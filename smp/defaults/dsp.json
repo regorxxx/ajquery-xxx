@@ -1,0 +1,10 @@
+﻿[
+	{
+		"active": true,
+		"name": "Speakers"
+	},
+	{
+		"active": false,
+		"name": "Headphones"
+	}
+]

@@ -1,0 +1,12 @@
+﻿[
+	{
+		"name": "Add skip Tag at current playback",
+		"funcName": "skipTagFromPlayback",
+		"icon": "ui-icon ui-icon-tag"
+	},
+	{
+		"name": "Pools Top Tracks Mix",
+		"funcName": "Pools\\Top tracks mix",
+		"icon": "ui-icon ui-icon-circle-zoomout"
+	}
+]

@@ -1,0 +1,14 @@
+﻿[
+	{
+		"active": false,
+		"device_id": "{5243F9AD-C84F-4723-8194-0788FC021BCC}",
+		"name": "Null Output",
+		"output_id": "{EEEB07DE-C2C8-44C2-985C-C85856D96DA1}"
+	},
+	{
+		"active": true,
+		"device_id": "{00000000-0000-0000-0000-000000000000}",
+		"name": "Default : Primary Sound Driver",
+		"output_id": "{D41D2423-FBB0-4635-B233-7054F79814AB}"
+	}
+]

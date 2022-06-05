@@ -1,0 +1,58 @@
+[
+	{
+		"tooltip": "Search tracks with same title.",
+		"name": "Same Title",
+		"menu": "Quicksearch for same/Title",
+		"component": "foo_quicksearch",
+		"icon": "ui-icon ui-icon-comment"
+	},
+	{
+		"tooltip": "Search tracks with same artist.",
+		"name": "Same Artist",
+		"menu": "Quicksearch for same/Artist",
+		"component": "foo_quicksearch",
+		"icon": "ui-icon ui-icon-person"
+	},
+	{
+		"tooltip": "Search tracks with same genre.",
+		"name": "Same Genre",
+		"menu": "Quicksearch for same/Genre",
+		"component": "foo_quicksearch",
+		"icon": "ui-icon ui-icon-tag"
+	},
+	{
+		"tooltip": "Search tracks with same style.",
+		"name": "Same Style",
+		"menu": "Quicksearch for same/Style",
+		"component": "foo_quicksearch",
+		"icon": "ui-icon ui-icon-tag"
+	},
+	{
+		"tooltip": "Search tracks by same artist on youtube.",
+		"name": "Youtube Artist",
+		"menu": "Youtube Source/Search/Songs by this artist",
+		"component": "foo_youtube",
+		"icon": "ui-icon ui-icon-person"
+	},
+	{
+		"tooltip": "Search tracks featuring this artist on youtube.",
+		"name": "Youtube collaborations by artist",
+		"menu": "Youtube Source/Search/Feat. songs by this artist",
+		"component": "foo_youtube",
+		"icon": "ui-icon ui-icon-person"
+	},
+	{
+		"tooltip": "Search acoustic version of this track.",
+		"name": "Youtube Acoustic version",
+		"menu": "Youtube Source/Search/Acoustic version",
+		"component": "foo_youtube",
+		"icon": "ui-icon ui-icon-volume-off"
+	},
+	{
+		"tooltip": "Search cover version of this track.",
+		"name": "Youtube Cover version",
+		"menu": "Youtube Source/Search/Cover version",
+		"component": "foo_youtube",
+		"icon": "ui-icon ui-icon-link"
+	}
+]

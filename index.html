@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html data-theme="ligth">
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>foobar2000</title>
+		<script type="text/javascript" src="js/jquery-1.11.0.min.js"></script>
+		<script type="text/javascript" src="js/jquery-ui-1.10.4.custom.min.js"></script>
+		<script type="text/javascript" src="js/ajquery.js"></script>
+		<link type="text/css" href="css/smoothness/jquery-ui-1.10.4.custom.css" rel="stylesheet" />
+		<link rel="shortcut Icon" href="/ajquery-xxx/img/favicon.ico" type="image/x-icon" />
+		<script type="text/javascript">
+			// Wait for document to load
+			document.addEventListener("DOMContentLoaded", function(event) {
+				if (Object.keys(xxx).length) {xxx.theme = '';}
+				else {xxx = {}; xxx.theme = '';}
+				$.getJSON('xxx/config-theme.json', function (data) {
+					xxx.theme = data[0].value;
+					if (xxx.theme && xxx.theme.length) {document.documentElement.setAttribute("data-theme", xxx.theme);}
+				});
+			});
+		</script>
+		<style type="text/css">
+			:root { --background-color: #fff; --background-color-v2: #e8e8e8; --background-color-v3: #e7e7e7; --background-color-v4: #f8f8f8; --border-color: gray; --border-color-v2: white; --text-color: #000; --text-color-v2: gray; --console-color: #000; --tabs-color-v1: #dddddd url(css/smoothness/images/ui-bg_highlight-soft_75_dddddd_1x100.png) 50% 0% repeat-x; --tabs-color-v2: none; --pl_prev: #5f5f5f; --pl_play: #6c0101;  --pl-album_play: #653b3b;}
+			[data-theme="dark"] { --background-color: #3F3F3F; --background-color-v2: #a2a2a2; --background-color-v3: #a2a2a2; --background-color-v4: #e8e8e8; --border-color: #000; --border-color-v2: #d7d7d7; --text-color: #000; --text-color-v2: #3f3d3d; --console-color: white; --tabs-color-v1: #cccccc url(css/smoothness/images/ui-bg_highlight-soft_75_cccccc_1x100.png) 50% 0% repeat-x; --tabs-color-v2: #c8c8c8; --pl_prev: #474747; --pl_play: #6c0101; --pl-album_play: #653b3b;}
+			body{ font-size: 0.5em; margin: 10px; background-color: var(--background-color); max-width: 600px;}
+			ul#buttons {margin: 0; padding: 0;}
+			ul#buttons li {margin: 3px; position: relative; padding: 4px 0; cursor: pointer; float: left;  list-style: none;}
+			ul#buttons span.ui-icon {float: left; margin: 0 4px;}
+			button { margin: .5em .4em .5em 0; cursor: pointer; padding: .2em .6em .3em .6em; line-height: 1.4em; }
+			.lindicator { padding: 8px; visibility: hidden; mix-blend-mode: multiply;}
+
+			.ui-progressbar .ui-progressbar-value { background: var(--background-color-v2); }
+			.ui-widget-content { background: var(--background-color-v4); color: var(--text-color); border: 1px solid var(--border-color)}
+			.ui-widget-header {border: 1px solid #aaaaaa; background: var(--tabs-color-v1); color: #222222; font-weight: bold;}
+			.ui-state-default,.ui-widget-content .ui-state-default,.ui-widget-header .ui-state-default {border: 1px solid #8ba5a0;}
+			.ui-tabs .ui-tabs-panel {background: var(--tabs-color-v2);}
+			
+			#pl { display: table; width: 100%; }
+			.pl_row { display: table-row; cursor: default; height: 18px; cursor: cell; }
+			.pl_c1  { width: 9%; display: table-cell; padding: 2px; text-align: right; vertical-align: middle; }
+			.pl_c2  { width: 71%; display: table-cell; padding: 2px; vertical-align: middle; }
+			.pl_c3  { width: 20%; display: table-cell; padding: 2px; text-align: right; vertical-align: middle; }
+			.pl_even { background: var(--background-color-v3); }
+			.pl_play { color: var(--pl_play); }
+			.pl_prev { color: var(--pl_prev); }
+			.pl_selected { background: #daeaff; border: 1px solid white; }
+			.bbl { border-left: 1px solid var(--border-color); } /* border black left */
+			.bbm { border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); } /* border black top and bottom */
+			.bbr { border-right: 1px solid var(--border-color); } /* border black right */
+			.bwl { border-left: 1px solid var(--border-color-v2); } /* border white left */
+			.bwm { border-top: 1px solid var(--border-color-v2); border-bottom: 1px solid var(--border-color-v2); } /* border white top and bottom */
+			.bwr { border-right: 1px solid var(--border-color-v2); } /* border white right */
+			.bbt { border-bottom: 1px solid var(--border-color-v2); border-top: 1px solid var(--border-color-v2); } /* border black top */
+			.pl-album { color: var(--text-color-v2);}
+			.pl-album_play { color: var(--pl-album_play);}
+			.noselect {
+				-webkit-touch-callout:	none; /* iOS Safari */
+				-webkit-user-select:	none; /* Safari */
+				-khtml-user-select:		none; /* Konqueror HTML */
+				-moz-user-select:		none; /* Old versions of Firefox */
+				-ms-user-select:		none; /* Internet Explorer/Edge */
+				-user-select:			none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
+			}
+			
+			#playlist { margin-right: -10px; margin-left: -10px; }
+
+			.br_o { background: var(--background-color-v2); }	/* odd file browser row */
+			.br_g { color: #a5a5a5; }	/* inactive file browser row */
+
+			hr { border: 0; border-bottom: 1px #b0b0b0 solid; }
+			#progressbar { cursor: pointer; margin-bottom: 12px; }
+			#playingtitle { float: left; font-size: 1.2em; padding: 0.25em; font-style: italic; font-weight: bold; margin: 0; position: absolute; top: 50%; transform: translateY(-50%);}
+			#playingtime { float: right; font-size: 1.2em; padding: 0.25em; font-style: italic; font-weight: bold; margin: 0; position: relative; top: 50%; transform: translateY(-50%);} 
+			#browse_table { width: 100%; /*height: 85%;*/ overflow-y: hidden; overflow-x:hidden; }
+			#aa_pane { opacity: .95; width: 50%; display: none; z-index: 2; cursor: move; margin: 0px;}
+			#cl_pane { opacity: .95; width: 50%; display: none; z-index: 2; cursor: move; margin: 0px;}
+			#cl_text { font-size: 2em; white-space: pre-line; color: var(--console-color)}
+
+			#querylist { height: 300px; overflow: visible;}
+			#querylist #qr { cursor: pointer; }
+			.qr_selected { background: #daeaff; }
+
+			#tooltip { background: #ededed; padding: 2px; border: 1px solid gray; display: none; z-index: 1000; }
+
+			.dragplacer-top div { border-top: 1px double red;}
+			.dragplacer-bottom div { border-bottom: 1px double red;}
+			
+			.justify {text-align: justify;  text-justify: inter-word;}
+			
+			.row { display: flex; }
+			.column { flex: 50%;}
+			.columnA { flex: 40%;}
+			.columnB { flex: 60%;}
+		</style>
+	</head>
+	<body>
+	<div id="wnd">
+		<ul id="buttons" class="ui-widget ui-helper-clearfix" style="float: left;">
+		<!-- <li class="btncmd ui-state-default ui-corner-all" title="Start" id="Start"><span class="ui-icon ui-icon-play"></span></li> -->
+		<li class="btncmd ui-state-default ui-corner-all" title="Play or pause (Space)" id="PlayOrPause"><span class="ui-icon ui-icon-pause"></span></li>
+		<li class="btncmd ui-state-default ui-corner-all" style="margin-left: 0px;" title="Stop" id="Stop"><span class="ui-icon ui-icon-stop"></span></li>
+		<li class="btncmd ui-state-default ui-corner-all" title="Previous" id="StartPrevious"><span class="ui-icon ui-icon-seek-first"></span></li>
+		<li class="btncmd ui-state-default ui-corner-all" title="Next" id="StartNext"><span class="ui-icon ui-icon-seek-end"></span></li>
+		<li class="btncmd ui-state-default ui-corner-all" title="Random" id="StartRandom"><span class="ui-icon ui-icon-shuffle"></span></li>
+		<li class=""></li>
+		<li class="ui-state-default ui-corner-all" title="Browse files" id="browse_btn"><span class="ui-icon ui-icon-folder-open"></span></li>
+		<li class="ui-state-default ui-corner-all" title="Search media library" id="search_btn"><span class="ui-icon ui-icon-search"></span></li>
+		<li class="ui-state-default ui-corner-all" title="Album art" id="aa_btn"><span class="ui-icon ui-icon-image"></span></li>
+		<li class="ui-state-default ui-corner-all" title="Extended controls" id="pbs_btn"><span class="ui-icon ui-icon-gear"></span></li>
+		<li class="ui-state-default ui-corner-all" title="Playlist Tools" id="pt_btn"><span class="ui-icon ui-icon-wrench"></span></li>
+		<li class="ui-state-default ui-corner-all" title="Playlist Manager" id="pm_btn"><span class="ui-icon ui-icon-note"></span></li>
+		<li class="ui-state-default ui-corner-all" title="Console log" id="cl_btn"><span class="ui-icon ui-icon-alert"></span></li>
+		<li class="ui-state-default ui-corner-all" title="Help" id="help_btn"><span class="ui-icon ui-icon-help"></span></li>
+		<li class="ui-state-default ui-corner-all" id="mute"><span class="ui-icon ui-icon-volume-off"></span></li>
+		<li id="vol"><!--<span>--><div id="volume" style="width: 100px; margin: 0.5em"></div><!--</span>--></li>
+		</ul>
+		<div id="loading" class="lindicator">&nbsp;&nbsp;<img src="img/loading.gif"></div>
+		<p><div id="progressbar" class="noselect"><div id="playingtitle"></div><div id="playingtime"></div></div>
+
+		<div id="tabs" class="ui-tabs ui-helper-clearfix">
+			<ul>
+				<li><a href="#t"></a></li>
+			</ul>
+			<div id="t">
+				<div>
+					<div style="float: right; width: 8em; margin-right: -1em;">
+						<ul id="buttons" class="ui-widget" style="margin-top: -1.3em; ">
+							<li style="border: 1px solid transparent;" title="" id="prevpage_btn"><span class="ui-icon ui-icon-arrowthick-1-w"></span></li>
+							<li style="border: 1px solid transparent;" title="" id="nextpage_btn"><span class="ui-icon ui-icon-arrowthick-1-e"></span></li>
+							<li style="border: 1px solid transparent;" title="Refresh controller" id="rel_btn"><span class="ui-icon ui-icon-arrowrefresh-1-w"></span></li>
+						</ul>
+					</div>
+					<div style="margin-top:0.5em; margin-right: 8em; cursor: pointer;"><div id="pageslider"></div></div>
+				</div>
+
+				<div id="playlist" style="clear: both;">Loading...</div>
+				<hr style="margin-right: -1.5em; margin-left: -1.5em;">
+				<div id="summary" class="noselect" style="margin-bottom: -0.5em"></div>
+  	        	</div>
+		</div>
+	</div>
+		<div id="pbs_dlg" class="noselect" title="Extended controls" style="overflow-x: hidden;">
+			<p>Playlist:</p>
+			<ul id="buttons" class="ui-widget ui-helper-clearfix">
+			<li class="ui-state-default ui-corner-all" title="Add" id="CreatePlaylist"><span class="ui-icon ui-icon-plusthick"></span></li>
+			<li class="ui-state-default ui-corner-all" title="Remove" id="RemovePlaylist"><span class="ui-icon ui-icon-closethick"></span></li>
+			<li class="ui-state-default ui-corner-all" title="Rename" id="RenamePlaylist"><span class="ui-icon ui-icon-pencil"></span></li>
+			<li class="ui-state-default ui-corner-all" title="Empty" id="EmptyPlaylist"><span class="ui-icon ui-icon-document"></span></li>
+			<li class="ui-state-default ui-corner-all" title="Undo (u)" id="Undo"><span class="ui-icon ui-icon-arrowreturnthick-1-w"></span></li>
+			<li class="ui-state-default ui-corner-all" title="Redo (r)" id="Redo"><span class="ui-icon ui-icon-arrowreturnthick-1-e"></span></li>
+			<li class="ui-state-default ui-corner-all" title="Refresh controller" id="RefreshPlaylist"><span class="ui-icon ui-icon-arrowrefresh-1-w"></span></li>
+			<li class="ui-state-default ui-corner-all" title="Show now playing (f)" id="FocusOnPlaying"><span class="ui-icon ui-icon-lightbulb"></span></li>
+			</ul>
+			<hr/>
+			<p>Playlist items:</p>
+			<ul id="buttons" class="ui-widget ui-helper-clearfix">
+			<li class="ui-state-default ui-corner-all" title="Enqueue selected items (q)" id="QueueItems"><span class="ui-icon ui-icon-circle-plus"></span></li>
+			<li class="ui-state-default ui-corner-all" title="Dequeue selected items (w)" id="DequeueItems"><span class="ui-icon ui-icon-circle-minus"></span></li>
+			<li class="ui-state-default ui-corner-all" title="Queue random item" id="QueueRandomItems"><span class="ui-icon ui-icon-shuffle"></span></li>
+			<li class="ui-state-default ui-corner-all" title="Flush queue" id="FlushQueue"><span class="ui-icon ui-icon-trash"></span></li>
+			<li class="ui-state-default ui-corner-all" title="Delete (Del)" id="Del"><span class="ui-icon ui-icon-minusthick"></span></li>
+			<li class="ui-state-default ui-corner-all" title="Set cursor" id="SetFocus"><span class="ui-icon ui-icon-pin-s"></span></li>
+			<li class="ui-state-default ui-corner-all" title="Run contextual menu...&#013;(on selection)" id="InputCC"><span class="ui-icon ui-icon-script"></span></li>
+			<li class="ui-state-default ui-corner-all" title="Sort by...&#013;(all playlist items)" id="InputSort"><span class="ui-icon ui-icon-carat-2-n-s"></span></li>
+			<!-- Paste doesn't work
+			<li class="ui-state-default ui-corner-all" title="Copy" id="Copy"><span class="ui-icon ui-icon-clipboard"></span></li>
+			<li class="ui-state-default ui-corner-all" title="Paste" id="Paste"><span class="ui-icon ui-icon-cart"></span></li>
+			-->
+			</ul>
+			<hr/>
+			<p>Rating:</p>
+			<ul id="buttons" class="ui-widget ui-helper-clearfix">
+			<li class="ui-state-default ui-corner-all" title="Rate 1 on selected items (1)" id="R1"><span class="ui-icon ui-icon-star"></span></li>
+			<li class="ui-state-default ui-corner-all" title="Rate 2 on selected items (2)" id="R2"><span class="ui-icon ui-icon-star"></span></li>
+			<li class="ui-state-default ui-corner-all" title="Rate 3 on selected items (3)" id="R3"><span class="ui-icon ui-icon-star"></span></li>
+			<li class="ui-state-default ui-corner-all" title="Rate 4 on selected items (4)" id="R4"><span class="ui-icon ui-icon-star"></span></li>
+			<li class="ui-state-default ui-corner-all" title="Rate 5 on selected items (5)" id="R5"><span class="ui-icon ui-icon-star"></span></li>
+			<li class="ui-state-default ui-corner-all" title="Rate + on selected items (Numpad +)" id="RPLUS"><span class="ui-icon ui-icon-plus"></span></li>
+			<li class="ui-state-default ui-corner-all" title="Rate - on selected items (Numpad -)" id="RMINUS"><span class="ui-icon ui-icon-minus"></span></li>
+			<li class="ui-state-default ui-corner-all" title="Rate 0 on selected items (0)" id="R0"><span class="ui-icon ui-icon-radio-off"></span></li>
+			</ul>
+			<hr/>
+			<p>Custom contextual menus:</p>
+			<ul id="buttons" class="ui-widget ui-helper-clearfix">
+			<li class="ui-state-default ui-corner-all" title="Custom 1" id="CC1"><span class="ui-icon ui-icon-star"></span></li>
+			<li class="ui-state-default ui-corner-all" title="Custom 2" id="CC2"><span class="ui-icon ui-icon-star"></span></li>
+			<li class="ui-state-default ui-corner-all" title="Custom 3" id="CC3"><span class="ui-icon ui-icon-star"></span></li>
+			<li class="ui-state-default ui-corner-all" title="Custom 4" id="CC4"><span class="ui-icon ui-icon-star"></span></li>
+			<li class="ui-state-default ui-corner-all" title="Custom 5" id="CC5"><span class="ui-icon ui-icon-star"></span></li>
+			<li class="ui-state-default ui-corner-all" title="Custom 6" id="CC6"><span class="ui-icon ui-icon-plus"></span></li>
+			<li class="ui-state-default ui-corner-all" title="Custom 7" id="CC7"><span class="ui-icon ui-icon-minus"></span></li>
+			<li class="ui-state-default ui-corner-all" title="Custom 8" id="CC8"><span class="ui-icon ui-icon-radio-off"></span></li>
+			</ul>
+			<hr/>
+			<p>Playback order&nbsp;<select id="PBO"><option value="0">Default</option><option value="1">Repeat (playlist)</option><option value="2">Repeat (track)</option><option value="3">Random</option><option value="4">Shuffle (tracks)</option><option value="5">Shuffle (albums)</option><option value="6">Shuffle (folders)</option></select></p>
+			<p><input type="checkbox" id="SAC">Stop after current</p>
+			<p><input type="checkbox" id="SAQ">Stop after queue</p>
+		</div>
+		
+		<div id="pt_dlg" class="noselect" title="Playlist Tools" style="overflow-x: hidden;">
+			<p>Playlist:</p>
+			<ul id="buttons" class="ui-widget ui-helper-clearfix">
+			<li class="ui-state-default ui-corner-all" title="Add" id="PTCreatePlaylist"><span class="ui-icon ui-icon-plusthick"></span></li>
+			<li class="ui-state-default ui-corner-all" title="Remove" id="PTRemovePlaylist"><span class="ui-icon ui-icon-closethick"></span></li>
+			<li class="ui-state-default ui-corner-all" title="Rename" id="PTRenamePlaylist"><span class="ui-icon ui-icon-pencil"></span></li>
+			<li class="ui-state-default ui-corner-all" title="Empty" id="PTEmptyPlaylist"><span class="ui-icon ui-icon-document"></span></li>
+			<li class="ui-state-default ui-corner-all" title="Undo (u)" id="PTUndo"><span class="ui-icon ui-icon-arrowreturnthick-1-w"></span></li>
+			<li class="ui-state-default ui-corner-all" title="Redo (r)" id="PTRedo"><span class="ui-icon ui-icon-arrowreturnthick-1-e"></span></li>
+			<li class="ui-state-default ui-corner-all" title="Refresh controller" id="PTRefreshPlaylist"><span class="ui-icon ui-icon-arrowrefresh-1-w"></span></li>
+			<li class="ui-state-default ui-corner-all" title="Show now playing" id="PTFocusOnPlaying"><span class="ui-icon ui-icon-lightbulb"></span></li>
+			<li class="ui-state-default ui-corner-all" title="Set cursor" id="PTSetFocus"><span class="ui-icon ui-icon-pin-s"></span></li>
+			</ul>
+			<hr/>
+			<p>SMP Menus:</p>
+			<ul id="buttons" class="ui-widget ui-helper-clearfix">
+			<li class="ui-state-default ui-corner-all" title="SMP 1" id="PTSMP1"><span class="ui-icon ui-icon-circle-check"></span></li>
+			<li class="ui-state-default ui-corner-all" title="SMP 2" id="PTSMP2"><span class="ui-icon ui-icon-circle-check"></span></li>
+			<li class="ui-state-default ui-corner-all" title="SMP 3" id="PTSMP3"><span class="ui-icon ui-icon-circle-check"></span></li>
+			<li class="ui-state-default ui-corner-all" title="SMP 4" id="PTSMP4"><span class="ui-icon ui-icon-circle-check"></span></li>
+			<li class="ui-state-default ui-corner-all" title="SMP 5" id="PTSMP5"><span class="ui-icon ui-icon-circle-check"></span></li>
+			<li class="ui-state-default ui-corner-all" title="SMP 6" id="PTSMP6"><span class="ui-icon ui-icon-circle-check"></span></li>
+			<li class="ui-state-default ui-corner-all" title="SMP 7" id="PTSMP7"><span class="ui-icon ui-icon-circle-check"></span></li>
+			<li class="ui-state-default ui-corner-all" title="SMP 8" id="PTSMP8"><span class="ui-icon ui-icon-circle-check"></span></li>
+			<li class="ui-state-default ui-corner-all" title="SMP 9" id="PTSMP9"><span class="ui-icon ui-icon-circle-check"></span></li>
+			</ul>
+			<hr/>
+			<p>Playlist Tools Menu entries&nbsp;<select id="PTME" style="max-width: 100%;"><option value="0">None</option></select></p>
+			<hr/>
+			<p>Output device&nbsp;<select id="PTOD" style="max-width: 100%;"><option value="0">None</option></select></p>
+			<p>DSP List&nbsp;<select id="PTDSP" style="max-width: 100%;"><option value="0">None</option></select></p>
+			<hr/>
+			<div id="pt_dlg_text" class="justify">
+				<p>When <a href="https://github.com/regorxxx/Playlist-Tools-SMP">Playlist Tools</a> (Spider Monkey Panel script) is installed on foobar server, menu entries, output devices and DSP list will be available.&nbsp;They are read only (greyed), unless the associated menus are also enabled at 'Script integration\SMP Main menu' or <a href="https://foosion.foobar2000.org/components/?id=runcmd">foo_runcmd</a> and <a href="https://marc2k3.github.io/run-main/">foo_run_main</a> plugins are both installed.</p>
+				<p>When the latter happens, devices and DSPs may be changed by using the drop-down list (uses command line).
+				</p>
+				<p>Otherwise, when Script integration is set right, you can change the Output Device or the current DSP on server by selecting the desired entry on the drop-down list and calling the associated menu button. Only one device/dsp can be set at the same time (the playlist used to send the command will be cleared every time you set a different selection) List is also cleared after command execution.
+				</p>
+				<p><a href="https://github.com/regorxxx/Playlist-Tools-SMP">Playlist Tools</a> menu entries work the same, but they allow multiple commands execution. Everytime a menu entry is selected, the command is added to the server list. Clicking on the associated menu button executes the entire list and clears it. By its nature, these commands can not be send using command line.
+				</p>
+				<p>SMP buttons always work, whether you have Playlist Tools installed or not. But without Playlist Tools they miss a lot of functionality:
+				<ul>
+				<li>Icons are dynamically set according to the menu type.</li>
+				<li>Menu enabled (custom icon or check circle) or disabled (crossed circle).</li>
+				<li>Tooltip showing menu name, function name and description if available.</li>
+				</ul>
+				Therefore, without <a href="https://github.com/regorxxx/Playlist-Tools-SMP">Playlist Tools</a>, the icons always show a crossed circle, since the server has no way to check if the menus are enabled or not. SMP Buttons data can be manually added/edited at 'smp\smpmenus.json' as workaround for servers without the scripts. Examples can be found at that folder.
+				</p>
+			</div>
+		</div>
+	
+		<div id="pm_dlg" class="noselect justify" title="Playlist Manager" style="overflow-x: hidden;">
+			<p>Playlist manager panels:&nbsp;<span id="pm_num">0 (none found)</span></p>
+			<div class="row">
+				<div class="columnA">
+					<p style="height: 1.5em;">Available playlists:&nbsp;</p>
+				</div>
+				<div class="columnB">
+					<p style="height: 1.5em; max-width: 100%;"><select id="PMME0" style="width: 100%; max-width: 100%;"><option value="0">None</option></select></p>
+				</div>
+			</div>
+			<hr/>
+			<div class="row">
+				<div class="columnA">
+					<p style="height: 1.5em;">Load playlist file:&nbsp;</p>
+					<p style="height: 1.5em;">Lock / unlock playlist:&nbsp;</p>
+					<p style="height: 1.5em;">Delete playlist file:&nbsp;</p>
+					<p style="height: 1.5em;">Clone in UI (copy):&nbsp;</p>
+				</div>
+				<div class="columnB">
+					<p style="height: 1.5em; max-width: 100%;"><select id="PMME1" style="width: 100%; max-width: 100%;"><option value="0">None</option></select></p>
+					<p style="height: 1.5em; max-width: 100%;"><select id="PMME2" style="width: 100%; max-width: 100%;"><option value="0">None</option></select></p>
+					<p style="height: 1.5em; max-width: 100%;"><select id="PMME3" style="width: 100%; max-width: 100%;"><option value="0">None</option></select></p>
+					<p style="height: 1.5em; max-width: 100%;"><select id="PMME4" style="width: 100%; max-width: 100%;"><option value="0">None</option></select></p>
+				</div>
+			</div>
+			<hr/>
+			<div class="row">
+				<div class="columnA">
+					<p style="height: 1.5em;">Send selection to:&nbsp;</p>
+				</div>
+				<div class="columnB">
+					<p style="height: 1.5em; max-width: 100%;"><select id="PMME5" style="width: 100%; max-width: 100%;"><option value="0">None</option></select></p>
+				</div>
+			</div>
+			<hr/>
+			<div class="row">
+				<div class="columnA">
+					<p style="height: 1.5em;">New empty playlist file:&nbsp;</p>
+					<p style="height: 1.5em;">Playlist file from active playlist:&nbsp;</p>
+					<p style="height: 1.5em;">Manually refresh panel:&nbsp;</p>
+				</div>
+				<div class="columnB">
+					<p style="height: 1.5em; max-width: 100%;"><select id="PMME6" style="width: 100%; max-width: 100%;"><option value="0">None</option></select></p>
+					<p style="height: 1.5em; max-width: 100%;"><select id="PMME7" style="width: 100%; max-width: 100%;"><option value="0">None</option></select></p>
+					<p style="height: 1.5em; max-width: 100%;"><select id="PMME8" style="width: 100%; max-width: 100%;"><option value="0">None</option></select></p>
+				</div>
+			</div>
+			<hr/>
+			<div id="pm_dlg_text">
+				<p>When <a href="https://github.com/regorxxx/Playlist-Manager-SMP">Playlist Manager</a> (Spider Monkey Panel script) is installed on foobar, server playlists will be available in every action list.&nbsp;They are read only (greyed), unless <a href="https://foosion.foobar2000.org/components/?id=runcmd">foo_runcmd</a> and <a href="https://marc2k3.github.io/run-main/">foo_run_main</a> plugins are both installed.</p>
+				<p>When the latter happens, playlist actions may be run by using the drop-down lists (using command line). Available playlists can be found at the top drop-down list with the following info:
+				<div class="row">
+					<div class="column">
+						<ul>
+							<li>Name</li>
+							<li>Size (tracks)</li>
+							<li>Writable (RW)</li>
+						</ul>
+					</div>
+					<div class="column">
+						<ul>
+							<li>Extension / format</li>
+							<li>Read only (R)</li>
+							<li>Duration (d/h/m)</li>
+						</ul>
+					</div>
+				</div>
+				</p>
+				<p>Note every panel has its own set of associated playlists, so every panel <strong>must have</strong> a different panel name to work.
+				</p>
+				<p>It's recommended to enable <strong>auto-saving</strong> on the server-side panels, otherwise changes to playlists will not be synced with their bound files. If that behavior is desired, playlist files may be selectively locked or cloned in UI (instead of loaded) to ensure no changes are made to the files -without disabling the global auto-saving feature-.
+				</p>
+			</div>
+		</div>
+		
+		<div id="aa_pane">
+			<img id="aa_img" style="width: 100%;">
+		</div>
+		
+		<div id="cl_pane">
+			<div id="cl_text"><p>No console.</p></div>
+		</div>
+
+		<div id="help_dlg" class="noselect justify" style="width: 50%; overflow-x: hidden;" title="Help">
+			<div id="help_dlg_text1">
+				<h3>Tips</h3>
+				<ul>
+				<li>It is recommended to enable 'Cursor follows playback' option in foobar2000 Playback menu for more convenient playlists browsing.</li>
+				<li>It's also recommended to uncheck 'Log access to console' at 'Preferences/Tools/Http Control' on foobar (to not pollute console).</li>
+				</ul>
+			</div>
+			<hr>
+			<div id="help_dlg_text2">
+				<h3>Playlist</h3>
+				<h4>Playlist items</h4>
+				<ul>
+				<li>Double clicking any playlist item starts playback.</li>
+				<li>Single clicking playlist item selects item(s):</li>
+					<ul>
+					<li><strong>On album name</strong> selects contiguous tracks from album.</li>
+						<ul><li>+ Shift selects multiple albums.</li></ul>
+					<li><strong>On track name</strong> selects the track.</li>
+						<ul><li>+ Shift selects in between track(s).</li>
+						<li>+ Control adds single track to selection.</li></ul>
+					</ul>
+				</ul>
+				<h4>Playlist page and slider</h4>
+				<ul>
+					<li>Dragging playlist item or selection moves it within the current playlist page.</li>
+					<li>Playlist slider is working as playlist page switcher, drag its thumb to change page.</li>
+					<li>Double clicking on playlist slider sets focus on playing item.</li>
+				</ul>
+				<h4>Playlist Tabs</h4>
+				<ul>
+				<li>Double clicking active playlist tab opens rename popup.</li>
+				</ul>
+				<h4>Hotkeys (also shown on buttons tooltip)</h4>
+				<ul>
+					<li><strong>f				</strong>: focus on noy playing item.</li>
+					<li><strong>s				</strong>: stop after current.</li>
+					<li><strong>u				</strong>: undo.</li>
+					<li><strong>r				</strong>: redo.</li>
+					<li><strong>del				</strong>: delete selection.</li>
+					<li><strong>q				</strong>: enqueue selection.</li>
+					<li><strong>w				</strong>: dequeue selection.</li>
+					<li><strong>0...5			</strong>: rate selection from 0 to 5.</li>
+					<li><strong>+ (numpad)		</strong>: reduce rating on selection.</li>
+					<li><strong>- (numpad)		</strong>: increase rating on selection.</li>
+					<li><strong>Space			</strong>: play/pause</li>
+					<li><strong>Shift + AvPag	</strong>: reduce playlist size</li>
+				</ul>
+			</div>
+			<hr>
+			<div id="help_dlg_text3">
+				<h3>Extended Controls</h3>
+				<p>This window has general tools for playlist/track management, among them you will find:</p>
+				<ul>
+				<li>Multiple playlist commands: new, delete, ...</li>
+				<li>Multiple selection commands: set cursor, delete, ...</li>
+				<li>Sorting popup.</li>
+				<li>Run CMD: Run an arbitrary contextual menu on selection.</li>
+				<li>Rating: from 1-5, +, - and reset for the current selection.</li>
+				<li>Custom contextual menu buttons: pre-defined tools associated to plugins.(*)</li>
+						<ul>
+						<li><a href="https://www.foobar2000.org/components/view/foo_quicksearch">foo_quicksearch</a> (**)</li>
+						<li><a href="https://fy.3dyd.com/home/">foo_youtube</a></li>
+					</ul>
+				<li>Playback order.</li>
+				</ul>
+				<p>
+				(*)	When <a href="https://github.com/regorxxx/Playlist-Tools-SMP">Playlist Tools</a> (Spider Monkey Panel script) is installed, component checking is also allowed, therefore Contextual menu Buttons are enabled/disabled according to the components installed.
+				</p>
+				<p>(**) The default contextual buttons make use of title, artist and genre queries. Style is not a query provided by default when you install the component but it can be added with this data: (name: Style, query: %style%, context menu: checked).
+				<br><br>
+				<img src="img/_doc/quicksearch.png" alt="Quicksearch configuration">
+				</p>
+			</div>
+			<hr>
+			<div id="help_dlg_text4">
+				<h3>Playlist Tools</h3>
+				<p>When <a href="https://github.com/regorxxx/Playlist-Tools-SMP">Playlist Tools</a> (Spider Monkey Panel script) is installed on foobar server, menu entries, output devices and DSP list will be available (*):</p>
+				<ul>
+				<li>Playlist Tools menu entries: disabled unless the associated menus is also enabled at 'Script integration\SMP Main menu'.</li>
+				<li>Output Device: disabled unless the associated menus is also enabled at 'Script integration\SMP Main menu' OR <a href="https://foosion.foobar2000.org/components/?id=runcmd">foo_runcmd</a> and <a href="https://marc2k3.github.io/run-main/">foo_run_main</a> plugins are both installed. When the latter happens, CMD method will be always preferred.</li>
+				<li>DSP List: disabled unless the associated menus is also enabled at 'Script integration\SMP Main menu' OR <a href="https://foosion.foobar2000.org/components/?id=runcmd">foo_runcmd</a> and <a href="https://marc2k3.github.io/run-main/">foo_run_main</a> plugins are both installed. When the latter happens, CMD method will be always preferred (*).</li>
+				</ul>
+				<p>	When using <a href="https://github.com/regorxxx/Playlist-Tools-SMP">Playlist Tools</a> method, and 'Script integration\SMP Main menu' relevant config is set, then you can change the Output Device or the current DSP on server by selecting the desired entry on the drop-down list and calling the associated menu button. (****) Only one device/dsp can be set at the same time (the playlist used to send the command will be cleared every time you set a different selection) List is also cleared after command execution.
+				<br><br>
+				<a href="https://github.com/regorxxx/Playlist-Tools-SMP">Playlist Tools</a> menu entries work the same, but they allow multiple commands execution. 	Everytime a menu entry is selected, the command is added to the server list. (****) Clicking on  the associated menu button executes the entire list and clears it.
+				<br><br>
+				(*) The panel is the one sending those lists to the server. Whether you enable or not the rest of the features, so it's a 'requirement' to see the actual devices or DSPs on the controller on real time. There is a 'workaround' if you don't use SMP and/or Playlist Tools though: you can manually edit 'smp\dsp.json' and 'devices.json' according to your PC config. Examples can be found at 'smp\defaults' folder.
+				<br><br>
+				(**) CMD method just uses simple command line to send the commands. Since it's cleaner (no playlist involved), it's preferred whenever it's possible. Obviously, it doesn't work for anything outside standard foobar main menus... so its usage is limited to those cases.
+				<br><br>
+				SMP buttons always work, whether you have Playlist Tools installed or not. But without the
+				panel they miss a lot of functionality:
+				<ul>
+					<li>Icons are dynamically set according to the menu type.</li>
+					<li>Show if menu is enabled (custom icon or check circle) or disabled (crossed circle) (***).</li>
+					<li>Tooltip showing menu name, function name and description if available.</li>
+				</ul>
+				(***) Therefore, without <a href="https://github.com/regorxxx/Playlist-Tools-SMP">Playlist Tools</a>, the icons always show a crossed circle, since the server has no way to check if the menus are enabled or not. SMP Buttons data can be manually added/edited at 'smp\smpmenus.json' as workaround for servers without Playlist Tools. Examples can be found at 'smp\defaults' folder.
+				<br><br>
+				(****) <strong>It's mandatory to disable 'Always send new files to playist' at 'Preferences/shell integration', otherwise the commands will be sent to the wrong playlist</strong>. See 'readme_Playlist_Tools.jpg' image.
+				</p>
+			</div>
+		</div>
+		
+		<div id="search_dlg" class="noselect" title="Search media library" style="overflow-x: hidden;">
+			<div id="querylist"></div>
+		</div>
+
+		<div id="search_dlg_nav1" class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix noselect" style="border-bottom-width: 1px; border-top-width: 0px; font-size: 1em; width: 92%; white-space:nowrap; max-width: 92%;">
+			<p>Search: <input type="text" size="30" id="searchstr" style="max-width: 80%;"> <a style="padding-right: 5px;" href="http://wiki.hydrogenaudio.org/index.php?title=Foobar2000:Query_syntax" target="_blank" title="Query syntax help">?</a></p>
+		</div>
+
+		<div id="search_dlg_nav2" class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix noselect" style="border-bottom-width: 1px; border-top-width: 0px; font-size: 1em; width: 92%; white-space:nowrap; max-width: 92%;">
+			<button id="r_btn">Retrieve artist list</button><strong>&nbsp;Current query path:&nbsp;</strong><span id="querypath"></span>
+		</div>
+
+		<div id="browse_dlg" class="noselect" title="File browser" style="overflow-x: hidden;">
+			<div id="browse_table"></div>
+		</div>
+
+		<div id="browse_dlg_nav" class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix" style="border-bottom-width: 1px; border-top-width: 0px; font-size: 1em; width: 100%; white-space:nowrap; max-width: 100%;">
+			<a id="browse_parent" href="#"></a>&nbsp;<span id="browse_path"></span>
+		</div>
+
+		<div id="error_dlg" title="&#9760; Ouch!">
+			<p>An AJAX error occured.</p>
+			<p>Possible reasons:</p>
+			<ul>
+				<li>JSON parser got stuck on invalid data; response dump might be provided below so you can analyze what went wrong using JSON validator of your choice, for example: <a href="http://jsonformatter.curiousconcept.com/">http://jsonformatter.curiousconcept.com/</a>;</li>
+				<li>borken connection;</li>
+				<li>god knows what else.</li>
+			</ul>
+			<p><a href="/ajquery-xxx/index.html">Restart</a> template or think of something else.</p>
+			<hr/>
+			<textarea id="dbg" cols="90" rows="30"></textarea>
+		</div>
+
+		<span id="tooltip" class="ui-widget"></span>
+	</body>
+</html>
