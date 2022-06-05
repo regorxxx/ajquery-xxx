@@ -196,7 +196,7 @@ Asynchronious foo_httpcontrol template
 	Examples can be found at 'smp\defaults' folder.
 	
 	(****) IT'S MANDATORY TO DISABLE 'ALWAYS SEND NEW FILES TO PLAYIST' 'AT PREFERENCES/SHELL INTEGRATION', 
-	¡otherwise the commands will be sent to the wrong playlist!. See 'readme_Playlist_Tools.jpg' image.
+	¡otherwise the commands will be sent to the wrong playlist!. See 'img\_doc\always_send_new_files.jpg' image.
 
 *** Release history 2022
 	25 Jun  0.90
