@@ -18,7 +18,7 @@
 * **Rating:** xxxxx.
 * **Playlist Tools:** xxxxx.
 * **Playlist Manager:** xxxxx.
-* 
+
 ## Comparison to old ajquery
 * Full and tested responsive design.
 * Tile, artist, album tags are cut at display to soft-force one track per row.
