@@ -13,9 +13,9 @@ helper3=[%codec% | %bitrate%kbps | %samplerate%Hz | %channels%]
 ; specifies wildcards where we should look for albumart files, separated by |. foobar2000 titleformatting is available there as well.
 albumart=$directory_path(%path%)\folder.jpg|$directory_path(%path%)\*.jpg
 ; specifies path of a picture to show when albumart is not found.
-albumart_not_found=ajquery-xxx/img/vinyl-playing.gif
+albumart_not_found=ajquery-xxx/img/vinyl-playing-dark.gif
 ; specifies path of a picture to show when albumart is requested but not currently available (no playing track).
-albumart_not_available=ajquery-xxx/img/vinyl.gif
+albumart_not_available=ajquery-xxx/img/vinyl-dark.gif
 ; limits maximum albumart size to download, in bytes.
 albumart_limit_size=0
 ; setting to 1 prefers embedded albumart over external.

@@ -1429,8 +1429,8 @@ function retrieveState(cmd, p1, bPreserveSel) {
 	}
 	cmd = cmd || '';
 	p1 = p1 || '';
-	cmd = cmd ? ['?cmd=', cmd, '&'].join('') : '?';
-	p1 = p1 ? ['&param1=', p1, '&'].join('') : '';
+	cmd = cmd.length ? ['?cmd=', cmd, '&'].join('') : '?';
+	p1 = p1.length ? ['&param1=', p1, '&'].join('') : '';
 	
 	retrieveSMP();
 	retrieveXXX();
@@ -1467,7 +1467,7 @@ function retrieveState(cmd, p1, bPreserveSel) {
 function retrieveBrowserState(p1) {
 	startWork();
 	p1 = p1 || '';
-	if (p1) {p1 = '&param1=' + p1;}
+	if (p1.length) {p1 = '&param1=' + p1;}
 	try {
 		$.getJSON(['/ajquery-xxx/?cmd=Browse', p1, '&param3=js/browser.json'].join(''), function(data, status) {
 			br = data;
@@ -1648,7 +1648,7 @@ $(function() {
 		
 		$('#r_btn').click(function(e) {
 			$(this).blur();
-			const query = $('#searchstr').val();
+			const query = $('#searchstr').val().toString();
 			if (query && query.length && (!library || library.queryInfo.length === 0)) {retrieveLibraryState('QueryAdvance', query);}
 			else {retrieveLibraryState('QueryRetrace');}
 		});
