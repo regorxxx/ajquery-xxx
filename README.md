@@ -46,7 +46,8 @@
 -IMAGE-
 
 ## Installation
-See [_TIPS and INSTALLATION (txt)](https://github.com/regorxxx/ajquery-xxx/blob/main/_TIPS%20and%20INSTALLATION.txt) and the [Wiki](https://github.com/regorxxx/ajquery-xxx/wiki/Installation).
+See [_readme (txt)](https://github.com/regorxxx/ajquery-xxx/blob/main/_readme.txt).
+To use this plugin at its best [foo_run_main](https://marc2k3.github.io/run-main/)is required to run dyanmic contextual menus.
 Not properly following the installation instructions will result in scripts not working as intended. Please don't report errors before checking this.
 
 [changelog]: CHANGELOG.md
