@@ -5,19 +5,19 @@
 ![GitHub](https://img.shields.io/github/license/regorxxx/ajquery-xxx)  
 [foo_httpcontrol](https://hydrogenaud.io/index.php/topic,62218.0.html) template for [foobar2000](https://www.foobar2000.org) developed to be used in modern desktop or mobile browsers with responsive design; fully compatible with [Playlist-Tools-SMP](https://github.com/regorxxx/Playlist-Tools-SMP) and [Playlist-Manager-SMP](https://github.com/regorxxx/Playlist-Manager-SMP).
 
--IMAGE-
+![ajquery](https://user-images.githubusercontent.com/83307074/193598636-730640f8-894e-45fa-a6f9-a722b59c5df8.gif)
 
 ## Features
-* **Full playback controls:** xxxxx.
-* **Extended controls:** xxxxx.
-* **Library browser:** xxxxx.
-* **Query browser:** xxxxx.
-* **Artwork support:** xxxxx.
-* **Console logging:** xxxxx.
-* **Contextual menus:** xxxxx.
-* **Rating:** xxxxx.
-* **Playlist Tools:** xxxxx.
-* **Playlist Manager:** xxxxx.
+* **Full playback controls:** smart play/pause, stop, prev/next, random.
+* **Extended controls:** sort playlist, queue, etc.
+* **Library browser:** by path.
+* **Query browser:** by artist.
+* **Artwork support:** front cover or disc animation.
+* **Console logging:** able to read a txt file on server (for ex. the console log).
+* **Contextual menus:** able to run any contextual menu by name.
+* **Rating:** displayed on playlist and full tagging support.
+* **Playlist Tools:** Full integration with SMP script; all tools and menus, output and DSP selection.
+* **Playlist Manager:** Full integration with SMP script;  browse, load, lock, create, ... playlist files.
 
 ## Comparison to old ajquery
 * Full and tested responsive design.
