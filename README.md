@@ -46,8 +46,9 @@
 -IMAGE-
 
 ## Installation
-See [_readme (txt)](https://github.com/regorxxx/ajquery-xxx/blob/main/_readme.txt). To use this plugin at its best, [foo_run_main](https://marc2k3.github.io/run-main/) is required to run dyanmic contextual menus.
-Not properly following the installation instructions will result in scripts not working as intended. Please don't report errors before checking this.
+See [_readme (txt)](https://github.com/regorxxx/ajquery-xxx/blob/main/_readme.txt). Not properly following the installation instructions will result in scripts not working as intended. Please don't report errors before checking this.
+
+To use this plugin at its best, [foo_run_main](https://marc2k3.github.io/run-main/) is required. It's used to run dynamic contextual menus.
 
 [changelog]: CHANGELOG.md
 [version_badge]: https://img.shields.io/github/release/regorxxx/ajquery-xxx.svg
