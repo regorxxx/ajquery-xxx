@@ -209,7 +209,7 @@
 			<li class="ui-state-default ui-corner-all" title="Redo (r)" id="PTRedo"><span class="ui-icon ui-icon-arrowreturnthick-1-e"></span></li>
 			<li class="ui-state-default ui-corner-all" title="Refresh controller" id="PTRefreshPlaylist"><span class="ui-icon ui-icon-arrowrefresh-1-w"></span></li>
 			<li class="ui-state-default ui-corner-all" title="Show now playing" id="PTFocusOnPlaying"><span class="ui-icon ui-icon-lightbulb"></span></li>
-			<li class="ui-state-default ui-corner-all" title="Set cursor" id="PTSetFocus"><span class="ui-icon ui-icon-pin-s"></span></li>
+			<li class="ui-state-default ui-corner-all" title="Set focus" id="PTSetFocus"><span class="ui-icon ui-icon-pin-s"></span></li>
 			</ul>
 			<hr/>
 			<p>SMP Menus:</p>
@@ -225,26 +225,19 @@
 			<li class="ui-state-default ui-corner-all" title="SMP 9" id="PTSMP9"><span class="ui-icon ui-icon-circle-check"></span></li>
 			</ul>
 			<hr/>
-			<p>Playlist Tools Menu entries&nbsp;<select id="PTME" style="max-width: 100%;"><option value="0">None</option></select></p>
+			<p>Playlist Tools Menu entries (listener)&nbsp;<select id="PTME" style="max-width: 100%;"><option value="0">None</option></select></p>
+			<p>Playlist Tools Menu entries (CMD)&nbsp;<select id="PTMECMD" style="max-width: 100%;"><option value="0">None</option></select></p>
 			<hr/>
 			<p>Output device&nbsp;<select id="PTOD" style="max-width: 100%;"><option value="0">None</option></select></p>
 			<p>DSP List&nbsp;<select id="PTDSP" style="max-width: 100%;"><option value="0">None</option></select></p>
 			<hr/>
 			<div id="pt_dlg_text" class="justify">
-				<p>When <a href="https://github.com/regorxxx/Playlist-Tools-SMP">Playlist Tools</a> (Spider Monkey Panel script) is installed on foobar server, menu entries, output devices and DSP list will be available.&nbsp;They are read only (greyed), unless the associated menus are also enabled at 'Script integration\SMP Main menu' or <a href="https://foosion.foobar2000.org/components/?id=runcmd">foo_runcmd</a> and <a href="https://marc2k3.github.io/run-main/">foo_run_main</a> plugins are both installed.</p>
+				<p>When <a href="https://github.com/regorxxx/Playlist-Tools-SMP">Playlist Tools</a> (Spider Monkey Panel script) is installed on foobar server, menu entries, output devices and DSP list will be available.&nbsp;They are read only (greyed), unless <a href="https://foosion.foobar2000.org/components/?id=runcmd">foo_runcmd</a> and <a href="https://marc2k3.github.io/run-main/">foo_run_main</a> plugins are both installed.</p>
 				<p>When the latter happens, devices and DSPs may be changed by using the drop-down list (uses command line).
 				</p>
-				<p>Otherwise, when Script integration is set right, you can change the Output Device or the current DSP on server by selecting the desired entry on the drop-down list and calling the associated menu button. Only one device/dsp can be set at the same time (the playlist used to send the command will be cleared every time you set a different selection) List is also cleared after command execution.
+				<p><a href="https://github.com/regorxxx/Playlist-Tools-SMP">Playlist Tools (CMD)</a> menu entries work the same, executing the selected menu entry via CMD. Feature must be enabled at 'Script integration\SMP Dynamic menu'.
 				</p>
-				<p><a href="https://github.com/regorxxx/Playlist-Tools-SMP">Playlist Tools</a> menu entries work the same, but they allow multiple commands execution. Everytime a menu entry is selected, the command is added to the server list. Clicking on the associated menu button executes the entire list and clears it. By its nature, these commands can not be send using command line.
-				</p>
-				<p>SMP buttons always work, whether you have Playlist Tools installed or not. But without Playlist Tools they miss a lot of functionality:
-				<ul>
-				<li>Icons are dynamically set according to the menu type.</li>
-				<li>Menu enabled (custom icon or check circle) or disabled (crossed circle).</li>
-				<li>Tooltip showing menu name, function name and description if available.</li>
-				</ul>
-				Therefore, without <a href="https://github.com/regorxxx/Playlist-Tools-SMP">Playlist Tools</a>, the icons always show a crossed circle, since the server has no way to check if the menus are enabled or not. SMP Buttons data can be manually added/edited at 'smp\smpmenus.json' as workaround for servers without the scripts. Examples can be found at that folder.
+				<p><a href="https://github.com/regorxxx/Playlist-Tools-SMP">Playlist Tools (listener)</a> menu entries allow multiple commands execution. Everytime a menu entry is selected, the command is added to the server list. Clicking on the execute button process the entire list and clears it. 'Execute menu entry by name' must be added at 'Script integration\SMP Dynamic menu' to bind the execute button to one of the 9 available buttons. 
 				</p>
 			</div>
 		</div>
@@ -345,8 +338,8 @@
 				<h3>Playlist</h3>
 				<h4>Playlist items</h4>
 				<ul>
-				<li>Double clicking any playlist item starts playback.</li>
-				<li>Single clicking playlist item selects item(s):</li>
+					<li>Double clicking any playlist item starts playback.</li>
+					<li>Single clicking playlist item selects item(s):</li>
 					<ul>
 					<li><strong>On album name</strong> selects contiguous tracks from album.</li>
 						<ul><li>+ Shift selects multiple albums.</li></ul>
@@ -355,6 +348,10 @@
 						<li>+ Control adds single track to selection.</li></ul>
 					</ul>
 				</ul>
+				<h4>Status bar</h4>
+				<ul>
+					<li>Double clicking sets focus on playing item.</li>
+				</ul>				
 				<h4>Playlist page and slider</h4>
 				<ul>
 					<li>Dragging playlist item or selection moves it within the current playlist page.</li>
@@ -410,29 +407,21 @@
 			<div id="help_dlg_text4">
 				<h3>Playlist Tools</h3>
 				<p>When <a href="https://github.com/regorxxx/Playlist-Tools-SMP">Playlist Tools</a> (Spider Monkey Panel script) is installed on foobar server, menu entries, output devices and DSP list will be available (*):</p>
+				<p>All functionality will be disabled unless <a href="https://foosion.foobar2000.org/components/?id=runcmd">foo_runcmd</a> and <a href="https://marc2k3.github.io/run-main/">foo_run_main</a> plugins are both installed.</p>
 				<ul>
-				<li>Playlist Tools menu entries: disabled unless the associated menus is also enabled at 'Script integration\SMP Main menu'.</li>
-				<li>Output Device: disabled unless the associated menus is also enabled at 'Script integration\SMP Main menu' OR <a href="https://foosion.foobar2000.org/components/?id=runcmd">foo_runcmd</a> and <a href="https://marc2k3.github.io/run-main/">foo_run_main</a> plugins are both installed. When the latter happens, CMD method will be always preferred.</li>
-				<li>DSP List: disabled unless the associated menus is also enabled at 'Script integration\SMP Main menu' OR <a href="https://foosion.foobar2000.org/components/?id=runcmd">foo_runcmd</a> and <a href="https://marc2k3.github.io/run-main/">foo_run_main</a> plugins are both installed. When the latter happens, CMD method will be always preferred (*).</li>
+				<li>Playlist Tools buttons: added at 'Script integration\SMP Dynamic menu'.</li>
+				<li>Playlist Tools (CMD): enabled at 'Script integration\SMP Dynamic menu'.</li>
+				<li>Playlist Tools (listener): disabled unless 'Execute menu entry by name' is used.</li>
+				<li>Output Device</li>
+				<li>DSP List</li>
 				</ul>
-				<p>	When using <a href="https://github.com/regorxxx/Playlist-Tools-SMP">Playlist Tools</a> method, and 'Script integration\SMP Main menu' relevant config is set, then you can change the Output Device or the current DSP on server by selecting the desired entry on the drop-down list and calling the associated menu button. (****) Only one device/dsp can be set at the same time (the playlist used to send the command will be cleared every time you set a different selection) List is also cleared after command execution.
-				<br><br>
-				<a href="https://github.com/regorxxx/Playlist-Tools-SMP">Playlist Tools</a> menu entries work the same, but they allow multiple commands execution. 	Everytime a menu entry is selected, the command is added to the server list. (****) Clicking on  the associated menu button executes the entire list and clears it.
-				<br><br>
+				<p><a href="https://github.com/regorxxx/Playlist-Tools-SMP">Playlist Tools (CMD)</a> executes the selected menu entry via CMD.
+				</p>
+				<p><a href="https://github.com/regorxxx/Playlist-Tools-SMP">Playlist Tools (listener)</a> menu entries allow multiple commands execution. Everytime a menu entry is selected, the command is added to the server list (**). Clicking on the execute button process the entire list and clears it. 'Execute menu entry by name' is added at 'Script integration\SMP Dynamic menu' to bind the execute button to one of the 9 available buttons. .
+				</p>
 				(*) The panel is the one sending those lists to the server. Whether you enable or not the rest of the features, so it's a 'requirement' to see the actual devices or DSPs on the controller on real time. There is a 'workaround' if you don't use SMP and/or Playlist Tools though: you can manually edit 'smp\dsp.json' and 'devices.json' according to your PC config. Examples can be found at 'smp\defaults' folder.
 				<br><br>
-				(**) CMD method just uses simple command line to send the commands. Since it's cleaner (no playlist involved), it's preferred whenever it's possible. Obviously, it doesn't work for anything outside standard foobar main menus... so its usage is limited to those cases.
-				<br><br>
-				SMP buttons always work, whether you have Playlist Tools installed or not. But without the
-				panel they miss a lot of functionality:
-				<ul>
-					<li>Icons are dynamically set according to the menu type.</li>
-					<li>Show if menu is enabled (custom icon or check circle) or disabled (crossed circle) (***).</li>
-					<li>Tooltip showing menu name, function name and description if available.</li>
-				</ul>
-				(***) Therefore, without <a href="https://github.com/regorxxx/Playlist-Tools-SMP">Playlist Tools</a>, the icons always show a crossed circle, since the server has no way to check if the menus are enabled or not. SMP Buttons data can be manually added/edited at 'smp\smpmenus.json' as workaround for servers without Playlist Tools. Examples can be found at 'smp\defaults' folder.
-				<br><br>
-				(****) <strong>It's mandatory to disable 'Always send new files to playist' at 'Preferences/shell integration', otherwise the commands will be sent to the wrong playlist</strong>.
+				(**) <strong>It's mandatory to disable 'Always send new files to playist' at 'Preferences/shell integration', otherwise the commands will be sent to the wrong playlist</strong>.
 				<br><br>
 				<img src="img/_doc/always_send_new_files.jpg" alt="Disable 'Always send new files to playist'." style="width: 100%;">
 				</p>

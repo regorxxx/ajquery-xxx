@@ -1,5 +1,5 @@
 Asynchronious foo_httpcontrol template
-0.81 http://code.google.com/p/foo-httpcontrol/
+0.92 http://code.google.com/p/foo-httpcontrol/
 
 *** Requirements
 
@@ -18,7 +18,11 @@ Asynchronious foo_httpcontrol template
 	Playlist Tools (along SMP) is not required but strongly recommended  to fully
 	integrate SMP with the online controller, get Ouput Device, DSP, menu entries,
 	dynamic button generation and allow Playlist Tools macros and tools to be used.
-	https://github.com/regorxxx/Playlist-Tools-SMP
+	https://regorxxx.github.io/foobar2000-SMP.github.io/
+	
+	Playlist Manager (along SMP) is not required but strongly recommended  to be 
+	able to manage playlists -as files- without cluttering the UI with tabs.
+	https://regorxxx.github.io/foobar2000-SMP.github.io/
 
 	Run Command (foo_runcmd) is not required but strongly recommended to get
 	some advanced features working (allows running statically created menus via cmd).
@@ -54,10 +58,9 @@ Asynchronious foo_httpcontrol template
 *** Installation
 
 	Extract archive contents retaining directory structure into %YOUR_FOOBAR_PROFILE_PATH%
-	Any other path WILL NOT work without editing the scripts. (see images\_Installation_*jpg)
-	For ex: mine is 			c:\Users\xxx\AppData\Roaming\foo_httpcontrol_data\...
-	For portable installations >= 1.6: .\foobar2000\profile\foo_httpcontrol_data\... 
-	For portable installations <= 1.5: .\foobar2000\foo_httpcontrol_data\... 
+	For ex: mine is 			c:\Users\xxx\AppData\Roaming\foo_httpcontrol_data\ajquery-xxx\...
+	For portable installations >= 1.6: .\foobar2000\profile\foo_httpcontrol_data\ajquery-xxx\... 
+	For portable installations <= 1.5: .\foobar2000\foo_httpcontrol_data\ajquery-xxx\... 
 
 *** Usage
 
@@ -76,16 +79,18 @@ Asynchronious foo_httpcontrol template
 		2.3. Clicking + shift on track name selects in between track(s).
 		2.3. Clicking + control on track name adds track to selection.
 
-	3. Dragging playlist item or selection moves it within the current
+	3. Double clicking on status bar sets focus on playing item.
+
+	4. Dragging playlist item or selection moves it within the current
 	playlist page.
 	
-	4. Playlist slider is working as playlist page switcher, drag its
+	5. Playlist slider is working as playlist page switcher, drag its
 	thumb to change page.
 
-	5. A few hotkeys are available (check command buttons tooltips for
+	6. A few hotkeys are available (check command buttons tooltips for
 	hotkey values).
 
-	6. Use Shift+PageUp and Shift+PageDown to resize playlist.
+	8. Use Shift+PageUp and Shift+PageDown to resize playlist.
 
 	It is recommended to enable "Cursor follows playback" option in 
 	foobar2000 Playback menu for more convenient playlists browsing.
@@ -199,6 +204,18 @@ Asynchronious foo_httpcontrol template
 	¡otherwise the commands will be sent to the wrong playlist!. See 'img\_doc\always_send_new_files.jpg' image.
 
 *** Release history 2022
+	14 Sept  0.92
+		fix:	All Playlist Tools and Manager lists get now refreshed when entries are deleted;
+		fix:	All CMD actions are now disabled (UI and functionality) when missing dependencies;
+		fix:	Wrapped all JSON reads on try/catch;
+		fix:	Minor code fixes and code cleanup;
+		
+	28 Aug  0.91
+		add:	Double clicking on status bar (below playlist) sets focus on playing item;
+		cha:	Playlist Tools integration using dynamic menus;
+		cha:	Updated all help texts about Playlist Tools integration;
+		fix:	Minor code fixes;
+
 	25 Jun  0.90
 		add:	File browser now has header columns;
 		add:	Double clicking on active playlist opens rename popup;
@@ -222,20 +239,27 @@ Asynchronious foo_httpcontrol template
 		cha:	Added and edited multiple tooltips;
 		cha:	A lot of code cleanup;
 		cha:	Text on tabs is now non-selectable;
+		cha:	Text on most panels is now non-selectable;
 		cha:	Library list can now be filtered with the search input (usually by artist);
 		cha:	Removed play button. Replaced with smart play/pause button;
+		cha:	Up/down keys allow to select items (+ shift allowed);
+		cha:	Icon for selected items;
+		fix:	Search panel now has a max height and a scroll bar (instead of infinite size)
+		fix:	Text on playlist is now non-selectable (fixes shift + selection not working properly);
+		fix:	Text on progress bar is now non-selectable (fixes seeking not working properly);
+		fix:	Broken seeking (since original ajquery);
+		fix:	Double clicking on playlist page slider to focus on now playing limited to button;
+		fix:	Double clicking on a playlist row now works the same on the title or album;
+		fix:	Focusing on now playing item jumps to page only when needed;
+		fix:	Focusing on now playing item will also mark the item as selected;
+		fix:	Selection is not lost when clicking on buttons, opening panels or running most actions;
+		fix:	Active playlist tab cursor was not consistent with the rest of tabs;
 		fix:	Console log panel position is now limited to window width and height;
 		fix:	Loading indicator showing white background on dark theme;
-		fix:	Text on playlist is now non-selectable (fixes shift+selection not working properly);
-		fix:	Text on progress bar is now non-selectable (fixes seeking not working properly);
-		fix:	Active playlist tab cursor was not consistent with the rest of tabs;
-		fix:	Broken seeking (since original ajquery);
-		fix:	Double clicking on playlist page slider (now limited to button);
-		fix:	Search panel now has a max height and a scroll bar (instead of infinite size);
 
 *** Release history 2021
 	25 Jun  0.80
-		add:	development continued to be compatible with Spider Monkey Panel scripts;
+		add:	Development continued to be compatible with Spider Monkey Panel scripts;
 		add:	Playlist Tools integration:
 				- Call pre-configured menu entries with buttons
 				- Call arbitrary menu entries by name (retrieves list from foobar first)

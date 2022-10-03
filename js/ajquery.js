@@ -1,5 +1,5 @@
 ﻿'use strict';﻿﻿﻿
-//05/06/22
+//14/09/22
 
 let fb; // fb2k state
 let smp;// SMP data
@@ -61,7 +61,7 @@ const selection = {
 	length: 0,
 	calc: function () {
 		let count = 0;
-		let lowest = fb.playlistItemsCount;
+		let lowest = fb ? fb.playlistItemsCount : 0;
 		let highest = 0;
 		let length = 0;
 
@@ -97,7 +97,17 @@ const selection = {
 		});
 		return result;
 	},
-	reset: function () { this.items = {}; this.count = 0; }
+	reset: function () { this.items = {}; this.count = 0; },
+	clone: function () {
+		return {items: {...this.items}, count: this.count, lowest: this.lowest, highest: this.highest, length: this.length};;
+	},
+	restore: function ({items, count, lowest, highest, length}) {
+		this.items = {...items};
+		this.count = count;
+		this.lowest = lowest;
+		this.highest = highest;
+		this.length = length;
+	}
 }
 
 const tooltip = {
@@ -438,10 +448,20 @@ function checkHotkeys(code) {
 		case 83: // s
 			$('#SAC').click();
 			break;
+		case 40: // Down
+		case 38: // Up
+			const delta = code === 40 ? 1 : -1;
+			const offset = code === 40 ? selection.highest : selection.lowest;
+			if (!keyPressed[16]) {selection.reset();} // shift
+			selection.items[offset + delta] = true;
+			selection.calc();
+			updatePlaylist();
+			break;
 		case 34: // PageUp
 		case 33: // PageDown
-			if (keyPressed[16] && fb) // shift 
+			if (keyPressed[16] && fb){ // shift 
 				setPlaylistRowCount(parseInt(fb.playlistItemsPerPage) + parseInt(code == 33 ? -1 : 1));
+			}
 			break;
 		default:
 	}
@@ -528,11 +548,11 @@ function updatePreferencesDynamic() {
 	toggleState('#RemovePlaylist,#RenamePlaylist,#PTRemovePlaylist,#PTRenamePlaylist', fb.playlists.length);
 	toggleState('#EmptyPlaylist,#QueueRandomItems,#PTEmptyPlaylist', fb.playlist.length && fb.playlists.length);
 	toggleState('#InputSort', fb.playlist.length);
-	toggleState('#Undo,#PTUndo', fb.isUndoAvailable=='1');
-	toggleState('#Redo,#PTRedo', fb.isRedoAvailable=='1');
-	toggleState('#FocusOnPlaying,#PTFocusOnPlaying', fb.isPlaying=='1' || fb.isPaused=='1');
+	toggleState('#Undo,#PTUndo', fb.isUndoAvailable =='1');
+	toggleState('#Redo,#PTRedo', fb.isRedoAvailable =='1');
+	toggleState('#FocusOnPlaying,#PTFocusOnPlaying', fb.isPlaying == '1' || fb.isPaused == '1');
 	toggleState('#QueueItems,#DequeueItems,#Del', selection.count);
-	toggleState('#SetFocus,#PTSetFocus', selection.count == 1);
+	// toggleState('#SetFocus,#PTSetFocus', selection.count === 1);
 	toggleState('#FlushQueue', fb.queueTotalTime);
 	// toggleState('#Copy,#Paste', selection.count);
 	toggleState('#InputCC', selection.count);
@@ -543,12 +563,15 @@ function updatePreferencesDynamic() {
 	toggleState('#nextpage_btn', fb.playlistPage == 1 && Math.ceil(fb.playlistItemsCount / fb.playlistItemsPerPage) == 0 ? 0 : fb.playlistPage - Math.ceil(fb.playlistItemsCount / fb.playlistItemsPerPage));
 	
 	let title = fb.playlistPage != 1 ? 
-					'Page '+(fb.playlistPage - 1)+'/'+Math.ceil(fb.playlistItemsCount / fb.playlistItemsPerPage) : ''
+					'Page ' + (fb.playlistPage - 1) + '/' + Math.ceil(fb.playlistItemsCount / fb.playlistItemsPerPage) : ''
 	$('#prevpage_btn').attr('title', title);
 	
 	title = (fb.playlistPage - Math.floor(fb.playlistItemsCount / fb.playlistItemsPerPage) - 1 != 0) ? 
-					'Page '+(fb.playlistPage + 1)+'/'+Math.ceil(fb.playlistItemsCount / fb.playlistItemsPerPage) : ''
+					'Page ' + (fb.playlistPage + 1) + '/' +Math.ceil(fb.playlistItemsCount / fb.playlistItemsPerPage) : ''
 	$('#nextpage_btn').attr('title', title);
+	
+	title = selection.count === 0 ? 'Clear selection' : selection.count === 1 ? 'Set focus' : 'Set selection (' + selection.count + ' items)'
+	$('#SetFocus,#PTSetFocus').attr('title', title);
 }
 
 function updateBrowser() {
@@ -631,11 +654,11 @@ function updatePlaylistSortable() {
 			tooltip.show(selection.toStr());
 			if (!drag.dragging) {
 				drag.dragging = true;
-				if (!$('#i'+drag.start).hasClass('pl_selected')) {
+				if (!$('#i' + drag.start).hasClass('pl_selected')) {
 					$("#pl div[id*='i']").removeClass('pl_selected');
 					selection.reset();
 					selection.items[drag.start] = true;
-					$('#i'+drag.start).addClass('pl_selected')
+					$('#i' + drag.start).addClass('pl_selected')
 				}
 				selection.calc();
 			}
@@ -696,14 +719,18 @@ function updatePlaylist() {
 	let group;
 	let ta = ['<div id="pl" class="noselect">'];
 	let len = fb.playlist.length;
-	for (let i = 0,k = (fb.playlistPage-1)*fb.playlistItemsPerPage; i < len; ++i,++k) {
+	
+	const selectedIcon = '<span class="ui-icon ui-icon-check" style="position: absolute; margin-top: -2px;"></span>';
+	const playIcon = '<span class="ui-icon ui-icon-play" style="position: absolute; margin-top: -2px;"></span>';
+	const pauseIcon = '<span class="ui-icon ui-icon-pause" style="position: absolute; margin-top: -2px;"></span>';
+	for (let i = 0, k = (fb.playlistPage - 1) * fb.playlistItemsPerPage; i < len; ++i,++k) {
 		group = '';
 		let row = fb.playlist[i];
 		let cl_1 = []; let cl_2 = []; let cl_3 = []; let cl_r = [];
 		if (album != row.b || artist != row.a) { //  &mdash;
 			let rowA = row.a;
 			let rowB = row.b;
-			if (rowA.length > 30) {rowA = rowA.slice(0, 30);; rowA += '...';}
+			if (rowA.length > 30) {rowA = rowA.slice(0, 30); rowA += '...';}
 			if (rowB.length > 20) {rowB = rowB.slice(0, 20); rowB += '...';}
 			let groupTags = [rowA, ' [', row.d, '] ', rowB].join('');
 			if (npt == i && ap == npp) {
@@ -718,14 +745,20 @@ function updatePlaylist() {
 			}
 		}
 		if (i % 2 == 0) {cl_r.push('pl_even');}
-		if (npt == i && ap == npp) {
+		row.n = row.n.replace(selectedIcon, '');
+		if (npt === i && ap == npp) {
 			cl_r.push('pl_play');
 			if (fb.isPlaying == '1') {
-				row.n = ['<span class="ui-icon ui-icon-play" style="position: absolute; margin-top: -2px;"></span>', row.n].join('');
+				row.n = [playIcon, row.n].join('');
 			} else if (fb.isPaused == '1') {
-				row.n = ['<span class="ui-icon ui-icon-pause" style="position: absolute; margin-top: -2px;"></span>', row.n].join('');
+				row.n = [pauseIcon, row.n].join('');
+			}
+		} else {
+			if (npt !== i && selection.items.hasOwnProperty(shift + i)) {
+				row.n = [selectedIcon, row.n].join('');
 			}
 		}
+		
 		if (ppt == i) {	cl_r.push('pl_prev');}
 		if (ft == i) {
 			cl_1.push('bbl bbm'); cl_2.push('bbm'); cl_3.push('bbm bbr');
@@ -781,18 +814,21 @@ function updatePlaylist() {
 	
 	$("#pl span[id*='n']").off('click');
 	$("#pl span[id*='n']").click(function() {
-			selectAlbum(getNumFromId($(this).attr('id')));
-		});
+		setTimeout(() => {selectAlbum(getNumFromId($(this).attr('id')));}, 200); // Give a 200ms window for dblclick
+	})
+	.dblclick(function() {
+		command('Start', getNumFromId($(this).attr('id')), void(0), true);
+	});
 	
 	$("#pl div[id*='i']").off('dblclick').off('click');
 	$("#pl div[id*='i']").dblclick(function() {
 			$("#pl div[id*='i']").removeClass('pl_selected');
-			command('Start', getNumFromId($(this).attr('id')));
+			command('Start', getNumFromId($(this).attr('id')), void(0), true);
 		})
 		.click(function() {
 			let i = getNumFromId($(this).attr('id'));
 			selection.calc();
-			if (keyPressed[16] && selection.count) {//shift
+			if (keyPressed[16] && selection.count) { // shift
 				$("#pl div[id*='i']").removeClass('pl_selected');
 				let start = 0; let end = 0;
 				if (i < selection.lowest) {
@@ -808,9 +844,7 @@ function updatePlaylist() {
 					$('#i'+k).addClass('pl_selected');
 					selection.items[k] = true;
 				}
-			}
-			else
-			if (keyPressed[17]) { // ctrl
+			} else if (keyPressed[17]) { // ctrl
 				if (selection.items[i]) {
 					$(this).removeClass('pl_selected');
 					selection.items[i] = false;
@@ -825,6 +859,7 @@ function updatePlaylist() {
 				$(this).addClass('pl_selected');
 			}
 			updateSelectionStats();
+			setTimeout('updatePlaylist()', 200); // Give a 200ms window for dblclick
 		})
 		.disableSelection();
 	
@@ -989,7 +1024,7 @@ function updateUI() {
 		if (fb.SAC === 'checked') {$('#progressbar').addClass('ui-state-error');}
 		else{$('#progressbar').removeClass('ui-state-error');}
 		
-		const volume_value = fb.volumedb == "1000" ? 0 : 134-Math.round(parseInt(fb.volumedb) / 10.0 / 0.5);
+		const volume_value = fb.volumedb == "1000" ? 0 : 134 - Math.round(parseInt(fb.volumedb) / 10.0 / 0.5);
 		$("#volume").slider("value", volume_value);
 		
 		if (fb.volumedb == 1000) {$('#mute').addClass('ui-state-error').attr('title', 'Unmute');}
@@ -1068,7 +1103,10 @@ function updateSMPConfig() {
 	// Check components
 	if (smp.hasOwnProperty('components')) {
 		if (smp.components.hasOwnProperty('foo_run_main') && smp.components.hasOwnProperty('foo_runcmd') && smp.components.foo_run_main && smp.components.foo_runcmd) {
-			smp.config.bRunCmd = true; // Use cmd methods instead of SMP method when possible
+			smp.config.bRunCmd = true; // Use CMD methods
+		}
+		if (smp.config.bRunCmd && smp.components.hasOwnProperty('bDynamicMenusPT') && smp.components.bDynamicMenusPT) {
+			smp.config.bDynamicMenusPT = true; // Use Dynamic Menus
 		}
 	}
 }
@@ -1080,23 +1118,29 @@ function updateSMPUI() {
 	let bEnabledDevice = false;
 	let bEnabledMenuList = false;
 	let bEnabledManager = false;
+	let bEnabledPlsToolsCMD = false;
+	let bEnabledPlsToolsCMDDyn = false;
+	
+	// Check components
+	if (smp.config.bRunCmd) {
+		bEnabledDsp = true;
+		bEnabledDevice = true;
+		bEnabledManager = true;
+		bEnabledPlsToolsCMD = true;
+	}
+	if (smp.config.bDynamicMenusPT) {
+		bEnabledPlsToolsCMDDyn = true;
+	}
+	
 	// Rewrite SMP buttons
-	if (smp.hasOwnProperty('smpMenus')) {
-		const menuLength = smp.smpMenus.length;
+	{
+		const menuLength = smp.hasOwnProperty('smpMenus') ? smp.smpMenus.length : 0;
 		for (let i = 1; i <= menuLength; i++) {
 			const button = document.getElementById('PTSMP' + i);
 			const currMenu = smp.smpMenus[i - 1];
 			button.title = '(' + i + ') ' + currMenu.name + '\nFunction: ' + currMenu.funcName;
-			if (currMenu.name === 'Set output device' || currMenu.funcName === 'setDevice') {
-				bEnabledDevice = true;
-				button.children[0].setAttribute('class', 'ui-icon ui-icon-volume-on');
-				button.title += '\nUsage:\n- Set desired device on list.\n- Wait for item addition on playlist.\n- Run this menu button afterwards.'
-			} else if (currMenu.name === 'Set DSP preset' || currMenu.funcName === 'setDSP') {
-				bEnabledDsp = true;
-				button.children[0].setAttribute('class', 'ui-icon ui-icon-script');
-				button.title += '\nUsage:\n- Set desired DSP on list.\n- Wait for item addition on playlist.\n- Run this menu button afterwards.'
-			} else if (currMenu.name === 'Execute menu entry by name' || currMenu.funcName === 'executeByName') {
-				bEnabledMenuList = true;
+			if (currMenu.name === 'Execute menu entry by name' || currMenu.funcName === 'executeByName') {
+				bEnabledMenuList = bEnabledPlsToolsCMD;
 				button.children[0].setAttribute('class', 'ui-icon ui-icon-star');
 				button.title += '\nUsage:\n- Set desired menu entry on list.\n- Wait for item addition on playlist.\n- Run this menu button afterwards.'
 			} else {
@@ -1106,114 +1150,139 @@ function updateSMPUI() {
 			if (currMenu.hasOwnProperty('icon') && currMenu.icon !== '') {button.children[0].setAttribute('class', currMenu.icon);}
 			if (currMenu.hasOwnProperty('tooltip') && currMenu.tooltip !== '') {
 				button.title = '(' + i + ') ' + currMenu.name + '\nFunction: ' + currMenu.funcName;
-				button.title += '\n' + currMenu.tooltip
+				button.title += '\n' + currMenu.tooltip;
+			}
+			if (!bEnabledPlsToolsCMD) {
+				button.title += '\n-- foo_runcmd or foo_run_main missing --';
+				button.children[0].setAttribute('class', 'ui-icon ui-icon-circle-close');
 			}
 		}
 		for (let i = 1 + menuLength; i <= 9; i++) {
 			const button = document.getElementById('PTSMP' + i);
+			button.title = 'SMP ' + i;
 			button.children[0].setAttribute('class', 'ui-icon ui-icon-circle-close');
+			if (!bEnabledPlsToolsCMD) {button.title += '\n-- foo_runcmd or foo_run_main missing --';}
 		}
 	}
-	
+		
+	const addDisabledNode = (id, nodeText = (bEnabledPlsToolsCMD ? '-- Select an option --' : '-- foo_runcmd or foo_run_main missing --')) => {
+		const list = document.getElementById(id);
+		while (list.firstChild) {list.removeChild(list.firstChild);}
+		const node = new Option(nodeText, -1, true, true);
+		node.disabled = true;
+		list.appendChild(node);
+	};
 	// Rewrite Playlist Tools Menu list
+	if (!bEnabledPlsToolsCMD || !smp.hasOwnProperty('playlistToolsEntries')) {
+		if (!bEnabledManager) {$('#pt_btn').attr('title', 'Playlist Tools (foo_run_main or foo_runcmd not found)');}
+	} else {
+		$('#pt_btn').attr('title', 'Playlist Tools');
+	}
 	if (smp.hasOwnProperty('playlistToolsEntries')) {
 		const num = smp.playlistToolsEntries.length;
 		if (num) {
 			const list = document.getElementById('PTME');
-			let child = list.lastElementChild;
-			while (child) {
-				list.removeChild(child);
-				child = list.lastElementChild;
-			}
+			while (list.firstChild) {list.removeChild(list.firstChild);}
 			for (let i = -1; i < num; i++) {
-				const node = document.createElement('OPTION'); 
-				node.setAttribute('value', i);
-				let name = i === -1 ? '-- Select an option --' : smp.playlistToolsEntries[i].name;
+				let name = i === -1 ? (bEnabledPlsToolsCMD ? '-- Select an option --' : '-- foo_runcmd or foo_run_main missing --') : smp.playlistToolsEntries[i].name;
+				const flags = i === -1 ? 1 : smp.playlistToolsEntries[i].flags;
 				if (name === 'sep') {
-					node.setAttribute('disabled', true);
 					name = '---------------------------\n---------------------------'
 				} else if (name.split('\\').pop() === 'sep') {
-					node.setAttribute('disabled', true);
 					name = '---------------------------'
-				} else if (name.endsWith(':')) {
-					node.setAttribute('disabled', true);
 				}
-				if (!bEnabledMenuList || i === -1) {node.setAttribute('disabled', true);}
-				const textnode = document.createTextNode(name)
-				node.appendChild(textnode);
+				const node = new Option(name, i);
+				if (flags === 1 || !bEnabledMenuList || !bEnabledPlsToolsCMD) {node.disabled = true;}
 				list.appendChild(node);
 			}
 			list.selectedIndex = 0; // Index will have an offset due to the first entry being a dummy entry...
-		}
-	}
+		} else {addDisabledNode('PTME');}
+	} else {addDisabledNode('PTME');}
 	
-	// Check components
-	if (smp.config.bRunCmd) {
-		bEnabledDsp = true;
-		bEnabledDevice = true;
-		bEnabledManager = true;
-	}
+	// Rewrite Playlist Tools Menu list CMD
+	if (smp.hasOwnProperty('playlistToolsEntriesCMD')) {
+		const panelKeys = Object.keys(smp.playlistToolsEntriesCMD);
+		const panelNum = panelKeys.length;
+		if (panelNum) {
+			const panelKey = panelKeys[0]; // Only use first one
+			const num = smp.playlistToolsEntriesCMD[panelKey].length;
+			if (num) {
+				const list = document.getElementById('PTMECMD');
+				while (list.firstChild) {list.removeChild(list.firstChild);}
+				for (let i = -1; i < num; i++) {
+					let name = i === -1 ? (bEnabledPlsToolsCMDDyn ? '-- Select an option --' : '-- foo_runcmd or foo_run_main missing --') : smp.playlistToolsEntriesCMD[panelKey][i].name;
+					const flags = i === -1 ? 1 : smp.playlistToolsEntriesCMD[panelKey][i].flags;
+					if (name === 'sep') {
+						name = '---------------------------\n---------------------------'
+					} else if (name.split('\\').pop() === 'sep') {
+						name = '---------------------------'
+					}
+					const node = new Option(name, i);
+					if (flags === 1 || !bEnabledPlsToolsCMDDyn) {node.disabled = true;}
+					list.appendChild(node);
+				}
+				list.selectedIndex = 0; // Index will have an offset due to the first entry being a dummy entry...
+			}
+		} else {addDisabledNode('PTMECMD');}
+	} else {addDisabledNode('PTMECMD');}
 	
 	// Rewrite Output devices list
 	if (smp.hasOwnProperty('devices')) {
 		const num = smp.devices.length;
 		if (num) {
 			const list = document.getElementById('PTOD');
-			let child = list.lastElementChild;
-			while (child) {
-				list.removeChild(child);
-				child = list.lastElementChild;
-			}
+			while (list.firstChild) {list.removeChild(list.firstChild);}
 			for (let i = 0; i < num; i++) {
-				const node = document.createElement('OPTION'); 
-				node.setAttribute('value', i);
 				let name = smp.devices[i].name;
+				let bDisabled = !bEnabledDevice;
 				if (name === 'sep') {
-					node.setAttribute('disabled', true);
+					bDisabled = true;
 					name = '---------------------------'
 				}
-				if (smp.devices[i].active) {node.setAttribute('selected', true);}
-				if (!bEnabledDevice) {node.setAttribute('disabled', true);}
-				const textnode = document.createTextNode(name)
-				node.appendChild(textnode);
+				const node = new Option(name, i);
+				if (smp.devices[i].active) {node.selected = true;}
+				if (bDisabled) {node.disabled = true;}
 				list.appendChild(node);
 			}
-		}
-	}
+		} else {addDisabledNode('PTOD', ' -- No devices file found  --');}
+	} else {addDisabledNode('PTOD', ' -- No devices file found  --');}
 	
 	// Rewrite DSP list
 	if (smp.hasOwnProperty('dsp')) {
 		const num = smp.dsp.length;
 		if (num) {
 			const list = document.getElementById('PTDSP');
-			let child = list.lastElementChild;
-			while (child) {
-				list.removeChild(child);
-				child = list.lastElementChild;
-			}
+			while (list.firstChild) {list.removeChild(list.firstChild);}
 			for (let i = 0; i < num; i++) {
-				const node = document.createElement('OPTION'); 
-				node.setAttribute('value', i);
+				let bDisabled = !bEnabledDsp;
 				let name = smp.dsp[i].name;
 				if (name === 'sep') {
-					node.setAttribute('disabled', true);
+					bDisabled = true;
 					name = '---------------------------'
 				}
-				if (smp.dsp[i].active) {node.setAttribute('selected', true);}
-				if (!bEnabledDsp) {node.setAttribute('disabled', true);}
-				const textnode = document.createTextNode(name)
-				node.appendChild(textnode);
+				const node = new Option(name, i);
+				if (smp.dsp[i].active) {node.selected = true;}
+				if (!bEnabledDsp) {node.disabled = true;}
 				list.appendChild(node);
 			}
-		}
-	}
+		} else {addDisabledNode('PTDSP', ' -- No DSP file found  --');}
+	} else {addDisabledNode('PTDSP', ' -- No DSP file found  --');}
 	
 	// Rewrite Playlist Manager
+	const addDisabledNodePLM = (nodeText = 'None') => {
+		menusPls.forEach((menu) => { // At header
+			const list = document.getElementById(menu.id);
+			while (list.firstChild) {list.removeChild(list.firstChild);}
+			const node = new Option(nodeText, -1, true, true);
+			node.disabled = true;
+			list.appendChild(node);
+		});
+	};
 	if (!bEnabledManager || !smp.hasOwnProperty('playlistManagerPanels')) {
-		if (!bEnabledManager) {$('#pm_btn').attr('title', 'Playlist manager (foo_run_main or foo_runcmd not found)');}
+		if (!bEnabledManager) {$('#pm_btn').attr('title', 'Playlist Manager (foo_run_main or foo_runcmd not found)');}
 		if (!smp.hasOwnProperty('playlistManagerPanels')) {$('#pm_num').html('0 (none found)');}
 	} else {
-		document.getElementById('pm_btn').setAttribute('title', 'Playlist manager');
+		$('#pm_btn').attr('title', 'Playlist Manager');
 	}
 	if (smp.hasOwnProperty('playlistManagerPanels')) {
 		const panelKeys = Object.keys(smp.playlistManagerPanels);
@@ -1222,11 +1291,7 @@ function updateSMPUI() {
 			$('#pm_num').html(panelNum + ' found (' + panelKeys.join(', ') + ')');
 			menusPls.forEach((menu) => { // At header
 				const list = document.getElementById(menu.id);
-				let child = list.lastElementChild;
-				while (child) {
-					list.removeChild(child);
-					child = list.lastElementChild;
-				}
+				while (list.firstChild) {list.removeChild(list.firstChild);}
 				smp.playlistManagerEntries[menu.type] = [];
 				let listIdx = -1;
 				for (let j = 0; j < panelNum; j++) {
@@ -1235,23 +1300,21 @@ function updateSMPUI() {
 					if (!currMenu) {continue;} // Corrupted file or old Playlist Manager version
 					const num = currMenu.length;
 					for (let i = 0; i < num; i++) {
-						const node = document.createElement('OPTION'); 
-						node.setAttribute('value', listIdx);
 						let name = listIdx === -1 ? (bEnabledManager ? '-- Select an option --' : '-- foo_runcmd or foo_run_main missing --') : currMenu[i].name;
 						if (Array.isArray(menu.name)) {menu.name.forEach((n) => {name = name.replace(n,'');});}
 						else {name = name.replace(menu.name,'');}
+						let bDisabled = !bEnabledManager || listIdx === -1;
 						if (name === 'sep') {
-							node.setAttribute('disabled', true);
+							bDisabled = true;
 							name = '---------------------------\n---------------------------'
 						} else if (name.split('\\').pop() === 'sep') {
-							node.setAttribute('disabled', true);
+							bDisabled = true;
 							name = '---------------------------'
 						} else if (name.endsWith(':')) {
-							node.setAttribute('disabled', true);
+							bDisabled = true;
 						}
-						if (!bEnabledManager || listIdx === -1) {node.setAttribute('disabled', true);}
-						const textnode = document.createTextNode(name)
-						node.appendChild(textnode);
+						const node = new Option(name, listIdx);
+						if (bDisabled) {node.disabled = true;}
 						list.appendChild(node);
 						if (listIdx !== -1) {smp.playlistManagerEntries[menu.type].push(currMenu[i]);}
 						else {i--;}
@@ -1264,38 +1327,31 @@ function updateSMPUI() {
 			if (smp.hasOwnProperty('playlistManagerPls') && Object.keys(smp.playlistManagerPls).length) {
 				const menu = menusPls[0];
 				const list = document.getElementById(menu.id);
-				let child = list.lastElementChild;
-				while (child) {
-					list.removeChild(child);
-					child = list.lastElementChild;
-				}
+				while (list.firstChild) {list.removeChild(list.firstChild);}
 				for (let j = 0; j < panelNum; j++) {
 					const currPanel = smp.playlistManagerPls[panelKeys[j]];
 					if (!currPanel) {continue;} // Corrupted file or old Playlist Manager version
 					const num = currPanel.length;
 					for (let i = -1; i < num; i++) {
 						const pls = currPanel[i];
-						const node = document.createElement('OPTION'); 
-						node.setAttribute('value', i);
 						if (i === -1) {
 							name = bEnabledManager ? '-- ' + panelKeys[j] + ' --' : '-- foo_runcmd or foo_run_main missing --';
 						} else {
 							name = pls.name + ' (' + (pls.extension || 'AutoPlaylist') + ')' + ' {' + pls.size + ' tracks - ' + (pls.isLocked ? 'R' : 'RW') + ' - ' + secondsToStr(pls.duration) + '}';
 						}
-						node.setAttribute('disabled', true);
-						const textnode = document.createTextNode(name)
-						node.appendChild(textnode);
+						const node = new Option(name, i);
+						node.disabled = true;
 						list.appendChild(node);
 					}
 				}
 				list.selectedIndex = 0; // Index will have an offset due to the first entry being a dummy entry...
-			}
-		} else {$('#pm_num').html('0 (none found)');}
-	}
+			} else {addDisabledNodePLM();}
+		} else {$('#pm_num').html('0 (none found)'); addDisabledNodePLM();}
+	} else {addDisabledNodePLM();}
 	return true;
 }
 
-function command(command, p1, p2) {
+function command(command, p1, p2, bPreserveSel = false) {
 	startWork();
 	
 	let params = {};
@@ -1305,61 +1361,66 @@ function command(command, p1, p2) {
 	params['param3'] = 'NoResponse';
 	
 	$.get('/ajquery-xxx/', params, function (data) {
-		if (!(command == "VolumeDB")) {retrievestate_schedule(command == "Start" ? 500 : 250);}
+		if (!(command == "VolumeDB")) {retrievestate_schedule(command == 'Start' ? 500 : 250, void(0), bPreserveSel);}
 		else {finishWork();}
 	});
 }
 
-function retrievestate_schedule(timeout, cmd) {
+function retrievestate_schedule(timeout, cmd, bPreserveSel) {
 	timeout = timeout || 500;
 	cmd = cmd || '';
 	if (timeoutId) {
 		clearTimeout(timeoutId);
 		timeoutId = null;
 	}
-	if (!timeoutId) {timeoutId = setTimeout('retrieveState("'+cmd+'")', timeout);}
+	if (!timeoutId) {timeoutId = setTimeout('retrieveState("'+ cmd +'",void(0),' + bPreserveSel + ')', timeout);}
 }
 
 function retrieveXXX() {
 	xxx = {};
 	xxx.contextMenus = [];
-	$.getJSON('xxx/config-contextmenus.json', function (data) {xxx.contextMenus = data;});
+	try {$.getJSON('xxx/config-contextmenus.json', function (data) {xxx.contextMenus = data;});} catch (e) {}
 	
 	xxx.theme = '';
-	$.getJSON('xxx/config-theme.json', function (data) {
-		xxx.theme = data[0].value;
-		if (xxx.theme && xxx.theme.length) {document.documentElement.setAttribute("data-theme", xxx.theme);}
-	});
+	try {
+		$.getJSON('xxx/config-theme.json', function (data) {
+			xxx.theme = data[0].value;
+			if (xxx.theme && xxx.theme.length) {document.documentElement.setAttribute("data-theme", xxx.theme);}
+		}); 
+	}catch (e) {}
 }
 
 function retrieveSMP() {
 	smp = {};
 	smp.smpMenus = [];
-	$.getJSON('smp/smpmenus.json', function (data) {smp.smpMenus = data;});
+	try {$.getJSON('smp/smpmenus.json', function (data) {smp.smpMenus = data;});} catch (e) {}
 	
 	smp.playlistToolsEntries = [];
-	$.getJSON('smp/playlisttoolsentries.json', function (data) {smp.playlistToolsEntries = data;});
+	try {$.getJSON('smp/playlisttoolsentries.json', function (data) {smp.playlistToolsEntries = data;});} catch (e) {}
+	
+	smp.playlistToolsEntriesCMD = [];
+	try {$.getJSON('smp/playlisttoolsentriescmd.json', function (data) {smp.playlistToolsEntriesCMD = data;});} catch (e) {}
 	
 	smp.devices = [];
-	$.getJSON('smp/devices.json', function (data) {smp.devices = data;});
+	try {$.getJSON('smp/devices.json', function (data) {smp.devices = data;});} catch (e) {}
 	
 	smp.dsp = [];
-	$.getJSON('smp/dsp.json', function (data) {smp.dsp = data;});
+	try {$.getJSON('smp/dsp.json', function (data) {smp.dsp = data;});} catch (e) {}
 	
 	smp.components = {};
-	$.getJSON('smp/components.json', function (data) {smp.components = data;});
+	try {$.getJSON('smp/components.json', function (data) {smp.components = data;});} catch (e) {}
 	
 	smp.playlistManagerPanels = [];
 	smp.playlistManagerEntries = {};
-	$.getJSON('smp/playlistmanagerentries.json', function (data) {smp.playlistManagerPanels = data;});
+	try {$.getJSON('smp/playlistmanagerentries.json', function (data) {smp.playlistManagerPanels = data;});} catch (e) {}
 	
 	smp.playlistManagerPls = {};
-	$.getJSON('smp/playlistmanagerpls.json', function (data) {smp.playlistManagerPls = data;});
+	try {$.getJSON('smp/playlistmanagerpls.json', function (data) {smp.playlistManagerPls = data;});} catch (e) {}
 	
-	smp.config = {bRunCmd: false};
+	smp.config = {bRunCmd: false, bDynamicMenusPT: false};
 }
 
-function retrieveState(cmd,p1) {
+function retrieveState(cmd, p1, bPreserveSel) {
 	startWork();
 	
 	if (timeoutId) {
@@ -1375,48 +1436,59 @@ function retrieveState(cmd,p1) {
 	retrieveXXX();
 	fb = null;
 	
-	$.getJSON(['/ajquery-xxx/', cmd, p1, 'param3=js/state.json'].join(''), function(data, status) {
-	  	fb = data;
-		if (fb.isPlaying == '1' && fb.helper1 == '' || fb.isEnqueueing == '1') {
-			retrievestate_schedule(refreshInterval);
-		} else {
-			fb.playingItem = parseInt(fb.playingItem);
-			fb.prevplayedItem = parseInt(fb.prevplayedItem);
-			fb.focusedItem = parseInt(fb.focusedItem);
-			fb.playlistItemsCount = parseInt(fb.playlistItemsCount);
-			fb.playlistItemsPerPage = parseInt(fb.playlistItemsPerPage);
-			fb.playlistPage = parseInt(fb.playlistPage);
-			fb.playlistPlaying = parseInt(fb.playlistPlaying);
-			fb.playlistActive = parseInt(fb.playlistActive);
-			if (fb.playlistPage == 0) {fb.playlistPage = 1;}
-			if (fb.playlists.length == 0) {	fb.playlists = [{ name: '&nbsp;', count: 0 } ];}
-			updateUI();
-			finishWork();
-		}
-	});
+	const oldSel = selection.clone();
+	try {
+		$.getJSON(['/ajquery-xxx/', cmd, p1, 'param3=js/state.json'].join(''), function(data, status) {
+			fb = data;
+			if (fb.isPlaying == '1' && fb.helper1 == '' || fb.isEnqueueing == '1') {
+				retrievestate_schedule(refreshInterval);
+			} else {
+				fb.playingItem = parseInt(fb.playingItem);
+				fb.prevplayedItem = parseInt(fb.prevplayedItem);
+				fb.focusedItem = parseInt(fb.focusedItem);
+				fb.playlistItemsCount = parseInt(fb.playlistItemsCount);
+				fb.playlistItemsPerPage = parseInt(fb.playlistItemsPerPage);
+				fb.playlistPage = parseInt(fb.playlistPage);
+				fb.playlistPlaying = parseInt(fb.playlistPlaying);
+				fb.playlistActive = parseInt(fb.playlistActive);
+				if (fb.playlistPage == 0) {fb.playlistPage = 1;}
+				if (fb.playlists.length == 0) {	fb.playlists = [{ name: '&nbsp;', count: 0 } ];}
+				updateUI();
+				finishWork();
+			}
+			if (bPreserveSel) {
+				selection.restore(oldSel);
+				updatePlaylist();
+			}
+		});
+	} catch (e) {}
 }
 
 function retrieveBrowserState(p1) {
 	startWork();
 	p1 = p1 || '';
 	if (p1) {p1 = '&param1=' + p1;}
-	$.getJSON(['/ajquery-xxx/?cmd=Browse', p1, '&param3=js/browser.json'].join(''), function(data, status) {
-		br = data;
-		updateBrowser();
-		retrieveState();
-		finishWork();
-	});
+	try {
+		$.getJSON(['/ajquery-xxx/?cmd=Browse', p1, '&param3=js/browser.json'].join(''), function(data, status) {
+			br = data;
+			updateBrowser();
+			retrieveState();
+			finishWork();
+		});
+	} catch (e) {}
 }
 
 function retrieveLibraryState(cmd, p1) {
 	startWork();
 	cmd = cmd || '';
 	p1 = Url.encode(p1);
-	$.getJSON(['/ajquery-xxx/?cmd=', cmd, '&param1=', p1, '&param3=js/library.json'].join(''), function(data, status) {
-		library = data;
-		updateLibrary();
-		command();
-	});
+	try {
+		$.getJSON(['/ajquery-xxx/?cmd=', cmd, '&param1=', p1, '&param3=js/library.json'].join(''), function(data, status) {
+			library = data;
+			updateLibrary();
+			command();
+		});
+	} catch (e) {}
 }
 
 function positionDialog(dlg,X,Y) {
@@ -1516,17 +1588,17 @@ $(function() {
 		);
 		
 		$('#SAC').click(function(e) {
-			if ($(this).prop('checked')) {command('SAC', '1');}
-			else {command('SAC', '0');}
+			if ($(this).prop('checked')) {command('SAC', '1', void(0), true);}
+			else {command('SAC', '0', void(0), true);}
 		});
 		
 		$('#SAQ').click(function(e) {
-			if ($(this).prop('checked')) {command('SAQ', '1');}
-			else {command('SAQ', '0');}
+			if ($(this).prop('checked')) {command('SAQ', '1', void(0), true);}
+			else {command('SAQ', '0', void(0), true);}
 		});
 		
 		$('#PBO').change(function(e) {
-			command('PlaybackOrder', $(this).prop('selectedIndex'));
+			command('PlaybackOrder', $(this).prop('selectedIndex'), void(0), true);
 		});
 		
 		// search dialog
@@ -1632,7 +1704,7 @@ $(function() {
 		$('.btncmd').click(function(e) {
 			e.preventDefault();
 			const id = $(this).attr('id');
-			command(id);
+			command(id, void(0), void(0), true);
 			if (id === 'PlayOrPause') {
 				if (fb.isPlaying == '1') {$(this).html('<span class="ui-icon ui-icon-play"></span>');}
 				else {$(this).html('<span class="ui-icon ui-icon-pause"></span>');}
@@ -1640,7 +1712,7 @@ $(function() {
 		});
 		
 		$('#mute').click(function(e) {
-			command('VolumeMuteToggle');
+			command('VolumeMuteToggle', void(0), void(0), true);
 		});
 		
 		// Extended controls
@@ -1707,7 +1779,7 @@ $(function() {
 			},
 			open: function(event, ui) {
 				saveWindowToCookie($(this).attr('id'), true);
-				command();
+				command(void(0), void(0), void(0), true);
 				$("#PBO").blur();
 			},
 			dragStop: function(event, ui) {
@@ -1748,7 +1820,7 @@ $(function() {
 			},
 			open: function(event, ui) {
 				saveWindowToCookie($(this).attr('id'), true);
-				command();
+				command(void(0), void(0), void(0), true);
 				$("#PBO").blur();
 			},
 			dragStop: function(event, ui) {
@@ -1845,7 +1917,6 @@ $(function() {
 			},
 			open: function(event, ui) {
 				saveWindowToCookie($(this).attr('id'), true);
-				command();
 				$("#PBO").blur();
 			},
 			dragStop: function(event, ui) {
@@ -1951,7 +2022,7 @@ $(function() {
 		});
 		// Only on playback volume slider button
 		$('#vol .ui-slider-handle').dblclick(function(e) {
-			command('VolumeMuteToggle');
+			command('VolumeMuteToggle', void(0), void(0), true);
 		}).hover(
 			function(e) {if (!mouse.down) {tooltip.show('Double click to mute', mouse.x + 20 , ($(this).offset().top - 15));}},
 			function(e) {tooltip.hide();}
@@ -1960,7 +2031,7 @@ $(function() {
 		// Buttons
 		$('#CreatePlaylist,#PTCreatePlaylist').click(function(e) {
 			let name = promptf('Enter new playlist name:', 'New Playlist');
-			if (name != null) {command($(this).attr('id').replace('PT',''), name);}
+			if (name != null) {command($(this).attr('id').replace('PT',''), name, void(0), true);}
 		});
 		
 		$('#RemovePlaylist,#PTRemovePlaylist').click(function(e) {
@@ -1974,7 +2045,7 @@ $(function() {
 		$('#RenamePlaylist,#PTRenamePlaylist').click(function(e) {
 			if (!$(this).hasClass('ui-state-disabled')) {
 				let new_name = promptf("Enter new name:", fb.playlists[fb.playlistActive].name);
-				if (new_name != null) {command('RenamePlaylist', new_name, fb.playlistActive);}
+				if (new_name != null) {command('RenamePlaylist', new_name, fb.playlistActive, true);}
 			}
 		});
 		
@@ -1992,7 +2063,7 @@ $(function() {
 		});
 		
 		$('#FlushQueue,#QueueRandomItems').click(function(e) {
-			command($(this).attr('id'));
+			command($(this).attr('id'), void(0), void(0), true);
 		});
 		
 		$('#Undo,#Redo,#PTUndo,#PTRedo').click(function() {
@@ -2003,14 +2074,48 @@ $(function() {
 		
 		$('#FocusOnPlaying,#PTFocusOnPlaying').click(function() {
 			if (!$(this).hasClass('ui-state-disabled')) {
-				command('FocusOnPlaying');
+				if (fb.isPlaying == '1' || fb.isPaused == '1') {
+					const curr = (fb.playlistPage - 1) * fb.playlistItemsPerPage;
+					const next = fb.playlistPage * fb.playlistItemsPerPage;
+					// Avoid loosing selection when the current page contains the focused item
+					if (fb.playlistActive === fb.playlistPlaying && fb.playingItem >= curr && fb.playingItem <= next) {return;}
+					else {
+						// Select item
+						selection.reset();
+						selection.items = {[fb.playingItem] : true};
+						selection.calc();
+						// And jump to page
+						command('FocusOnPlaying', void(0), void(0), true);
+					}
+				}
 			}
 		});
 		
-		$('#QueueItems,#DequeueItems,#Del,#SetFocus,#PTSetFocus').click(function() { 
+		$('#Del').click(function() { 
 			if (!$(this).hasClass('ui-state-disabled')) {
 				let items = selection.toStr();
 				command($(this).attr('id').replace('PT',''), items);
+			}
+		});
+		
+		$('#QueueItems,#DequeueItems').click(function() { 
+			if (!$(this).hasClass('ui-state-disabled')) {
+				let items = selection.toStr();
+				command($(this).attr('id').replace('PT',''), items, void(0), true);
+			}
+		});
+		
+		$('#SetFocus,#PTSetFocus').click(function() { 
+			if (!$(this).hasClass('ui-state-disabled')) {
+				const items = selection.toStr();
+				if (selection.count === 0) {
+					return;
+				} else if (selection.count === 1) {
+					command('SetFocus', items, void(0), true);
+				} else {
+					command('SetSelection', '', void(0), true);
+					command('SetSelection', items, void(0), true);
+				}
 			}
 		});
 		
@@ -2080,7 +2185,7 @@ $(function() {
 			let name = promptf('Enter Contextual (full) menu name:\nNote that running playlist-specific commands\nlike Remove, Crop, etc is not possible.', 'Playback Statistics/Rating/5');
 			if (name != null) {
 				const items = selection.toStr();
-				command('SelectionCommand', name , items);
+				command('SelectionCommand', name , items, true);
 			}
 		});
 		
@@ -2090,7 +2195,7 @@ $(function() {
 				const items = selection.toStr();
 				const id = $(this).attr('id').replace('R','');
 				const menu = (id === '0' ? '<not set>' : (id === 'PLUS' ? '+' : (id === 'MINUS' ? '-' : id)));
-				command('SelectionCommand', 'Playback Statistics/Rating/' + menu , items);
+				command('SelectionCommand', 'Playback Statistics/Rating/' + menu , items, true);
 			}
 		});
 		// Custom contextual menus
@@ -2108,11 +2213,18 @@ $(function() {
 		// Playlist Tools
 		$('[id^=PTSMP]').click(function() { // PTSMP*
 			if (!$(this).hasClass('ui-state-disabled')) {
-				command('CmdLine', '/command:' + $(this).attr('id').replace('PTSMP',''));
+				if (!smp.config.bRunCmd) {return;}
+				const panelKeys = Object.keys(smp.playlistToolsEntriesCMD);
+				if (!panelKeys.length) {return;}
+				const panelKey = panelKeys[0]; // Only use first one
+				const idx = $(this).attr('id').replace('PTSMP','');
+				const currMenu = smp.smpMenus[idx - 1];
+				command('CmdLine', '/run_main:"File/Spider Monkey Panel/Script commands/' + panelKey + '/' + currMenu.name + '"');
 			}
 		});
 		
 		$('#PTME').change(function(e) {
+			if (!smp.config.bRunCmd) {return;}
 			const data = smp.playlistToolsEntries[$(this).prop('selectedIndex') - 1].name; // Index has an offset due to the first entry being a dummy entry...
 			const idxListener = fb.playlists.findIndex((pls) => {return pls.name === 'pt:listener';});
 			const currPls = fb.playlistActive;
@@ -2126,46 +2238,29 @@ $(function() {
 			setTimeout('command();', 1500);
 		});
 		
+		$('#PTMECMD').change(function(e) {
+			if (!smp.config.bRunCmd) {return;}
+			const panelKeys = Object.keys(smp.playlistToolsEntriesCMD);
+			if (!panelKeys.length) {return;}
+			const panelKey = panelKeys[0]; // Only use first one
+			const data = smp.playlistToolsEntriesCMD[panelKey][$(this).prop('selectedIndex') - 1].name; // Index has an offset due to the first entry being a dummy entry...
+			command('CmdLine', '/run_main:"File/Spider Monkey Panel/Script commands/' + panelKey + '/' + data + '"');
+			setTimeout('command();', 1500);
+		});
+		
 		$('#PTOD').change(function(e) {
-			if (smp.config.bRunCmd) { // CMD method
-				const data = smp.devices[$(this).prop('selectedIndex')].name;
-				command('CmdLine', '/run_main:"Playback/Device/' + data);
-			} else { // SMP Method
-				const data = smp.devices[$(this).prop('selectedIndex')].device_id;
-				const idxListener = fb.playlists.findIndex((pls) => {return pls.name === 'pt:listener';});
-				const currPls = fb.playlistActive;
-				if (idxListener === -1) {
-					command('CreatePlaylist', 'pt:listener', currPls + 1);
-					command('SwitchPlaylist', currPls + 1);
-				} else if (currPls !== idxListener) {
-					command('SwitchPlaylist', idxListener);
-				} else {
-					command('EmptyPlaylist', idxListener);
-				}
-				command('CmdLine', '/add "command_'+ data + '"');
-			}
+			if (!smp.config.bRunCmd) {return;}
+			const data = smp.devices[$(this).prop('selectedIndex')].name;
+			command('CmdLine', '/run_main:"Playback/Device/' + data, void(0), void(0), true);
 			smp.devices.forEach((_) => {_.active = false;});
 			smp.devices[$(this).prop('selectedIndex')].active = true;
 			setTimeout('command();', 1500);
 		});
 		
 		$('#PTDSP').change(function(e) {
+			if (!smp.config.bRunCmd) {return;}
 			const data = smp.dsp[$(this).prop('selectedIndex')].name;
-			if (smp.config.bRunCmd) { // CMD method
-				command('CmdLine', '/run_main:"Playback/DSP settings/' + data);
-			} else { // SMP Method
-				const idxListener = fb.playlists.findIndex((pls) => {return pls.name === 'pt:listener';});
-				const currPls = fb.playlistActive;
-				if (idxListener === -1) {
-					command('CreatePlaylist', 'pt:listener', currPls + 1);
-					command('SwitchPlaylist', currPls + 1);
-				} else if (currPls !== idxListener) {
-					command('SwitchPlaylist', idxListener);
-				} else {
-					command('EmptyPlaylist', idxListener);
-				}
-				command('CmdLine', '/add "command_'+ data + '"');
-			}
+			command('CmdLine', '/run_main:"Playback/DSP settings/' + data, void(0), void(0), true);
 			smp.dsp.forEach((_) => {_.active = false;});
 			smp.dsp[$(this).prop('selectedIndex')].active = true;
 			setTimeout('command();', 1500);
@@ -2173,16 +2268,17 @@ $(function() {
 		
 		// Playlist Manager
 		$('[id^=PMME]').change(function(e) { // PMME*
+			if (!smp.config.bRunCmd) {return;}
 			const menu = menusPls.find((menu) => {return menu.id === $(this).prop('id');}); // menuPpls at header
 			const menuType = menu.type;
 			const data = smp.playlistManagerEntries[menuType][$(this).prop('selectedIndex') - 1].name; // Index has an offset due to the first entry being a dummy entry...
 			if (menu.bSelection) {
-				command('SetSelection', '');
-				setTimeout('command();', 1500);
-				command('SetSelection', selection.toStr());
-				setTimeout('command();', 1500);
+				const items = selection.toStr();
+				const oldSel = selection.clone();
+				command('SetSelection', '', void(0), true);
+				command('SetSelection', items, void(0), true);
 			}
-			command('CmdLine', '/run_main:"File/Spider Monkey Panel/Script commands/' + data);
+			command('CmdLine', '/run_main:"File/Spider Monkey Panel/Script commands/' + data, void(0), true);
 			$(this).prop('selectedIndex', 0); // Just in case something fails...
 		});
 		
@@ -2199,6 +2295,13 @@ $(function() {
 				$('#error_dlg').dialog('open');
 			}
 		});
+		
+		$('#summary').dblclick(function(e) {
+			$('#FocusOnPlaying').click();
+		}).hover(
+			function(e) {if (!mouse.down) {tooltip.show('Double click to focus on playing item', mouse.x + 20 , ($(this).offset().top - 15));}},
+			function(e) {tooltip.hide();}
+		);
 		
 		document.onkeydown = function(evt) { keyDown(evt? evt.keyCode : event.keyCode); }
 		document.onkeyup = function(evt) { keyUp(evt? evt.keyCode : event.keyCode); }
