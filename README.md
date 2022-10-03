@@ -11,7 +11,7 @@
 * **Full playback controls:** smart play/pause, stop, prev/next, random.
 * **Extended controls:** sort playlist, queue, etc.
 * **Library browser:** by path.
-* **Query browser:** by artist.
+* **Query browser:** by configured tags.
 * **Artwork support:** front cover or disc animation.
 * **Console logging:** able to read a txt file on server (for ex. the console log).
 * **Contextual menus:** able to run any contextual menu by name.
