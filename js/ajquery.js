@@ -991,7 +991,7 @@ function updateLibrary() {
 	len = library.queryInfo.length;
 	const currSearch = $('#searchstr').val().length;
 	if (len < 1 && currSearch) {$('#r_btn').html('Filter');}
-	else if(len < 1 && !currSearch) {$('#r_btn').html('Retrieve artist list');}
+	else if (len < 1 && !currSearch) {$('#r_btn').html('Retrieve list');}
 	else {$('#r_btn').text('<');}
 	const path = [];
 	for (let i = 0; i < len; ++i) {
