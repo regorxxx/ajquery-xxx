@@ -36,6 +36,7 @@
 * Toggleable log panel (usually used to display console log from foobar).
 * Query browser filtering.
 * Builtin documentation.
+* Fixes to bugs on previous versions.
 
 ### Compatible with
  1. [Playlist-Tools-SMP](https://github.com/regorxxx/Playlist-Tools-SMP): Full integration with all tools and menus, output and DSP selection,...
