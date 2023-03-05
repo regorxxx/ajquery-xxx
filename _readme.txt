@@ -1,5 +1,5 @@
 Asynchronious foo_httpcontrol template
-0.92 http://code.google.com/p/foo-httpcontrol/
+0.93 http://code.google.com/p/foo-httpcontrol/
 
 *** Requirements
 
@@ -9,7 +9,7 @@ Asynchronious foo_httpcontrol template
 
 	Some other browsers might also work, but you never know until you try.
 
-	foobar2000 1.4+ and foo_httpcontrol 0.97.15.
+	foobar2000 1.4+ and foo_httpcontrol 0.97.24.
 
 	Spider Monkey Panel (SMP) is not required but strongly recommended to get
 	some advanced features working (allows running SMP menus via cmd).
