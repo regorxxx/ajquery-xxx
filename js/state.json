@@ -23,6 +23,7 @@
 "queueTotalTime":"[QUEUE_TOTAL_TIME]",
 "isUndoAvailable":"[PLAYLIST_IS_UNDO_AVAILABLE]",
 "isRedoAvailable":"[PLAYLIST_IS_REDO_AVAILABLE]",
+"isLocked":"[PLAYLIST_IS_LOCKED]",
 "helper1":"[HELPER1X]",
 "helper2":"[HELPER2X]",
 "helper3":"[HELPER3X]",

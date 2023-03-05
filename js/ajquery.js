@@ -1,5 +1,5 @@
 ﻿'use strict';﻿﻿﻿
-//14/09/22
+//05/03/23
 
 let fb; // fb2k state
 let smp;// SMP data
@@ -71,7 +71,7 @@ const selection = {
 				if (!isNaN(k)) {
 					if (k < lowest) {lowest = k;}
 					if (k > highest) {highest = k;}
-					let pr = fb.playlist[k - (fb.playlistPage - 1) * fb.playlistItemsPerPage];
+					let pr = fb ? fb.playlist[k - (fb.playlistPage - 1) * fb.playlistItemsPerPage] : null;
 					if (pr) {
 						const len = parseInt(pr.ls);
 						if (!isNaN(len)) {length += len;}
@@ -697,11 +697,13 @@ function updatePlaylistSortable() {
 
 function updateSelectionStats() {
 	selection.calc();
-	let total_time;
-	if (selection.count > 1) {total_time = [formatTime(selection.length), '/', fb.playlistTotalTime].join('');} 
-	else {total_time = fb.playlistTotalTime;}
-	if (fb.queueTotalTime) {$('#totaltime').text(['(', fb.queueTotalTime, ') ', total_time].join(''));}
-	else {$('#totaltime').text(total_time);}
+	let totalTime;
+	let extraText = '';
+	if (fb.isLocked == "1") {extraText = ' Locked | ';}
+	if (selection.count > 1) {totalTime = [formatTime(selection.length), '/', fb.playlistTotalTime].join('');} 
+	else {totalTime = fb.playlistTotalTime;}
+	if (fb.queueTotalTime) {$('#totaltime').text([extraText, '(', fb.queueTotalTime, ') ', totalTime].join(''));}
+	else {$('#totaltime').text(extraText + totalTime);}
 	updatePreferencesDynamic();
 }
 
@@ -792,7 +794,13 @@ function updatePlaylist() {
 		else {tmp += 'Stopped ';}
 	}
 	
-	tmp += '<span id="totaltime" style="float: right"></span';
+	tmp += '<span id="totaltime" style="float: right"></span>';
+	if (fb.isLocked == "1") {
+		tmp += '<span class="ui-icon ui-icon-locked noselect" style="float: right; background-position: -192px -97.5px; transform: scale(1.2); -ms-transform: scale(1.2); -webkit-transform: scale(1.2);"></span>';
+		// red icons_cd0a0a_256x240
+	} else {
+		
+	}
 	$('#summary').html(tmp);
 	let pageslider = $('#pageslider');
 	
@@ -1427,8 +1435,8 @@ function retrieveState(cmd, p1, bPreserveSel) {
 		clearTimeout(timeoutId);
 		timeoutId = null;
 	}
-	cmd = cmd || '';
-	p1 = p1 || '';
+	cmd = (cmd || '').toString();
+	p1 = (p1 || '').toString();
 	cmd = cmd.length ? ['?cmd=', cmd, '&'].join('') : '?';
 	p1 = p1.length ? ['&param1=', p1, '&'].join('') : '';
 	
