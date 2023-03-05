@@ -26,7 +26,7 @@ Asynchronious foo_httpcontrol template
 
 	Run Command (foo_runcmd) is not required but strongly recommended to get
 	some advanced features working (allows running statically created menus via cmd).
-	https://foosion.foobar2000.org/components/?id=runcmd
+	It should be built-in on foobar2000 1.4+ installations.
 	
 	Run Main (foo_run_main) is not required but strongly recommended to get
 	some advanced features working (allows running dynamically created menus via cmd).
@@ -202,6 +202,11 @@ Asynchronious foo_httpcontrol template
 	
 	(****) IT'S MANDATORY TO DISABLE 'ALWAYS SEND NEW FILES TO PLAYIST' 'AT PREFERENCES/SHELL INTEGRATION', 
 	¡otherwise the commands will be sent to the wrong playlist!. See 'img\_doc\always_send_new_files.jpg' image.
+
+*** Release history 2022
+	05 March  0.93
+		add:	Playlist locks are now shown on the status bar (requires foo_httpcontrol v0.97.24);
+		fix:	Some actions not working properly due to type mismatch (for ex. switching playlists);
 
 *** Release history 2022
 	14 Sept  0.92
