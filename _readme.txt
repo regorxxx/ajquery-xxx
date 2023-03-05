@@ -26,7 +26,7 @@ Asynchronious foo_httpcontrol template
 
 	Run Command (foo_runcmd) is not required but strongly recommended to get
 	some advanced features working (allows running statically created menus via cmd).
-	It should be built-in on foobar2000 1.4+ installations.
+	It should be built-in on foobar2000 1.5+ installations.
 	
 	Run Main (foo_run_main) is not required but strongly recommended to get
 	some advanced features working (allows running dynamically created menus via cmd).
@@ -217,7 +217,7 @@ Asynchronious foo_httpcontrol template
 		fix:	All CMD actions are now disabled (UI and functionality) when missing dependencies;
 		fix:	Wrapped all JSON reads on try/catch;
 		fix:	Minor code fixes and code cleanup;
-		
+
 	28 Aug  0.91
 		add:	Double clicking on status bar (below playlist) sets focus on playing item;
 		cha:	Playlist Tools integration using dynamic menus;
