@@ -1,5 +1,4 @@
 # ajquery-xxx
-# -WIP BETA: no release yet, missing docs and wiki but fully functional-
 [![version][version_badge]][changelog]
 [![CodeFactor][codefactor_badge]](https://www.codefactor.io/repository/github/regorxxx/ajquery-xxx/overview/main)
 [![CodacyBadge][codacy_badge]](https://www.codacy.com/gh/regorxxx/ajquery-xxx/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=regorxxx/ajquery-xxx&amp;utm_campaign=Badge_Grade)
