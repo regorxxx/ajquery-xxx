@@ -207,6 +207,9 @@ Asynchronious foo_httpcontrol template
 	05 March  0.93
 		add:	Playlist locks are now shown on the status bar (requires foo_httpcontrol v0.97.24);
 		fix:	Some actions not working properly due to type mismatch (for ex. switching playlists);
+		fix:	Infinite loading cursor when console log file was not found;
+		fix:	Preemptive workaround for infinite loading when commands or file reading are not 
+				executed properly in any case (may happen on foobar crash);
 
 *** Release history 2022
 	14 Sept  0.92

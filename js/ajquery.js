@@ -980,8 +980,12 @@ function updateConsole(maxLines = log.maxLines) {
 				const lines = data.length;
 				cl_text.innerHTML = lines > maxLines ? data.slice(data.length - maxLines).join('\n'): data.join('\n');
 			} else {cl_text.innerHTML = 'No console log found.';}
+		}, 'text')
+		.always(function() {
 			finishWork();
-		}, 'text');
+		});
+	} else {
+		finishWork();
 	}
 }
 
@@ -1371,6 +1375,9 @@ function command(command, p1, p2, bPreserveSel = false) {
 	$.get('/ajquery-xxx/', params, function (data) {
 		if (!(command == "VolumeDB")) {retrievestate_schedule(command == 'Start' ? 500 : 250, void(0), bPreserveSel);}
 		else {finishWork();}
+	})
+	.fail(function() {
+		finishWork();
 	});
 }
 
@@ -1468,8 +1475,11 @@ function retrieveState(cmd, p1, bPreserveSel) {
 				selection.restore(oldSel);
 				updatePlaylist();
 			}
+		})
+		.fail(function() {
+			finishWork();
 		});
-	} catch (e) {}
+	} catch (e) {finishWork()}
 }
 
 function retrieveBrowserState(p1) {
@@ -1482,8 +1492,11 @@ function retrieveBrowserState(p1) {
 			updateBrowser();
 			retrieveState();
 			finishWork();
+		})
+		.fail(function() {
+			finishWork();
 		});
-	} catch (e) {}
+	} catch (e) {finishWork();}
 }
 
 function retrieveLibraryState(cmd, p1) {
@@ -1495,8 +1508,11 @@ function retrieveLibraryState(cmd, p1) {
 			library = data;
 			updateLibrary();
 			command();
+		})
+		.fail(function() {
+			finishWork();
 		});
-	} catch (e) {}
+	} catch (e) {finishWork();}
 }
 
 function positionDialog(dlg,X,Y) {
