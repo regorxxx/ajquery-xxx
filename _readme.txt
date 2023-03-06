@@ -203,7 +203,7 @@ Asynchronious foo_httpcontrol template
 	(****) IT'S MANDATORY TO DISABLE 'ALWAYS SEND NEW FILES TO PLAYIST' 'AT PREFERENCES/SHELL INTEGRATION', 
 	¡otherwise the commands will be sent to the wrong playlist!. See 'img\_doc\always_send_new_files.jpg' image.
 
-*** Release history 2022
+*** Release history 2023
 	05 March  0.93
 		add:	Playlist locks are now shown on the status bar (requires foo_httpcontrol v0.97.24);
 		fix:	Some actions not working properly due to type mismatch (for ex. switching playlists);
