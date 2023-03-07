@@ -1031,6 +1031,7 @@ function updateUI() {
 			else {$('#PlayOrPause').html('<span class="ui-icon ui-icon-play"></span>');}
 		} else {
 			$("#playingtitle").html('&nbsp;');
+			$('#PlayOrPause').html('<span class="ui-icon ui-icon-play"></span>');
 		}
 		
 		if (fb.SAC === 'checked') {$('#progressbar').addClass('ui-state-error');}
@@ -1721,7 +1722,7 @@ $(function() {
 			autoOpen: false,
 			modal: true,
 			bgiframe: true,
-			width: 500
+			width: 510
 		});
 		
 		// toolbar buttons
@@ -2310,11 +2311,20 @@ $(function() {
 			if(event.type == 'ajaxError') {
 				// Don't throw window errors for json/log when file is missing
 				if (XMLHttpRequest.statusText === 'Not Found' && (settings.url.endsWith('.json') || settings.url.endsWith('.log')))  {console.log('File import: ' + settings.url + ' ' + XMLHttpRequest.statusText); return;}
-				// The rest
 				let rep = '';
-				rep += 'settings.url: ' + settings.url + '\n\n';
-				rep += 'XMLHttpRequest.responseText: \n' + XMLHttpRequest.responseText + '\n\n';
-				rep += 'XMLHttpRequest.statusText: ' + XMLHttpRequest.statusText;
+				// The rest
+				if (fb) {
+					rep += 'settings.url: ' + settings.url + '\n\n';
+					rep += 'XMLHttpRequest.responseText: \n' + XMLHttpRequest.responseText + '\n\n';
+					rep += 'XMLHttpRequest.statusText: ' + XMLHttpRequest.statusText;
+				} else {
+					rep += 'settings.url: ' + settings.url + '\n\n';
+					rep += 'foobar2000 server connection is not working. Possible reasons:\n'
+					rep += '\t- Network errors.\n';
+					rep += '\t- Unreachable or stopped server.\n'
+					rep += '\t- foobar2000 crash.\n'
+					rep += '\n\nConnection will be retried every 10 secs (dialog will be automatically closed on success).';
+				}
 				$('#dbg').html(rep);
 				$('#error_dlg').dialog('open');
 			}
@@ -2333,5 +2343,23 @@ $(function() {
 		retrieveState();
 		reopenWindows();
 		restorePlaylistSize();
+		// Try again if foobar2000 has not started yet or there was a crash
+		setTimeout(() => {
+			let bCrashed = false;
+			const refresh = () => {
+				setTimeout(() => {
+					retrievestate_schedule(500, "RefreshPlayingInfo");
+					refresh();
+					if (!fb) {bCrashed = true;}
+					else {
+						if (bCrashed && $('#error_dlg').dialog('isOpen')) {
+							$('#error_dlg').dialog('close');
+						}
+						bCrashed = false;
+					}
+				}, 10000);
+			};
+			refresh();
+		}, 1000);
 	});
 });
