@@ -204,6 +204,12 @@ Asynchronious foo_httpcontrol template
 	¡otherwise the commands will be sent to the wrong playlist!. See 'img\_doc\always_send_new_files.jpg' image.
 
 *** Release history 2023
+	07 March  0.94
+		add:	Template will try to reconnect when server is unreachable every 10 secs;
+		add:	Template will check server connection every 10 secs (and adjust UI accordingly);
+		cha:	Improved AJAX errors dialog popups;
+		fix:	Play/pause icon is now properly set on init (according to foobar playing state);
+				
 	05 March  0.93
 		add:	Playlist locks are now shown on the status bar (requires foo_httpcontrol v0.97.24);
 		fix:	Some actions not working properly due to type mismatch (for ex. switching playlists);
