@@ -16,7 +16,7 @@
 - Template will try to reconnect when server is unreachable every 10 secs.
 - Template will check server connection every 10 secs (and adjust UI accordingly).
 ### Changed
-- Improved AJAX errors dialog popups;
+- Improved AJAX errors dialog popups.
 ### Removed
 ### Fixed
 - Play/pause icon is now properly set on init (according to foobar playing state).
