@@ -969,6 +969,31 @@ function updateAlbumart() {
 		$('#aa_img').attr('src', aa.img.src);
 		updateAlbumartAspect();
 	}
+	updateAlbumartPalette();
+}
+
+function updateAlbumartPalette() {
+	if (aa.img && $('#aa_pane').is(':visible')) {
+		const imgPath = /.*\.gif/i.test(aa.img.src) ? aa.img.src.replace(/(.*)(\.gif)/i, '$1-static.jpg') : aa.img.src;
+		Vibrant.from(imgPath, {imageClass: Image.Browser})
+			.useQuantizer(Vibrant.Quantizer.WebWorker)
+			.getPalette().then((palette) => {
+				const colors = {
+					'--background-color':		palette.Vibrant.getHex(),
+					'--background-color-v2':	palette.LightMuted.getHex(),
+					'--background-color-v3':	palette.LightMuted.getHex(),
+					'--background-color-v4':	palette.LightVibrant.getHex(),
+					'--tabs-color-v1':			palette.LightMuted.getHex(),
+					'--tabs-color-v2':			palette.LightVibrant.getHex(),
+				};
+				const style = Object.keys(colors).map((key) => key + ': ' + colors[key]).join('; ');
+				$(':root').attr('style', style);
+			}).catch((err) => {
+				$(':root').attr('style', null);
+			});
+	} else {
+		$(':root').attr('style', null);
+	}
 }
 
 function updateConsole(maxLines = log.maxLines) {
@@ -2010,6 +2035,7 @@ $(function() {
 			} else {
 				$('#aa_pane').hide();
 				saveWindowToCookie('aa_pane', false);
+				updateAlbumartPalette();
 			}
 		});
 		
