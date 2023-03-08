@@ -204,6 +204,10 @@ Asynchronious foo_httpcontrol template
 	¡otherwise the commands will be sent to the wrong playlist!. See 'img\_doc\always_send_new_files.jpg' image.
 
 *** Release history 2023
+	?? ?????  0.95
+		cha:	Colors will change according to album art palette when the album art is shown, 
+				similar to [Georgia-ReBORN](https://github.com/TT-ReBORN/Georgia-ReBORN).
+
 	07 March  0.94
 		add:	Template will try to reconnect when server is unreachable every 10 secs;
 		add:	Template will check server connection every 10 secs (and adjust UI accordingly);

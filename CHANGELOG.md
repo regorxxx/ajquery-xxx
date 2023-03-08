@@ -8,6 +8,7 @@
 ## [Unreleased][]
 ### Added
 ### Changed
+- Colors will change according to album art palette when the album art is shown, similar to [Georgia-ReBORN](https://github.com/TT-ReBORN/Georgia-ReBORN).
 ### Removed
 ### Fixed
 
