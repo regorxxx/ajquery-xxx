@@ -1,5 +1,5 @@
 ﻿'use strict';﻿﻿﻿
-//05/03/23
+//09/03/23
 
 let fb; // fb2k state
 let smp;// SMP data
@@ -2278,9 +2278,9 @@ $(function() {
 			if (!smp.config.bRunCmd) {return;}
 			const data = smp.playlistToolsEntries[$(this).prop('selectedIndex') - 1].name; // Index has an offset due to the first entry being a dummy entry...
 			const idxListener = fb.playlists.findIndex((pls) => {return pls.name === 'pt:listener';});
-			const currPls = fb.playlistActive;
+			const currPls = Number(fb.playlistActive);
 			if (idxListener === -1) {
-				command('CreatePlaylist', 'pt:listener', currPls + 1);
+				command('CreatePlaylist', 'pt:listener', currPls); // Created just after current index
 				command('SwitchPlaylist', currPls + 1);
 			} else if (currPls !== idxListener) {
 				command('SwitchPlaylist', idxListener);

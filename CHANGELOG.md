@@ -11,6 +11,7 @@
 - Colors will change according to album art palette when the album art is shown, similar to [Georgia-ReBORN](https://github.com/TT-ReBORN/Georgia-ReBORN).
 ### Removed
 ### Fixed
+- Playlist Tools menu entries (listener) not sending commands to proper playlist if 'PT:listener' did not exist before (i.e. working on second command sent not the first one).
 
 ## [0.94] - 2023-03-07
 ### Added
