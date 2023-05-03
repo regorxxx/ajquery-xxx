@@ -46,17 +46,12 @@
  3. [foo_quicksearch](https://www.foobar2000.org/components/view/foo_quicksearch): Buttons to search for title, artist and genre queries.
  4. [foo_youtube](https://fy.3dyd.com/home/): Buttons to search for acoustic versions, collaborations, tracks by artist, etc.
 
+![image](https://user-images.githubusercontent.com/83307074/236061283-d7cd7bbf-e309-4889-a222-83980142ad84.png)
+
 ## Installation
 See [_readme (txt)](https://github.com/regorxxx/ajquery-xxx/blob/main/_readme.txt). Not properly following the installation instructions will result in scripts not working as intended. Please don't report errors before checking this.
 
 To use this plugin at its best, [foo_run_main](https://marc2k3.github.io/run-main/) is required. It's used to run dynamic contextual menus.
-
-### More images
-![image](https://user-images.githubusercontent.com/83307074/236061990-3c8205a9-66da-4130-8c6a-c9d03f615db9.png)
-
-![image](https://user-images.githubusercontent.com/83307074/236061283-d7cd7bbf-e309-4889-a222-83980142ad84.png)
-
-![image](https://user-images.githubusercontent.com/83307074/236061184-6320818c-7160-42bc-b36e-a1bb5c86b938.png)
 
 [changelog]: CHANGELOG.md
 [version_badge]: https://img.shields.io/github/release/regorxxx/ajquery-xxx.svg
