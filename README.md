@@ -20,6 +20,8 @@
 * **Playlist Tools:** Full integration with SMP script; all tools and menus, output and DSP selection.
 * **Playlist Manager:** Full integration with SMP script;  browse, load, lock, create, ... playlist files.
 
+![image](https://user-images.githubusercontent.com/83307074/236062127-7b1cc092-17e2-4b92-8e81-05d82e1c69a2.png)
+
 ## Comparison to old ajquery
 * Full and tested responsive design.
 * Tile, artist, album tags are cut at display to soft-force one track per row.
@@ -37,8 +39,6 @@
 * Query browser filtering.
 * Builtin documentation.
 * Fixes to bugs on previous versions.
-
-![image](https://user-images.githubusercontent.com/83307074/236062127-7b1cc092-17e2-4b92-8e81-05d82e1c69a2.png)
 
 ### Compatible with
  1. [Playlist-Tools-SMP](https://github.com/regorxxx/Playlist-Tools-SMP): Full integration with all tools and menus, output and DSP selection,...
@@ -62,4 +62,3 @@ To use this plugin at its best, [foo_run_main](https://marc2k3.github.io/run-mai
 [version_badge]: https://img.shields.io/github/release/regorxxx/ajquery-xxx.svg
 [codacy_badge]: https://api.codacy.com/project/badge/Grade/e04be28637dd40d99fae7bd92f740677
 [codefactor_badge]: https://www.codefactor.io/repository/github/regorxxx/ajquery-xxx/badge/main
-
