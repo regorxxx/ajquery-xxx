@@ -1,5 +1,5 @@
 ﻿'use strict';﻿﻿﻿
-//09/03/23
+//03/05/23
 
 let fb; // fb2k state
 let smp;// SMP data
@@ -280,7 +280,7 @@ function saveWindowToCookie(wnd, state) {// stores state of a window (opened/clo
 
 function reopenWindows() { // restores open windows
 	if (isWorking || !fb || fb && (fb.isPlaying == '1' && fb.helper1 == '')) {// try again if something is loading while we're trying to mangle with windows
-		setTimeout('reopenWindows()', 500);
+		setTimeout(reopenWindows, 500);
 	} else {
 		let cookie = $.cookie('windows');
 		if (cookie) {
@@ -303,7 +303,7 @@ function reopenWindows() { // restores open windows
 
 function restorePlaylistSize() {
 	if (isWorking || !fb) {
-		setTimeout('restorePlaylistSize()', 250);
+		setTimeout(restorePlaylistSize, 250);
 	} else {
 		let cookie = $.cookie('pl_size');
 		if (cookie) {
@@ -479,17 +479,16 @@ function keyUp(e) {
 	keyPressed[e] = 0;
 }
 
-function startWork() {
+function startWork(bBackground = false) {
 	isWorking = true;
-    document.body.style.cursor = 'wait';
+	if (!bBackground) {document.body.style.cursor = 'wait';}
 	$("#loading").css("visibility", "visible");
 }
 
-function finishWork() {
+function finishWork(bBackground = false) {
 	isWorking = false;
 	$("#loading").css("visibility", "hidden");
-
-    document.body.style.cursor = 'default'; // When the window has finished loading, set it back to default...
+	if (!bBackground) {document.body.style.cursor = 'default';} // When the window has finished loading, set it back to default...
 }
 
 function pad(str, chr, count) {
@@ -673,7 +672,7 @@ function updatePlaylistSortable() {
 					drag.end -= 1;
 				}
 				if (drag.end == (fb.playlistPage - 1) * fb.playlistItemsPerPage && fb.playlistItemsCount > fb.playlistItemsPerPage && fb.playlistPage != 1) {
-					drag.timeout = setTimeout('switchPage(-1)', 2000);
+					drag.timeout = setTimeout(() => switchPage(-1), 2000);
 				}
 			} else {
 				if (!$('#i'+(drag.end+1)).hasClass('dragplacer-top') && !$('#i'+(drag.end+1)).hasClass('pl_selected')) {
@@ -683,7 +682,7 @@ function updatePlaylistSortable() {
 					drag.end += 1;
 				}
 				if (drag.end >= ((fb.playlistPage - 1) * fb.playlistItemsPerPage+fb.playlistItemsPerPage - 1) && fb.playlistItemsCount > fb.playlistItemsPerPage && fb.playlistPage != Math.ceil(fb.playlistItemsCount / fb.playlistItemsPerPage)) {
-					drag.timeout = setTimeout('switchPage(1)', 2000);
+					drag.timeout = setTimeout(() => switchPage(1), 2000);
 				}
 			}
 			if (cl) {
@@ -725,10 +724,11 @@ function updatePlaylist() {
 	const selectedIcon = '<span class="ui-icon ui-icon-check" style="position: absolute; margin-top: -2px;"></span>';
 	const playIcon = '<span class="ui-icon ui-icon-play" style="position: absolute; margin-top: -2px;"></span>';
 	const pauseIcon = '<span class="ui-icon ui-icon-pause" style="position: absolute; margin-top: -2px;"></span>';
+	
 	for (let i = 0, k = (fb.playlistPage - 1) * fb.playlistItemsPerPage; i < len; ++i,++k) {
 		group = '';
 		let row = fb.playlist[i];
-		let cl_1 = []; let cl_2 = []; let cl_3 = []; let cl_r = [];
+		let cl_1 = []; let cl_2 = []; let cl_3 = []; let cl_4 = []; let cl_r = [];
 		if (album != row.b || artist != row.a) { //  &mdash;
 			let rowA = row.a;
 			let rowB = row.b;
@@ -743,7 +743,7 @@ function updatePlaylist() {
 			artist = row.a;
 			album = row.b;
 			if (i != 0 && ft != i) {
-				cl_1.push('bbt'); cl_2.push('bbt'); cl_3.push('bbt');
+				cl_1.push('bbt'); cl_2.push('bbt'); cl_3.push('bbt');  cl_4.push('bbt');
 			}
 		}
 		if (i % 2 == 0) {cl_r.push('pl_even');}
@@ -763,9 +763,9 @@ function updatePlaylist() {
 		
 		if (ppt == i) {	cl_r.push('pl_prev');}
 		if (ft == i) {
-			cl_1.push('bbl bbm'); cl_2.push('bbm'); cl_3.push('bbm bbr');
+			cl_1.push('bbl bbm'); cl_2.push('bbm'); cl_3.push('bbm '); cl_4.push('bbm bbr');
 		} else {
-			cl_1.push('bwl bwm'); cl_2.push('bwm '); cl_3.push('bwm bwr');
+			cl_1.push('bwl bwm'); cl_2.push('bwm '); cl_3.push('bwm '); cl_4.push('bwm bwr');
 		}
 		if (cl_1.length == 0)
 			cl_1.push('bwm');
@@ -774,12 +774,13 @@ function updatePlaylist() {
 		ta.push(['<div id="i', k, '" class="pl_row ', cl_r.join(' '), '">',
 			'<div class="pl_c1 ', cl_1.join(' '), '">', row.n, '.</div>',
 			'<div class="pl_c2 ', cl_2.join(' '), '">', rowT, group, '</div>',
-			'<div class="pl_c3 ', cl_3.join(' '), '">', row.r, '&ensp;', row.l, '</div></div>'].join(''));
+			'<div class="pl_c3 ', cl_3.join(' '), '">', row.r, '</div>',
+			'<div class="pl_c4 ', cl_4.join(' '), '">', row.l, '</div></div>'].join(''));
 	}
 	let a = [];
 	len = fb.playlistItemsPerPage - fb.playlist.length;
 	for (let i = 0; i < len; ++i) {
-		a.push('<div class="pl_row"><div class="pl_c1">&nbsp;</div><div class="pl_c2">&nbsp;</div><div class="pl_c3">&nbsp;</div></div>');
+		a.push('<div class="pl_row"><div class="pl_c1">&nbsp;</div><div class="pl_c2">&nbsp;</div><div class="pl_c3">&nbsp;</div><div class="pl_c4">&nbsp;</div></div>');
 	}
 	ta.push([a.join(''), '</div>'].join(''));
 	
@@ -867,7 +868,7 @@ function updatePlaylist() {
 				$(this).addClass('pl_selected');
 			}
 			updateSelectionStats();
-			setTimeout('updatePlaylist()', 200); // Give a 200ms window for dblclick
+			setTimeout(updatePlaylist, 200); // Give a 200ms window for dblclick
 		})
 		.disableSelection();
 	
@@ -889,7 +890,7 @@ function updateNp() {
 		if (pos < len) {
 			fb.itemPlayingPos = pos + 1;
 			$("#playingtime").html("-" + formatTime(len-pos));
-			if (fb.isPlaying == "1") {npid = setTimeout('updateNp()', refreshInterval);}
+			if (fb.isPlaying == "1") {npid = setTimeout(updateNp, refreshInterval);}
 		}
 	} else if (fb.isPlaying != "1" && fb.isPaused != "1") {
 		$("#progressbar").progressbar('disable').progressbar('value', 0);
@@ -900,9 +901,9 @@ function updateNp() {
 		fb.itemPlayingPos = pos + 1;
 		$("#playingtime").html(formatTime(pos));
 		if (pos % 15 == 0) {
-			retrievestate_schedule(1100, "RefreshPlayingInfo");
+			retrievestate_schedule(1100, 'RefreshPlayingInfo');
 		} else {
-			npid = setTimeout('updateNp()', refreshInterval);
+			npid = setTimeout(updateNp, refreshInterval);
 		}
 	}
 
@@ -947,7 +948,7 @@ function updateTabs() {
 }
 
 function updateAlbumartAspect() {
-	if (aa.img.width == 0 || aa.img.height == 0) {setTimeout('updateAlbumartAspect()', refreshInterval);}
+	if (aa.img.width == 0 || aa.img.height == 0) {setTimeout(updateAlbumartAspect, refreshInterval);}
 	else {
 		if ($('#aa_pane').hasClass("ui-resizeable")) {$('#aa_pane').resizable('destroy');}
 		$('#aa_pane').resizable({
@@ -1407,14 +1408,14 @@ function command(command, p1, p2, bPreserveSel = false) {
 	});
 }
 
-function retrievestate_schedule(timeout, cmd, bPreserveSel) {
+function retrievestate_schedule(timeout, cmd, bPreserveSel, bBackground = false) {
 	timeout = timeout || 500;
 	cmd = cmd || '';
 	if (timeoutId) {
 		clearTimeout(timeoutId);
 		timeoutId = null;
 	}
-	if (!timeoutId) {timeoutId = setTimeout('retrieveState("'+ cmd +'",void(0),' + bPreserveSel + ')', timeout);}
+	if (!timeoutId) {timeoutId = setTimeout(() => retrieveState(cmd, void(0), bPreserveSel, bBackground), timeout);}
 }
 
 function retrieveXXX() {
@@ -1461,8 +1462,8 @@ function retrieveSMP() {
 	smp.config = {bRunCmd: false, bDynamicMenusPT: false};
 }
 
-function retrieveState(cmd, p1, bPreserveSel) {
-	startWork();
+function retrieveState(cmd, p1, bPreserveSel, bBackground = false) {
+	startWork(bBackground);
 	
 	if (timeoutId) {
 		clearTimeout(timeoutId);
@@ -1495,7 +1496,7 @@ function retrieveState(cmd, p1, bPreserveSel) {
 				if (fb.playlistPage == 0) {fb.playlistPage = 1;}
 				if (fb.playlists.length == 0) {	fb.playlists = [{ name: '&nbsp;', count: 0 } ];}
 				updateUI();
-				finishWork();
+				finishWork(bBackground);
 			}
 			if (bPreserveSel) {
 				selection.restore(oldSel);
@@ -1503,9 +1504,9 @@ function retrieveState(cmd, p1, bPreserveSel) {
 			}
 		})
 		.fail(function() {
-			finishWork();
+			finishWork(bBackground);
 		});
-	} catch (e) {finishWork()}
+	} catch (e) {finishWork(bBackground)}
 }
 
 function retrieveBrowserState(p1) {
@@ -1686,7 +1687,7 @@ $(function() {
 				  	timeoutId2 = null;
 				}
 				if (!timeoutId2) {
-					timeoutId2 = setTimeout("searchMediaLibrary($('#searchstr').val())", 500);
+					timeoutId2 = setTimeout(() => searchMediaLibrary($('#searchstr').val()), 500);
 				}
 			}
 			const query = library ? library.queryInfo.length : null;
@@ -2257,7 +2258,7 @@ $(function() {
 					const items = selection.toStr();
 					const menu = xxx.contextMenus[idx].menu;
 					command('SelectionCommand', menu, items);
-					if (menu.indexOf('Youtube') !== -1) {setTimeout('command();', 1500);}
+					if (menu.indexOf('Youtube') !== -1) {setTimeout(command, 1500);}
 				}
 			}
 		});
@@ -2286,7 +2287,7 @@ $(function() {
 				command('SwitchPlaylist', idxListener);
 			}
 			command('CmdLine', '/add "command_'+ data + '"');
-			setTimeout('command();', 1500);
+			setTimeout(command, 1500);
 		});
 		
 		$('#PTMECMD').change(function(e) {
@@ -2296,7 +2297,7 @@ $(function() {
 			const panelKey = panelKeys[0]; // Only use first one
 			const data = smp.playlistToolsEntriesCMD[panelKey][$(this).prop('selectedIndex') - 1].name; // Index has an offset due to the first entry being a dummy entry...
 			command('CmdLine', '/run_main:"File/Spider Monkey Panel/Script commands/' + panelKey + '/' + data + '"');
-			setTimeout('command();', 1500);
+			setTimeout(command, 1500);
 		});
 		
 		$('#PTOD').change(function(e) {
@@ -2305,7 +2306,7 @@ $(function() {
 			command('CmdLine', '/run_main:"Playback/Device/' + data, void(0), void(0), true);
 			smp.devices.forEach((_) => {_.active = false;});
 			smp.devices[$(this).prop('selectedIndex')].active = true;
-			setTimeout('command();', 1500);
+			setTimeout(command, 1500);
 		});
 		
 		$('#PTDSP').change(function(e) {
@@ -2314,7 +2315,7 @@ $(function() {
 			command('CmdLine', '/run_main:"Playback/DSP settings/' + data, void(0), void(0), true);
 			smp.dsp.forEach((_) => {_.active = false;});
 			smp.dsp[$(this).prop('selectedIndex')].active = true;
-			setTimeout('command();', 1500);
+			setTimeout(command, 1500);
 		});
 		
 		// Playlist Manager
@@ -2374,7 +2375,7 @@ $(function() {
 			let bCrashed = false;
 			const refresh = () => {
 				setTimeout(() => {
-					retrievestate_schedule(500, "RefreshPlayingInfo");
+					retrievestate_schedule(500, 'RefreshPlayingInfo', void(0), true);
 					refresh();
 					if (!fb) {bCrashed = true;}
 					else {

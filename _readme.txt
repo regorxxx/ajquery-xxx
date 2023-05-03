@@ -205,11 +205,15 @@ Asynchronious foo_httpcontrol template
 
 *** Release history 2023
 	?? ?????  0.95
+		cha:	Colors will change according to album art palette when the album art is shown, 
+				similar to [Georgia-ReBORN](https://github.com/TT-ReBORN/Georgia-ReBORN).
+		cha:	Cursor no longer changes while connection is re-checked (loading indicator).
+		cha:	Rating and track length are now split into 2 columns, so they always get aligned
+				properly no matter the number of digits (for ex. 10:23 vs 3:20).
+		cha:	Code cleanup;
 		fix:	Playlist Tools menu entries (listener) not sending commands to proper playlist
 				if 'PT:listener' did not exist before (i.e. working on second command sent not the
 				first one);
-		cha:	Colors will change according to album art palette when the album art is shown, 
-				similar to [Georgia-ReBORN](https://github.com/TT-ReBORN/Georgia-ReBORN).
 
 	07 March  0.94
 		add:	Template will try to reconnect when server is unreachable every 10 secs;
@@ -301,8 +305,8 @@ Asynchronious foo_httpcontrol template
 
 *** Release history 2014
 	26 Jul  0.72
-		fix:	broken media library search;
 		add:	autofocus input on search window open;
+		fix:	broken media library search;
 
 	02 Mar  0.71
 		add:	Second precision seeking (instead of percent), requires 
@@ -329,9 +333,9 @@ Asynchronious foo_httpcontrol template
 
 *** Release history 2011
 	09 Apr 0.67
-		fix:	wrong now playing info when playing first track;
 		add:	double clicking playlist switcher focuses now playing item;
 		add:	removed search button;
+		fix:	wrong now playing info when playing first track;
 
 	16 Mar 0.66
 		fix:	updated jquery & jquery-ui;
@@ -352,9 +356,9 @@ Asynchronious foo_httpcontrol template
 
 	17 Apr 0.63
 		add:	shift+[ and shift] resizes playlist height;
-		fix:	resize playlist width by dragging right side of seekbar;
 		add:	show selection total time;
 		add:	clicking album title selects whole album;
+		fix:	resize playlist width by dragging right side of seekbar;
 		fix:	prefomance improvements;
 
 	10 Apr 0.62
