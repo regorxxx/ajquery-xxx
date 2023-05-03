@@ -213,10 +213,12 @@ Asynchronious foo_httpcontrol template
 	¡otherwise the commands will be sent to the wrong playlist!. See 'img\_doc\always_send_new_files.jpg' image.
 
 *** Release history 2023
-	?? ?????  0.95
-		cha:	Colors will change according to album art palette when the album art is shown, 
+	04 May  0.95
+		add:	Template version is now shown on the help button and dialog window title.
+		cha:	Colors will change based on album art palette when the album art is shown, 
 				similar to [Georgia-ReBORN](https://github.com/TT-ReBORN/Georgia-ReBORN). Option 
-				may be set at 'xxx\config-theme.json'.
+				may be set at 'xxx\config-theme.json', enabled by default.
+		cha:	Dark theme is now the default theme.
 		cha:	Cursor no longer changes while connection is re-checked (loading indicator).
 		cha:	Rating and track length are now split into 2 columns, so they always get aligned
 				properly no matter the number of digits (for ex. 10:23 vs 3:20).
