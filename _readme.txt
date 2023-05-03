@@ -58,7 +58,7 @@ Asynchronious foo_httpcontrol template
 *** Installation
 
 	Extract archive contents retaining directory structure into %YOUR_FOOBAR_PROFILE_PATH%
-	For ex: mine is 			c:\Users\xxx\AppData\Roaming\foo_httpcontrol_data\ajquery-xxx\...
+	For ex: mine is c:\Users\xxx\AppData\Roaming\foo_httpcontrol_data\ajquery-xxx\...
 	For portable installations >= 1.6: .\foobar2000\profile\foo_httpcontrol_data\ajquery-xxx\... 
 	For portable installations <= 1.5: .\foobar2000\foo_httpcontrol_data\ajquery-xxx\... 
 
@@ -119,13 +119,22 @@ Asynchronious foo_httpcontrol template
 
 *** Theme
 
-	Dark or light themes can be set at 'xxx\config-theme.json'. Light is the default.
+	Dark or light themes can be set at 'xxx\config-theme.json'. Dark is the default.
 	Don't forget to also change default artwork images to at 'img\...' to their dark
 	background counterparts! To do that set the http control config file ('config'):
 		- albumart_not_found=ajquery-xxx/vinyl-playing-dark.gif
 		- albumart_not_available=ajquery-xxx/vinyl-dark.gif
 		
-	Alternatively you can simply run '_switchTheme.bat' to process the 3 files at once.
+	Alternatively you can run '_switchTheme.bat' to process all required changes at once.
+	
+*** Dynamic color theme
+
+	There is also an option to completely change the player colors based on album art,
+	similar to [Georgia-ReBORN](https://github.com/TT-ReBORN/Georgia-ReBORN). It's enabled 
+	by default. In case the artwork is hidden or playback stopped, theme fallbacks to the 
+	light/dark setting.
+	
+	Option may be set at 'xxx\config-theme.json'.
 
 *** Console log
 
@@ -206,7 +215,8 @@ Asynchronious foo_httpcontrol template
 *** Release history 2023
 	?? ?????  0.95
 		cha:	Colors will change according to album art palette when the album art is shown, 
-				similar to [Georgia-ReBORN](https://github.com/TT-ReBORN/Georgia-ReBORN).
+				similar to [Georgia-ReBORN](https://github.com/TT-ReBORN/Georgia-ReBORN). Option 
+				may be set at 'xxx\config-theme.json'.
 		cha:	Cursor no longer changes while connection is re-checked (loading indicator).
 		cha:	Rating and track length are now split into 2 columns, so they always get aligned
 				properly no matter the number of digits (for ex. 10:23 vs 3:20).
