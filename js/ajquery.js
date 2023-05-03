@@ -1,6 +1,7 @@
 ﻿'use strict';﻿﻿﻿
 //04/05/23
 
+const version = 'v0.95'
 let fb; // fb2k state
 let smp;// SMP data
 let xxx;// SMP data
@@ -971,7 +972,7 @@ function updateAlbumart() {
 		$('#aa_img').attr('src', aa.img.src);
 		updateAlbumartAspect();
 	}
-	if (xxx.dynamicColor) {updateAlbumartPalette();}
+	if (xxx.dynamicColor) {updateAlbumartPalette();} // Takes some seconds
 	else {$(':root').attr('style', null);}
 }
 
