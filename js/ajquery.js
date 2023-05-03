@@ -970,7 +970,8 @@ function updateAlbumart() {
 		$('#aa_img').attr('src', aa.img.src);
 		updateAlbumartAspect();
 	}
-	updateAlbumartPalette();
+	if (xxx.dynamicColor) {updateAlbumartPalette();}
+	else {$(':root').attr('style', null);}
 }
 
 function updateAlbumartPalette() {
@@ -1426,7 +1427,7 @@ function retrieveXXX() {
 	xxx.theme = '';
 	try {
 		$.getJSON('xxx/config-theme.json', function (data) {
-			xxx.theme = data[0].value;
+			for (let setting of data) {xxx[setting.option] = setting.value;}
 			if (xxx.theme && xxx.theme.length) {document.documentElement.setAttribute("data-theme", xxx.theme);}
 		}); 
 	}catch (e) {}

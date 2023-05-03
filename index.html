@@ -13,10 +13,10 @@
 		<script type="text/javascript">
 			// Wait for document to load
 			document.addEventListener("DOMContentLoaded", function(event) {
-				if (Object.keys(xxx).length) {xxx.theme = '';}
-				else {xxx = {}; xxx.theme = '';}
+				if (Object.keys(xxx).length) {xxx.theme = ''; xxx.dynamicColor = true;}
+				else {xxx = {}; xxx.theme = ''; xxx.dynamicColor = true;}
 				$.getJSON('xxx/config-theme.json', function (data) {
-					xxx.theme = data[0].value;
+					for (let setting of data) {xxx[setting.option] = setting.value;}
 					if (xxx.theme && xxx.theme.length) {document.documentElement.setAttribute("data-theme", xxx.theme);}
 				});
 			});

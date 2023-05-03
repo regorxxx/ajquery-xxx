@@ -3,5 +3,10 @@
 		"option": "theme",
 		"name": "Light mode or dark mode: light, dark",
 		"value": "dark"
+	},
+	{
+		"option": "dynamicColor",
+		"name": "Change UI colors based on album art.",
+		"value": true
 	}
 ]
