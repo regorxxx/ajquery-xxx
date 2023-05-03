@@ -224,6 +224,8 @@ Asynchronious foo_httpcontrol template
 		fix:	Playlist Tools menu entries (listener) not sending commands to proper playlist
 				if 'PT:listener' did not exist before (i.e. working on second command sent not the
 				first one);
+		fix:	Window height increasing indefinitely when showing artwork due to server re-connection
+				added on v0.94;
 
 	07 March  0.94
 		add:	Template will try to reconnect when server is unreachable every 10 secs;

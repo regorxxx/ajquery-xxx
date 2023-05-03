@@ -1,5 +1,5 @@
 ﻿'use strict';﻿﻿﻿
-//03/05/23
+//04/05/23
 
 let fb; // fb2k state
 let smp;// SMP data
@@ -964,6 +964,7 @@ function updateAlbumartAspect() {
 }
 
 function updateAlbumart() {
+	if (aa.img && aa.img.src.endsWith(fb.albumArt)) {return;} // Skip unnecessary updates
 	if ($('#aa_pane').is(':visible')) {
 		aa.img = new Image();
 		aa.img.src = fb.albumArt;
