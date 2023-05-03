@@ -8,6 +8,7 @@
 ![ajquery](https://user-images.githubusercontent.com/83307074/193598636-730640f8-894e-45fa-a6f9-a722b59c5df8.gif)
 
 ## Features
+* **Dynamic themes:** Dark, light or dynamic colors based on album art palette similar to [Georgia-ReBORN](https://github.com/TT-ReBORN/Georgia-ReBORN).
 * **Full playback controls:** smart play/pause, stop, prev/next, random.
 * **Extended controls:** sort playlist, queue, etc.
 * **Library browser:** by path.
@@ -24,7 +25,7 @@
 * Tile, artist, album tags are cut at display to soft-force one track per row.
 * General tweaks to UI placement, space usage, fonts (larger) and many QOL changes.
 * Rating is now shown on the playlist list for every item (stars).
-* Themes: dark/light. (new themes may be easily added editing the html)
+* Themes: dark/light and dynamic colors. (new themes may be easily added editing the html)
 * Default 20 items per page.
 * Artwork: non-playing and non-artwork found images are now animations.
 * Extended controls reworked: rating and Custom contextual menu Buttons.
@@ -37,18 +38,25 @@
 * Builtin documentation.
 * Fixes to bugs on previous versions.
 
+![image](https://user-images.githubusercontent.com/83307074/236062127-7b1cc092-17e2-4b92-8e81-05d82e1c69a2.png)
+
 ### Compatible with
  1. [Playlist-Tools-SMP](https://github.com/regorxxx/Playlist-Tools-SMP): Full integration with all tools and menus, output and DSP selection,...
  2. [Playlist-Manager-SMP](https://github.com/regorxxx/Playlist-Manager-SMP): Full integration with playlist files (browse, load, lock, create, ...)
  3. [foo_quicksearch](https://www.foobar2000.org/components/view/foo_quicksearch): Buttons to search for title, artist and genre queries.
  4. [foo_youtube](https://fy.3dyd.com/home/): Buttons to search for acoustic versions, collaborations, tracks by artist, etc.
 
--IMAGE-
-
 ## Installation
 See [_readme (txt)](https://github.com/regorxxx/ajquery-xxx/blob/main/_readme.txt). Not properly following the installation instructions will result in scripts not working as intended. Please don't report errors before checking this.
 
 To use this plugin at its best, [foo_run_main](https://marc2k3.github.io/run-main/) is required. It's used to run dynamic contextual menus.
+
+### More images
+![image](https://user-images.githubusercontent.com/83307074/236061990-3c8205a9-66da-4130-8c6a-c9d03f615db9.png)
+
+![image](https://user-images.githubusercontent.com/83307074/236061283-d7cd7bbf-e309-4889-a222-83980142ad84.png)
+
+![image](https://user-images.githubusercontent.com/83307074/236061184-6320818c-7160-42bc-b36e-a1bb5c86b938.png)
 
 [changelog]: CHANGELOG.md
 [version_badge]: https://img.shields.io/github/release/regorxxx/ajquery-xxx.svg
