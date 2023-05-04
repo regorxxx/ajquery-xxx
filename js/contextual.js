@@ -9,7 +9,18 @@ function menu(id) {
 		this.html.style.left = x + 'px';
 		this.html.style.visibility = 'visible';
 		this.html.style.opacity = '1';
+		this.checkFlags();
 	};
+	this.flags = {};
+	this.checkFlags = () => {
+		for (let option in this.flags) {
+			if (!this.flags[option]()) {
+				$('[id=' + option+ ']').attr('style', 'color: darkgray;');
+			} else {
+				$('[id=' + option+ ']').attr('style', null);
+			}
+		}
+	}
 	this.functions = {};
 	this.onClick = (option) => {
 		if (this.track(option)) {
@@ -23,7 +34,11 @@ function menu(id) {
 
 const ctxMenu = new menu('ctxMenu');
 ctxMenu.functions.ctxMenuDelete = () => $('#Del').click();
+ctxMenu.flags.ctxMenuDelete = () => fb.isLocked != '1' && selection.count;
 ctxMenu.functions.ctxMenuUndo = () => $('#Undo').click();
+ctxMenu.flags.ctxMenuUndo = () => fb.isUndoAvailable == '1';
+ctxMenu.functions.ctxMenuRedo = () => $('#Redo').click();
+ctxMenu.flags.ctxMenuRedo = () => fb.isRedoAvailable == '1';
 
 if (document.addEventListener) {
 	document.addEventListener('contextmenu', function(e) {
