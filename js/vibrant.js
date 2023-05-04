@@ -6015,15 +6015,46 @@ function isClass(fn) {
     }
 }
 
-function toFastProperties(obj) {
-    /*jshint -W027,-W055,-W031*/
-    function FakeConstructor() {}
-    FakeConstructor.prototype = obj;
-    var l = 8;
-    while (l--) new FakeConstructor();
-    return obj;
-    eval(obj);
+// ajquery-xxx replace with modern usage for V8
+// See https://github.com/petkaantonov/bluebird/issues/1504
+// See https://github.com/petkaantonov/bluebird/pull/1636
+// function toFastProperties(obj) {
+    // /*jshint -W027,-W055,-W031*/
+    // function FakeConstructor() {}
+    // FakeConstructor.prototype = obj;
+    // var l = 8;
+    // while (l--) new FakeConstructor();
+    // return obj;
+    // // Prevent the function from being optimized through dead code elimination
+    // // or further optimizations. This code is never reached but even using eval
+    // // in unreachable code causes v8 to not optimize functions.
+    // eval(obj);
+// }
+
+var fastProto = null;
+var kInlineCacheCutoff = 10;
+function FastObject(o) {
+    if (fastProto !== null && typeof fastProto.property) {
+        var result = fastProto;
+        fastProto = FastObject.prototype = null;
+        return result;
+    }
+    fastProto = FastObject.prototype = o == null ? Object.create(null) : o;
+    return new FastObject();
 }
+
+// Initialize the inline property cache of FastObject
+for(var i = 0; i <= kInlineCacheCutoff; i++) {
+    FastObject({});
+}
+
+
+function toFastProperties(obj) {
+    FastObject(obj);
+    // ASSERT("%HasFastProperties", true, obj); // Can not care about this here
+    return obj;
+}
+// ajquery-xxx end
 
 var rident = /^[a-z$_][a-z$_0-9]*$/i;
 function isIdentifier(str) {
