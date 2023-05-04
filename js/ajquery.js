@@ -435,9 +435,13 @@ function checkHotkeys(code) {
 	}
 
 	switch (code) {
+		case 90: // ctrl + z
+			if (!keyPressed[17]) {break;}
 		case 85: // u
 			$('#Undo').click();
 			break;
+		case 89: // ctrl + y
+			if (!keyPressed[17]) {break;}
 		case 82: // r
 			$('#Redo').click();
 			break;
