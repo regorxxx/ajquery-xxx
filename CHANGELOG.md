@@ -2,17 +2,25 @@
 
 ## [Table of Contents]
 - [Unreleased](#unreleased)
+- [0.96](#096---2023-05-05)
 - [0.95](#095---2023-05-04)
 - [0.94](#094---2023-03-07)
 - [0.93](#093---2023-03-05)
 
 ## [Unreleased][]
 ### Added
+### Changed
+### Removed
+### Fixed
+
+## [0.96] - 2023-05-05
+### Added
 - Contextual menu with basic functionality on a player context, replaces the native web browser contextual menu (available pressing Shift + R. Click). Further features will be added on future updates.
 - Undo action also available via Ctrl + z.
 - Redo action also available via Ctrl + y.
 ### Changed
 - All js files are now deferred after the entire template is loaded. This also fixes console warnings about 'Layout was forced before the page was fully loaded. If stylesheets are not yet loaded this may cause a flash of unstyled content.' on Firefox.
+- Code cleanup.
 ### Removed
 ### Fixed
 - Removed static image fallback for dynamic colors usage when no album art was found (which was never implemented). Fallback to theme used instead. Fixes console warnings about file not being found. Functionality doesn't change at all for final user.
@@ -51,7 +59,8 @@
 ### Removed
 ### Fixed
 
-[Unreleased]: https://github.com/regorxxx/ajquery-xxx/compare/v0.95...HEAD
+[Unreleased]: https://github.com/regorxxx/ajquery-xxx/compare/v0.96...HEAD
+[0.96]: https://github.com/regorxxx/ajquery-xxx/compare/v0.95...v0.95
 [0.95]: https://github.com/regorxxx/ajquery-xxx/compare/v0.94...v0.95
 [0.94]: https://github.com/regorxxx/ajquery-xxx/compare/v0.93...v0.94
 [0.93]: https://github.com/regorxxx/ajquery-xxx/compare/2fd0f3d...v0.93

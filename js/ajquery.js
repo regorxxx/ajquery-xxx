@@ -1,7 +1,7 @@
 ﻿'use strict';﻿﻿﻿
 //04/05/23
 
-const version = 'v0.95'
+const version = 'v0.96'
 let fb; // fb2k state
 let smp;// SMP data
 let xxx;// SMP data
