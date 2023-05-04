@@ -8,9 +8,17 @@
 
 ## [Unreleased][]
 ### Added
+- Contextual menu with basic functionality on a player context, replaces the native web browser contextual menu (available pressing Shift + R. Click). Further features will be added on future updates.
+- Undo action also available via Ctrl + z.
+- Redo action also available via Ctrl + y.
 ### Changed
+- All js files are now deferred after the entire template is loaded. This also fixes console warnings about 'Layout was forced before the page was fully loaded. If stylesheets are not yet loaded this may cause a flash of unstyled content.' on Firefox.
 ### Removed
 ### Fixed
+- Removed static image fallback for dynamic colors usage when no album art was found (which was never implemented). Fallback to theme used instead. Fixes console warnings about file not being found. Functionality doesn't change at all for final user.
+- Selection not being preserved after connection re-check. Bug introduced on v0.95.
+- Changed some optimizations in vibrant library to comply with modern V8 usage. Also fixes console warnings about 'Unreachable code after return statement'.
+- Updated cookie usage to current standards. Now uses 'SameSite=Strict' following [mozilla guidelines](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie);
 
 ## [0.95] - 2023-05-04
 ### Added

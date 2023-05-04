@@ -1,5 +1,5 @@
 Asynchronious foo_httpcontrol template
-0.93 http://code.google.com/p/foo-httpcontrol/
+https://github.com/regorxxx/ajquery-xxx
 
 *** Requirements
 
@@ -213,6 +213,23 @@ Asynchronious foo_httpcontrol template
 	¡otherwise the commands will be sent to the wrong playlist!. See 'img\_doc\always_send_new_files.jpg' image.
 
 *** Release history 2023
+	XX May  0.96
+		add:	Contextual menu with basic functionality on a player context, replaces the native web
+				browser contextual menu (available pressing Shift + R. Click). Further features will 
+				be added on future updates.
+		add:	Undo action also available via Ctrl + z.
+		add:	Redo action also available via Ctrl + y.
+		cha:	All js files are now deferred after the entire template is loaded. This also fixes
+				console warnings about 'Layout was forced before the page was fully loaded. If 
+				stylesheets are not yet loaded this may cause a flash of unstyled content.' on Firefox.
+		fix:	Removed static image fallback for dynamic colors usage when no album art was found
+				(which was never implemented). Fallback to theme used instead. Fixes console warnings
+				about file not being found. Functionality doesn't change at all for final user.
+		fix:	Selection not being preserved after connection re-check. Bug introduced on v0.95.
+		fix:	Changed some optimizations in vibrant library to comply with modern V8 usage. Also
+				fixes console warnings about 'Unreachable code after return statement'.
+		fix:	Updated cookie usage to current standards. Now uses 'SameSite=Strict' following 
+				[mozilla guidelines](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie);
 	04 May  0.95
 		add:	Template version is now shown on the help button and dialog window title.
 		cha:	Colors will change based on album art palette when the album art is shown, 
@@ -222,6 +239,7 @@ Asynchronious foo_httpcontrol template
 		cha:	Cursor no longer changes while connection is re-checked (loading indicator).
 		cha:	Rating and track length are now split into 2 columns, so they always get aligned
 				properly no matter the number of digits (for ex. 10:23 vs 3:20).
+		cha:	Artwork optimization while connection is re-checked.
 		cha:	Code cleanup;
 		fix:	Playlist Tools menu entries (listener) not sending commands to proper playlist
 				if 'PT:listener' did not exist before (i.e. working on second command sent not the
