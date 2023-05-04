@@ -15,7 +15,8 @@
 * **Query browser:** by configured tags.
 * **Artwork support:** front cover or disc animation.
 * **Console logging:** able to read a txt file on server (for ex. the console log).
-* **Contextual menus:** able to run any contextual menu by name.
+* **Contextual menus:** on selected items by right clicking.
+* **Run commands:** able to run any contextual menu by name.
 * **Rating:** displayed on playlist and full tagging support.
 * **Playlist Tools:** Full integration with SMP script; all tools and menus, output and DSP selection.
 * **Playlist Manager:** Full integration with SMP script;  browse, load, lock, create, ... playlist files.
@@ -26,6 +27,7 @@
 * Full and tested responsive design.
 * Tile, artist, album tags are cut at display to soft-force one track per row.
 * General tweaks to UI placement, space usage, fonts (larger) and many QOL changes.
+* Contextual menus.
 * Rating is now shown on the playlist list for every item (stars).
 * Themes: dark/light and dynamic colors. (new themes may be easily added editing the html)
 * Default 20 items per page.
@@ -39,6 +41,7 @@
 * Query browser filtering.
 * Builtin documentation.
 * Fixes to bugs on previous versions.
+* Updated to modern web-standards.
 
 ### Compatible with
  1. [Playlist-Tools-SMP](https://github.com/regorxxx/Playlist-Tools-SMP): Full integration with all tools and menus, output and DSP selection,...

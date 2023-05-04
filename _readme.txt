@@ -30,7 +30,7 @@ https://github.com/regorxxx/ajquery-xxx
 	
 	Run Main (foo_run_main) is not required but strongly recommended to get
 	some advanced features working (allows running dynamically created menus via cmd).
-	https://marc2k3.github.io/run-main/
+	https://marc2k3.github.io/run-main/		(or included on github release)
 	
 	Youtube component (foo_youtube) is not required but recommended to get
 	used along the new contextual menu buttons (the default buttons use it, but you can
@@ -76,21 +76,22 @@ https://github.com/regorxxx/ajquery-xxx
 		2.1. Clicking on album name selects contiguous tracks from album.
 		2.2. Clicking + shift on album name selects multiple albums.
 		2.3. Clicking on track name selects the track.
-		2.3. Clicking + shift on track name selects in between track(s).
-		2.3. Clicking + control on track name adds track to selection.
+		2.4. Clicking + shift on track name selects in between track(s).
+		2.5. Clicking + control on track name adds track to selection.
+		2.6. Right Clicking opens contextual menu for selection.
 
 	3. Double clicking on status bar sets focus on playing item.
 
 	4. Dragging playlist item or selection moves it within the current
 	playlist page.
-	
+
 	5. Playlist slider is working as playlist page switcher, drag its
 	thumb to change page.
 
 	6. A few hotkeys are available (check command buttons tooltips for
 	hotkey values).
 
-	8. Use Shift+PageUp and Shift+PageDown to resize playlist.
+	7. Use Shift+PageUp and Shift+PageDown to resize playlist.
 
 	It is recommended to enable "Cursor follows playback" option in 
 	foobar2000 Playback menu for more convenient playlists browsing.
@@ -213,7 +214,7 @@ https://github.com/regorxxx/ajquery-xxx
 	¡otherwise the commands will be sent to the wrong playlist!. See 'img\_doc\always_send_new_files.jpg' image.
 
 *** Release history 2023
-	XX May  0.96
+	05 May  0.96
 		add:	Contextual menu with basic functionality on a player context, replaces the native web
 				browser contextual menu (available pressing Shift + R. Click). Further features will 
 				be added on future updates.
