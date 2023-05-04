@@ -154,7 +154,8 @@ jQuery.cookie = function(name, value, options) {
 		const path = options.path ? '; path=' + (options.path) : '';
 		const domain = options.domain ? '; domain=' + (options.domain) : '';
 		const secure = options.secure ? '; secure' : '';
-		document.cookie = [name, '=', encodeURIComponent(value), expires, path, domain, secure].join('');
+		const others = '; SameSite=Strict';
+		document.cookie = [name, '=', encodeURIComponent(value), expires, path, domain, secure, others].join('');
 	} else { // only name given, get cookie
 		let cookieValue = null;
 		if (document.cookie && document.cookie != '') {
@@ -978,7 +979,8 @@ function updateAlbumart() {
 
 function updateAlbumartPalette() {
 	if (aa.img && $('#aa_pane').is(':visible')) {
-		const imgPath = /.*\.gif/i.test(aa.img.src) ? aa.img.src.replace(/(.*)(\.gif)/i, '$1-static.jpg') : aa.img.src;
+		const imgPath = /ajquery-xxx\/img\/.*\.gif/i.test(aa.img.src) ? null : aa.img.src;
+		if (!imgPath) {$(':root').attr('style', null);}
 		Vibrant.from(imgPath, {imageClass: Image.Browser})
 			.useQuantizer(Vibrant.Quantizer.WebWorker)
 			.getPalette().then((palette) => {
@@ -2378,7 +2380,7 @@ $(function() {
 			let bCrashed = false;
 			const refresh = () => {
 				setTimeout(() => {
-					retrievestate_schedule(500, 'RefreshPlayingInfo', void(0), true);
+					retrievestate_schedule(500, 'RefreshPlayingInfo', true, true);
 					refresh();
 					if (!fb) {bCrashed = true;}
 					else {
