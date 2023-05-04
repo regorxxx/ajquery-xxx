@@ -214,6 +214,8 @@ https://github.com/regorxxx/ajquery-xxx
 	¡otherwise the commands will be sent to the wrong playlist!. See 'img\_doc\always_send_new_files.jpg' image.
 
 *** Release history 2023
+	XX XXX  0.97
+
 	05 May  0.96
 		add:	Contextual menu with basic functionality on a player context, replaces the native web
 				browser contextual menu (available pressing Shift + R. Click). Further features will 
@@ -231,6 +233,7 @@ https://github.com/regorxxx/ajquery-xxx
 				fixes console warnings about 'Unreachable code after return statement'.
 		fix:	Updated cookie usage to current standards. Now uses 'SameSite=Strict' following 
 				[mozilla guidelines](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie);
+
 	04 May  0.95
 		add:	Template version is now shown on the help button and dialog window title.
 		cha:	Colors will change based on album art palette when the album art is shown, 
