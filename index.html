@@ -4,27 +4,15 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<title>foobar2000</title>
-		<script type="text/javascript" src="js/jquery-1.11.0.min.js"></script>
-		<script type="text/javascript" src="js/jquery-ui-1.10.4.custom.min.js"></script>
-		<script type="text/javascript" src="js/ajquery.js"></script>
-		<script type="text/javascript" src="js/vibrant.js"></script>
+		<link type="text/css" href="css/contextual.css" rel="stylesheet" />
 		<link type="text/css" href="css/smoothness/jquery-ui-1.10.4.custom.css" rel="stylesheet" />
 		<link rel="shortcut Icon" href="/ajquery-xxx/img/favicon.ico" type="image/x-icon" />
-		<script type="text/javascript">
-			// Wait for document to load
-			document.addEventListener("DOMContentLoaded", function(event) {
-				// Set theme colors
-				if (Object.keys(xxx).length) {xxx.theme = ''; xxx.dynamicColor = true;}
-				else {xxx = {}; xxx.theme = ''; xxx.dynamicColor = true;}
-				$.getJSON('xxx/config-theme.json', function (data) {
-					for (let setting of data) {xxx[setting.option] = setting.value;}
-					if (xxx.theme && xxx.theme.length) {document.documentElement.setAttribute("data-theme", xxx.theme);}
-				});
-				// Set template version
-				$('#help_btn').attr('title', 'Help (' + version + ')');
-				$('#help_dlg').dialog('option', 'title', 'Help (' + version + ')');
-			});
-		</script>
+		<script type="text/javascript" defer src="js/jquery-1.11.0.min.js"></script>
+		<script type="text/javascript" defer src="js/jquery-ui-1.10.4.custom.min.js"></script>
+		<script type="text/javascript" defer src="js/ajquery.js"></script>
+		<script type="text/javascript" defer src="js/vibrant.js"></script>
+		<script type="text/javascript" defer src="js/contextual.js"></script>
+		<script type="text/javascript" defer src="js/startup.js"></script>
 		<style type="text/css">
 			:root { --background-color: #fff; --background-color-v2: #e8e8e8; --background-color-v3: #e7e7e7; --background-color-v4: #f8f8f8; --border-color: gray; --border-color-v2: white; --text-color: #000; --text-color-v2: gray; --console-color: #000; --tabs-color-v1: #dddddd url(css/smoothness/images/ui-bg_highlight-soft_75_dddddd_1x100.png) 50% 0% repeat-x; --tabs-color-v2: none; --pl_prev: #5f5f5f; --pl_play: #6c0101;  --pl-album_play: #653b3b;}
 			[data-theme="dark"] { --background-color: #3F3F3F; --background-color-v2: #a2a2a2; --background-color-v3: #a2a2a2; --background-color-v4: #e8e8e8; --border-color: #000; --border-color-v2: #d7d7d7; --text-color: #000; --text-color-v2: #3f3d3d; --console-color: white; --tabs-color-v1: #cccccc url(css/smoothness/images/ui-bg_highlight-soft_75_cccccc_1x100.png) 50% 0% repeat-x; --tabs-color-v2: #c8c8c8; --pl_prev: #474747; --pl_play: #6c0101; --pl-album_play: #653b3b;}
@@ -481,5 +469,15 @@
 		</div>
 
 		<span id="tooltip" class="ui-widget"></span>
+		
+		<div id="ctxMenu" class="menu">
+			<a id="ctxMenuDelete">
+				Remove <span>Del</span>
+			</a>
+			<hr />
+			<a id="ctxMenuUndo">
+				Undo <span>Ctrl + z</span>
+			</a>
+		</div>
 	</body>
 </html>
