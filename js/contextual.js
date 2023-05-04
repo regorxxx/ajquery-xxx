@@ -39,12 +39,14 @@ if (document.addEventListener) {
 	}, false);
 
 	document.addEventListener('click', function(e) {
-		ctxMenu.html.style.opacity = "0";
-		const option = $(e.target).context.id;
-		if (ctxMenu.track(option)) {ctxMenu.onClick(option);}
-		setTimeout(function() {
-			ctxMenu.html.style.visibility = "hidden";
-		}, 501);
+		if (e.button === 0) { // Left click only
+			ctxMenu.html.style.opacity = "0";
+			const option = $(e.target).context.id;
+			if (ctxMenu.track(option)) {ctxMenu.onClick(option);}
+			setTimeout(function() {
+				ctxMenu.html.style.visibility = "hidden";
+			}, 501);
+		}
 	}, false);
 } else { // ie
 	document.attachEvent('oncontextmenu', function(e) {
