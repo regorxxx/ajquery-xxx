@@ -1,24 +1,30 @@
 ; ajquery-xxx template configuration file
-; 
-; check readme.txt for usage details
+; 06/05/23
+; Check readme.txt for usage details
 ;
 [foo_httpcontrol]
 url=/index.html
-; defines formatting of a playlist row using foobar2000 titleformatting.
-playlist_row={"a":"$fix_eol($replace(%artist%,\,\\,",\"))","b":"$fix_eol($replace(%album%,\,\\,",\"))","n":"$if(%queue_indexes%,'('%queue_indexes%') ',)$ifgreater(%totaldiscs%,1,D%discnumber%.,)%tracknumber%","t":"$fix_eol($replace(%title%,\,\\,",\"))","l":"%length%","ls":"%length_seconds%","d":"%date%","r":"$repeat(&#9733;,%rating%)$repeat(&#9734;,$sub(5,%rating%))"}
-; defines formatting of a helper macros using foobar2000 titleformatting.
-helper1=[%title% - ]
-helper2=[%artist% - %title%]
-helper3=[%codec% | %bitrate%kbps | %samplerate%Hz | %channels%]
-; specifies wildcards where we should look for albumart files, separated by |. foobar2000 titleformatting is available there as well.
-albumart=$directory_path(%path%)\folder.jpg|$directory_path(%path%)\*.jpg
-; specifies path of a picture to show when albumart is not found.
+; Defines formatting of a playlist row using foobar2000 titleformatting.
+playlist_row={"a":"$fix_eol($replace(%ARTIST%,\,\\,",\"))","b":"$fix_eol($replace(%ALBUM%,\,\\,",\"))","n":"$if(%QUEUE_INDEX%,'('%QUEUE_INDEX%') ',)$ifgreater(%TOTALDISCS%,1,D%DISCNUMBER%.,)%TRACKNUMBER%","t":"$fix_eol($replace(%TITLE%,\,\\,",\"))","l":"%LENGTH%","ls":"%LENGTH_SECONDS%","d":"%DATE%","r":"$repeat(&#9733;,%RATING%)$repeat(&#9734;,$sub(5,%RATING%))"}
+; Web browsr tab's name
+helper1=[%TITLE% - ]
+; Seek/progress bar
+helper2=[%ARTIST% - %TITLE%]
+; Status bar
+helper3=[%CODEC% | %BITRATE%kbps | %SAMPLERATE%hz | %CHANNELS%]
+; Track's tooltip (note it applies on the playing track)
+helper4=[]
+; Specifies wildcards where we should look for albumart files, separated by |. foobar2000 titleformatting is available there as well.
+albumart=$directory_path(%PATH%)\folder.jpg|$directory_path(%PATH%)\*.jpg
+; Specifies path of a picture to show when albumart is not found.
 albumart_not_found=ajquery-xxx/img/vinyl-playing-dark.gif
-; specifies path of a picture to show when albumart is requested but not currently available (no playing track).
+; Specifies path of a picture to show when albumart is requested but not currently available (no playing track).
 albumart_not_available=ajquery-xxx/img/vinyl-dark.gif
-; limits maximum albumart size to download, in bytes.
+; Limits maximum albumart size to download, in bytes.
 albumart_limit_size=0
-; setting to 1 prefers embedded albumart over external.
+; Setting to 1 prefers embedded albumart over external.
 albumart_prefer_embedded=1
-; controls size of a playlist 'page'. setting to 0 completely disables playlist generation.
+; Controls size of a playlist 'page'. setting to 0 completely disables playlist generation.
 playlist_items_per_page=20
+; Controls maximum size of playlist 'page'. setting it to 0 removes restriction.
+playlist_items_per_page_max=100
