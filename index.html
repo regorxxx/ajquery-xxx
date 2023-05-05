@@ -28,9 +28,10 @@
 			.ui-widget-header {border: 1px solid #aaaaaa; background: var(--tabs-color-v1); color: #222222; font-weight: bold;}
 			.ui-state-default,.ui-widget-content .ui-state-default,.ui-widget-header .ui-state-default {border: 1px solid #8ba5a0;}
 			.ui-tabs .ui-tabs-panel {background: var(--tabs-color-v2);}
+			.ui-tabs .ui-tabs-nav .ui-tabs-anchor {padding: .3em .4em;}
 			
 			#pl { display: table; width: 100%; }
-			.pl_row { display: table-row; cursor: default; height: 18px; cursor: cell; }
+			.pl_row { display: table-row; height: 18px; cursor: cell; }
 			.pl_c1  { width: 9%; display: table-cell; padding: 2px; text-align: right; vertical-align: middle; }
 			.pl_c2  { width: 71%; display: table-cell; padding: 2px; vertical-align: middle; }
 			.pl_c3  { width: 15%; display: table-cell; padding: 2px; text-align: right; vertical-align: middle; }
@@ -130,7 +131,7 @@
 
 				<div id="playlist" style="clear: both;">Loading...</div>
 				<hr style="margin-right: -1.5em; margin-left: -1.5em;">
-				<div id="summary" class="noselect" style="margin-bottom: -0.5em"></div>
+				<div id="summary" class="noselect" style="margin-bottom: -0.5em; cursor: pointer;"></div>
   	        	</div>
 		</div>
 	</div>
@@ -480,6 +481,13 @@
 		<div id="ctxMenu" class="menu">
 			<a id="ctxMenuDelete">
 				Remove <span>Del</span>
+			</a>
+			<hr />
+			<a id="ctxMenuQueue">
+				Queue <span>q</span>
+			</a>
+			<a id="ctxMenuDequeue">
+				Dequeue <span>w</span>
 			</a>
 			<hr />
 			<a id="ctxMenuUndo">
