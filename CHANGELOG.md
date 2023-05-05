@@ -9,9 +9,25 @@
 
 ## [Unreleased][]
 ### Added
+- Tooltip to playlist's tracks with current track's info, selection count and extra configurable info at 'config.json' (helper4).
+- Added 'playlist_items_per_page_max' at 'config.json' (requires foo_httpcontrol v0.97.25).
+- Added total number of tracks on active playlist and selected tracks count at the status bar (at bottom).
+- Queue and Dequeue commands to contextual menu.
 ### Changed
+- Tooltips are now self-hidden if mouse is not moved after 6 secs of being shown.
+- Cut left text on status bar (at bottom) in case it's too long. Full text is now shown on the tooltip.
+- Changed queue column to only show the first queue index (in case an item is queued multiple times).
+- Adjusted dynamic colors to better differentiate playlist scrollbar from background.
+- Adjusted playlist tabs size (but font size remains the same).
+- Mouse changed to cross during drag n' drop.
+- Mouse changed to pointer when over the status bar (at bottom).
+- Scrolling during drag n' drop by moving the mouse to the top or bottom of the playlist now fires after 400 ms instead of 2000 ms (which made it practically unusable);
+- Template no longer shows AJAX errors while reloading the web page, as long as it is able to identify the page is unloading. See Mozilla compatibility browser [list](https://developer.mozilla.org/en-US/docs/Web/API/Window/beforeunload_event).
 ### Removed
 ### Fixed
+- Selected track, playing or pause icon overlapping with queue index in some cases.
+- Scrolling back not working during drag n' drop if already scrolled to a posterior page on the playlist (since original ajquery).
+- Dynamic colors not being reset when closing/opening the art panel during the same track due to some optimizations included in v0.96.
 
 ## [0.96] - 2023-05-05
 ### Added

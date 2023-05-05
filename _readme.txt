@@ -9,7 +9,7 @@ https://github.com/regorxxx/ajquery-xxx
 
 	Some other browsers might also work, but you never know until you try.
 
-	foobar2000 1.4+ and foo_httpcontrol 0.97.24.
+	foobar2000 1.4+ and foo_httpcontrol 0.97.25.
 
 	Spider Monkey Panel (SMP) is not required but strongly recommended to get
 	some advanced features working (allows running SMP menus via cmd).
@@ -215,35 +215,60 @@ https://github.com/regorxxx/ajquery-xxx
 
 *** Release history 2023
 	XX XXX  0.97
+		add:	Tooltip to playlist's tracks with current track's info, selection count and
+				extra configurable info at 'config.json' (helper4);
+		add:	Added 'playlist_items_per_page_max' at 'config.json' (requires foo_httpcontrol v0.97.25);
+		add:	Added total number of tracks on active playlist and selected tracks count at the
+				status bar (at bottom);
+		add:	Queue and Dequeue commands to contextual menu;
+		cha:	Tooltips are now self-hidden if mouse is not moved after 6 secs of being shown.
+		cha:	Cut left text on status bar (at bottom) in case it's too long. Full text is now
+				shown on the tooltip.
+		cha:	Changed queue column to only show the first queue index (in case an item is queued
+				multiple times);
+		cha:	Adjusted dynamic colors to better differentiate playlist scrollbar from background;
+		cha:	Adjusted playlist tabs size (but font size remains the same);
+		cha:	Mouse changed to cross during drag n' drop;
+		cha:	Mouse changed to pointer when over the status bar (at bottom);
+		cha:	Scrolling during drag n' drop by moving the mouse to the top or bottom of the playlist
+				now fires after 400 ms instead of 2000 ms (which made it practically unusable);
+		cha:	Template no longer shows AJAX errors while reloading the web page, as long as it
+				is able to identify the page is unloading. See mozilla compatibility browser
+				[list](https://developer.mozilla.org/en-US/docs/Web/API/Window/beforeunload_event);
+		fix:	Selected track, playing or pause icon overlapping with queue index in some cases;
+		fix:	Scrolling back not working during drag n' drop if already scrolled to a posterior
+				page on the playlist (since original ajquery);
+		fix:	Dynamic colors not being reset when closing/opening the art panel during the same 
+				track due to some optimizations included in v0.96.
 
 	05 May  0.96
 		add:	Contextual menu with basic functionality on a player context, replaces the native web
 				browser contextual menu (available pressing Shift + R. Click). Further features will 
-				be added on future updates.
-		add:	Undo action also available via Ctrl + z.
-		add:	Redo action also available via Ctrl + y.
+				be added on future updates;
+		add:	Undo action also available via Ctrl + z;
+		add:	Redo action also available via Ctrl + y;
 		cha:	All js files are now deferred after the entire template is loaded. This also fixes
 				console warnings about 'Layout was forced before the page was fully loaded. If 
-				stylesheets are not yet loaded this may cause a flash of unstyled content.' on Firefox.
+				stylesheets are not yet loaded this may cause a flash of unstyled content.' on Firefox;
 		fix:	Removed static image fallback for dynamic colors usage when no album art was found
 				(which was never implemented). Fallback to theme used instead. Fixes console warnings
-				about file not being found. Functionality doesn't change at all for final user.
-		fix:	Selection not being preserved after connection re-check. Bug introduced on v0.95.
+				about file not being found. Functionality doesn't change at all for final user;
+		fix:	Selection not being preserved after connection re-check. Bug introduced on v0.95;
 		fix:	Changed some optimizations in vibrant library to comply with modern V8 usage. Also
-				fixes console warnings about 'Unreachable code after return statement'.
+				fixes console warnings about 'Unreachable code after return statement';
 		fix:	Updated cookie usage to current standards. Now uses 'SameSite=Strict' following 
 				[mozilla guidelines](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie);
 
 	04 May  0.95
-		add:	Template version is now shown on the help button and dialog window title.
+		add:	Template version is now shown on the help button and dialog window title;
 		cha:	Colors will change based on album art palette when the album art is shown, 
 				similar to [Georgia-ReBORN](https://github.com/TT-ReBORN/Georgia-ReBORN). Option 
 				may be set at 'xxx\config-theme.json', enabled by default.
-		cha:	Dark theme is now the default theme.
-		cha:	Cursor no longer changes while connection is re-checked (loading indicator).
+		cha:	Dark theme is now the default theme;
+		cha:	Cursor no longer changes while connection is re-checked (loading indicator);
 		cha:	Rating and track length are now split into 2 columns, so they always get aligned
-				properly no matter the number of digits (for ex. 10:23 vs 3:20).
-		cha:	Artwork optimization while connection is re-checked.
+				properly no matter the number of digits (for ex. 10:23 vs 3:20);
+		cha:	Artwork optimization while connection is re-checked;
 		cha:	Code cleanup;
 		fix:	Playlist Tools menu entries (listener) not sending commands to proper playlist
 				if 'PT:listener' did not exist before (i.e. working on second command sent not the
@@ -256,7 +281,7 @@ https://github.com/regorxxx/ajquery-xxx
 		add:	Template will check server connection every 10 secs (and adjust UI accordingly);
 		cha:	Improved AJAX errors dialog popups;
 		fix:	Play/pause icon is now properly set on init (according to foobar playing state);
-				
+
 	05 March  0.93
 		add:	Playlist locks are now shown on the status bar (requires foo_httpcontrol v0.97.24);
 		fix:	Some actions not working properly due to type mismatch (for ex. switching playlists);
