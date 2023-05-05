@@ -1,7 +1,7 @@
 ﻿'use strict';﻿﻿﻿
-//04/05/23
+//06/05/23
 
-const version = 'v0.96'
+const version = 'v0.97'
 let fb; // fb2k state
 let smp;// SMP data
 let xxx;// SMP data
@@ -18,6 +18,7 @@ let npid;
 let brParams = new Object;
 let keyPressed = {};
 let inputHasFocus = false;
+let bUnloading = false; // See startup.js
 const refreshInterval = 1000; // ms,.data retrieval interval, (not supposed to be changed)
 const menusPls = [
 	{id: 'PMME0',	type: '',					bSelection: false,	name: '', 						description: ''},
@@ -42,7 +43,20 @@ const mouse = {
 	x: 0,
 	y: 0,
 	down: false,
-	reset: function() {this.down = false;}
+	reset: function() {
+		this.down = false;
+		const playlistRows = document.getElementsByClassName('pl_row');
+		if (playlistRows && playlistRows.length && playlistRows[0].style.cursor !== 'cell') { // Either all are changed or none
+			Array.prototype.forEach.call(playlistRows, (el) => el.style.cursor = 'cell');
+		}
+	},
+	drag: function() {
+		const playlistRows = document.getElementsByClassName('pl_row');
+		if (playlistRows && playlistRows.length && playlistRows[0].style.cursor !== 'move') { // Either all are changed or none
+			Array.prototype.forEach.call(playlistRows, (el) => el.style.cursor = 'move');
+		}
+	},
+	timeoutTooltip: null
 };
 
 const drag = {
@@ -109,17 +123,37 @@ const selection = {
 		this.highest = highest;
 		this.length = length;
 	}
-}
+};
 
 const tooltip = {
+	text: '',
 	show: function(text, l, t) {
+		this.text = text;
 		$('#tooltip').text(text);
-		if (t && l) {$('#tooltip').css( { position: 'absolute', left: l, top: t } ).show();}
+		if (t && l) {$('#tooltip').css( { position: 'absolute', left: l, top: t } ).show(350, 'swing');}
+	},
+	showHTML: function(text, l, t) {
+		this.text = text;
+		$('#tooltip').html(text);
+		if (t && l) {$('#tooltip').css( { position: 'absolute', left: l, top: t } ).show(350, 'swing');}
+		this.selfHide();
 	},
 	hide: function() {
 		$('#tooltip').hide();
+	},
+	selfHide:  function() {
+		const cache = this.text;
+		setTimeout(() => {
+			if (this.text === cache) {this.hide();}
+		}, 6000)
 	}
-}
+};
+
+const summary = {
+	short: '',
+	full: '',
+	bCut: false
+};
 
 jQuery.cookie = function(name, value, options) {
 	/**
@@ -333,7 +367,7 @@ function savePlaylistSize(rows) {
 function setPlaylistRowCount(rows) {
 	if (!isNaN(rows)) {
 		savePlaylistSize(rows);
-		$('#tabs').height('auto');	
+		$('#tabs').height('auto');
 		retrieveState('PlaylistItemsPerPage', rows);
 	}
 }
@@ -637,9 +671,11 @@ function switchPage(shift) {
 }
 
 function updatePlaylistSortable() {
+	if (drag.dragging) {mouse.drag();} // Update cursor while re-syncing with server
 	$("#pl div[id*='i']").mousedown(function() {
 		drag.start = getNumFromId($(this).attr('id'));
 		mouse.down = true;
+		mouse.drag();
 		selection.calc();
 	})
 	.mouseup(function() {
@@ -655,8 +691,7 @@ function updatePlaylistSortable() {
 		drag.reset();
 	})
 	.mousemove(function() {
-		if (mouse.down) {
-			tooltip.show(selection.toStr());
+		if (mouse.down && fb) { // fb may be null while re-syncing with server
 			if (!drag.dragging) {
 				drag.dragging = true;
 				if (!$('#i' + drag.start).hasClass('pl_selected')) {
@@ -677,8 +712,8 @@ function updatePlaylistSortable() {
 				if (drag.end > drag.start) {
 					drag.end -= 1;
 				}
-				if (drag.end == (fb.playlistPage - 1) * fb.playlistItemsPerPage && fb.playlistItemsCount > fb.playlistItemsPerPage && fb.playlistPage != 1) {
-					drag.timeout = setTimeout(() => switchPage(-1), 2000);
+				if (drag.end <= (fb.playlistPage - 1) * fb.playlistItemsPerPage && fb.playlistItemsCount > fb.playlistItemsPerPage && fb.playlistPage != 1) {
+					drag.timeout = setTimeout(() => switchPage(-1), 400);
 				}
 			} else {
 				if (!$('#i'+(drag.end+1)).hasClass('dragplacer-top') && !$('#i'+(drag.end+1)).hasClass('pl_selected')) {
@@ -687,13 +722,36 @@ function updatePlaylistSortable() {
 				if (drag.end < drag.start && (drag.end >= (fb.playlistPage-1)*fb.playlistItemsPerPage && drag.end <= ((fb.playlistPage-1)*fb.playlistItemsPerPage + fb.playlistItemsPerPage) )) {
 					drag.end += 1;
 				}
-				if (drag.end >= ((fb.playlistPage - 1) * fb.playlistItemsPerPage+fb.playlistItemsPerPage - 1) && fb.playlistItemsCount > fb.playlistItemsPerPage && fb.playlistPage != Math.ceil(fb.playlistItemsCount / fb.playlistItemsPerPage)) {
-					drag.timeout = setTimeout(() => switchPage(1), 2000);
+				if (drag.end >= ((fb.playlistPage - 1) * fb.playlistItemsPerPage + fb.playlistItemsPerPage - 1) && fb.playlistItemsCount > fb.playlistItemsPerPage && fb.playlistPage != Math.ceil(fb.playlistItemsCount / fb.playlistItemsPerPage)) {
+					drag.timeout = setTimeout(() => switchPage(1), 400);
 				}
 			}
 			if (cl) {
 				$("#pl div[id*='i']").removeClass('dragplacer-top').removeClass('dragplacer-bottom');
 				$(this).addClass(cl);
+			}
+		} else if (fb && fb.playlist.length) {
+			const current = parseInt(this.id.replace('i', '')) - (fb.playlistPage - 1) * fb.playlistItemsPerPage;
+			const start = selection.lowest - (fb.playlistPage - 1) * fb.playlistItemsPerPage;
+			const end = selection.highest  - (fb.playlistPage - 1) * fb.playlistItemsPerPage;
+			clearTimeout(mouse.timeoutTooltip);
+			if (fb.playlist[current]) {
+				let trackText = '';
+				const row = fb.playlist[current];
+				trackText = row.t + ' - ' + row.a + ' / ' + row.b + ' (' + row.d + ')';
+				if (selection.count > 1) {trackText += '\n\n' + selection.count + ' selected tracks.';}
+				if(fb.hasOwnProperty('helper4') && fb.helper4.length) {trackText += '\n' + fb.helper4;}
+				const x = mouse.x; const y = mouse.y;
+				mouse.timeoutTooltip = setTimeout(() => {
+					trackText = stripXmlEntities.perform(trackText).replace(/\r\n?|\n/g, '<br>');
+					trackText = trackText;
+					if (Math.abs(mouse.x - x) > 20 || Math.abs(mouse.y - y) > 20) {
+						if (tooltip.text === trackText) {tooltip.hide();}
+						return;
+					} else {
+						tooltip.showHTML(trackText, mouse.x + 20, $(this).offset().top - 15);
+					}
+				}, 400);
 			}
 		}
 	});
@@ -705,6 +763,7 @@ function updateSelectionStats() {
 	let totalTime;
 	let extraText = '';
 	if (fb.isLocked == "1") {extraText = ' Locked | ';}
+	extraText += ' ' + (selection.count > 0 ? selection.count + '/' : '') + fb.playlistItemsCount + ' tracks | ';
 	if (selection.count > 1) {totalTime = [formatTime(selection.length), '/', fb.playlistTotalTime].join('');} 
 	else {totalTime = fb.playlistTotalTime;}
 	if (fb.queueTotalTime) {$('#totaltime').text([extraText, '(', fb.queueTotalTime, ') ', totalTime].join(''));}
@@ -727,9 +786,9 @@ function updatePlaylist() {
 	let ta = ['<div id="pl" class="noselect">'];
 	let len = fb.playlist.length;
 	
-	const selectedIcon = '<span class="ui-icon ui-icon-check" style="position: absolute; margin-top: -2px;"></span>';
-	const playIcon = '<span class="ui-icon ui-icon-play" style="position: absolute; margin-top: -2px;"></span>';
-	const pauseIcon = '<span class="ui-icon ui-icon-pause" style="position: absolute; margin-top: -2px;"></span>';
+	const selectedIcon = '<span class="ui-icon ui-icon-check" style="position: absolute;"></span>';
+	const playIcon = '<span class="ui-icon ui-icon-play" style="position: absolute;"></span>';
+	const pauseIcon = '<span class="ui-icon ui-icon-pause" style="position: absolute;"></span>';
 	
 	for (let i = 0, k = (fb.playlistPage - 1) * fb.playlistItemsPerPage; i < len; ++i,++k) {
 		group = '';
@@ -753,16 +812,20 @@ function updatePlaylist() {
 			}
 		}
 		if (i % 2 == 0) {cl_r.push('pl_even');}
-		row.n = row.n.replace(selectedIcon, '');
+		row.n = row.n.replace(selectedIcon, '').replace(playIcon, '').replace(pauseIcon, '');
+		let queueRow = null;
 		if (npt === i && ap == npp) {
 			cl_r.push('pl_play');
 			if (fb.isPlaying == '1') {
+				queueRow = [playIcon, row.n.replace(/^\(.*\)/, '')].join('');
 				row.n = [playIcon, row.n].join('');
 			} else if (fb.isPaused == '1') {
+				queueRow = [pauseIcon, row.n.replace(/^\(.*\)/, '')].join('');
 				row.n = [pauseIcon, row.n].join('');
 			}
 		} else {
 			if (npt !== i && selection.items.hasOwnProperty(shift + i)) {
+				queueRow = [selectedIcon, row.n.replace(/^\(.*\)/, '')].join('');
 				row.n = [selectedIcon, row.n].join('');
 			}
 		}
@@ -778,7 +841,7 @@ function updatePlaylist() {
 		let rowT = row.t;
 		if (rowT.length > 30) {rowT = rowT.slice(0, 30); rowT += '...';}
 		ta.push(['<div id="i', k, '" class="pl_row ', cl_r.join(' '), '">',
-			'<div class="pl_c1 ', cl_1.join(' '), '">', row.n, '.</div>',
+			'<div class="pl_c1 ', cl_1.join(' '), '">', queueRow || row.n, '.</div>',
 			'<div class="pl_c2 ', cl_2.join(' '), '">', rowT, group, '</div>',
 			'<div class="pl_c3 ', cl_3.join(' '), '">', row.r, '</div>',
 			'<div class="pl_c4 ', cl_4.join(' '), '">', row.l, '</div></div>'].join(''));
@@ -790,24 +853,27 @@ function updatePlaylist() {
 	}
 	ta.push([a.join(''), '</div>'].join(''));
 	
+	// Summary left (may be cut on display, save full text for tooltip)
 	$('#playlist').html(ta.join(''));
 	let playingItem = isNaN(fb.playingItem) ? '?' : fb.playingItem + 1;
 	let tmp = '';
-	
 	if (fb.isPlaying == "1") {
 		tmp += ['Playing ', playingItem, ' of ', fb.playlistPlayingItemsCount, ' | ', fb.helper3].join('');
 	} else {
 		if (fb.isPaused == "1") {tmp += ['Paused ', playingItem, ' of ', fb.playlistPlayingItemsCount, ' | ', fb.helper3].join('');}
 		else {tmp += 'Stopped ';}
 	}
-	
+	summary.full = summary.short = tmp;
+	if (tmp.length > 40) {
+		summary.short = tmp = tmp.slice(0, 40) + '...'; 
+		summary.bCut = true;
+	} else {summary.bCut = false;}
+	// Summary right
 	tmp += '<span id="totaltime" style="float: right"></span>';
 	if (fb.isLocked == "1") {
 		tmp += '<span class="ui-icon ui-icon-locked noselect" style="float: right; background-position: -192px -97.5px; transform: scale(1.2); -ms-transform: scale(1.2); -webkit-transform: scale(1.2);"></span>';
-		// red icons_cd0a0a_256x240
-	} else {
-		
 	}
+	// Merge
 	$('#summary').html(tmp);
 	let pageslider = $('#pageslider');
 	
@@ -942,7 +1008,7 @@ function updateTabs() {
 			} else if (fb.isPaused == '1') {
 				c = '<span class="ui-icon ui-icon-pause noselect"';
 			}
-			$("#tabs a:eq(" + i + ")").html([c, ' style="position: absolute; margin-top: -2px; margin-left: -5px;"></span><span style="margin-left: 12px;">', fb.playlists[i].name, '</span>'].join(''));
+			$("#tabs a:eq(" + i + ")").html([c, ' style="position: absolute; margin-left: -5px;"></span><span style="margin-left: 12px;">', fb.playlists[i].name, '</span>'].join(''));
 		} else {
 			$("#tabs a:eq(" + i + ")").html(['<span>', fb.playlists[i].name, '</span>'].join(''));
 		}
@@ -969,8 +1035,8 @@ function updateAlbumartAspect() {
 	}
 }
 
-function updateAlbumart() {
-	if (aa.img && aa.img.src.endsWith(fb.albumArt)) {return;} // Skip unnecessary updates
+function updateAlbumart(bForce) {
+	if (!bForce && aa.img && aa.img.src.endsWith(fb.albumArt)) {return;} // Skip unnecessary updates
 	if ($('#aa_pane').is(':visible')) {
 		aa.img = new Image();
 		aa.img.src = fb.albumArt;
@@ -990,9 +1056,9 @@ function updateAlbumartPalette() {
 			.getPalette().then((palette) => {
 				const colors = {
 					'--background-color':		palette.Vibrant.getHex(),
-					'--background-color-v2':	palette.LightMuted.getHex(),
+					'--background-color-v2':	palette.Muted.getHex(),
 					'--background-color-v3':	palette.LightMuted.getHex(),
-					'--background-color-v4':	palette.LightVibrant.getHex(),
+					'--background-color-v4':	palette.LightMuted.getHex(),
 					'--tabs-color-v1':			palette.LightMuted.getHex(),
 					'--tabs-color-v2':			palette.LightVibrant.getHex(),
 				};
@@ -2040,7 +2106,7 @@ $(function() {
 				if (values[2] != 'auto') {$('#aa_pane').css({width: values[2]});}
 				if (values[3] != 'auto') {$('#aa_pane').css({width: values[3]});}
 				$('#aa_pane').css( { position: 'absolute', left: values[0], top: values[1], display: 'inline', visibility: 'visible' } );
-				updateAlbumart();
+				updateAlbumart(true);
 				saveWindowToCookie('aa_pane', true);
 			} else {
 				$('#aa_pane').hide();
@@ -2347,6 +2413,7 @@ $(function() {
 			if(event.type == 'ajaxError') {
 				// Don't throw window errors for json/log when file is missing
 				if (XMLHttpRequest.statusText === 'Not Found' && (settings.url.endsWith('.json') || settings.url.endsWith('.log')))  {console.log('File import: ' + settings.url + ' ' + XMLHttpRequest.statusText); return;}
+				if (bUnloading) {return;}
 				let rep = '';
 				// The rest
 				if (fb) {
@@ -2369,21 +2436,29 @@ $(function() {
 		$('#summary').dblclick(function(e) {
 			$('#FocusOnPlaying').click();
 		}).hover(
-			function(e) {if (!mouse.down) {tooltip.show('Double click to focus on playing item', mouse.x + 20 , ($(this).offset().top - 15));}},
+			function(e) {if (!mouse.down) {
+				if (summary.bCut) {
+					tooltip.showHTML(summary.full + '<br>Double click to focus on playing item', mouse.x + 20 , ($(this).offset().top - 15));
+				} else {
+					tooltip.show('Double click to focus on playing item', mouse.x + 20 , ($(this).offset().top - 15));
+				}
+			}},
 			function(e) {tooltip.hide();}
 		);
 		
-		document.onkeydown = function(evt) { keyDown(evt? evt.keyCode : event.keyCode); }
-		document.onkeyup = function(evt) { keyUp(evt? evt.keyCode : event.keyCode); }
+		document.onkeydown = function(e) { keyDown(e ? e.keyCode : event.keyCode); }
+		document.onkeyup = function(e) { keyUp(e ? e.keyCode : event.keyCode); }
 		
 		retrieveState();
 		reopenWindows();
 		restorePlaylistSize();
+		
 		// Try again if foobar2000 has not started yet or there was a crash
 		setTimeout(() => {
 			let bCrashed = false;
 			const refresh = () => {
 				setTimeout(() => {
+					if (bUnloading) {return;}
 					retrievestate_schedule(500, 'RefreshPlayingInfo', true, true);
 					refresh();
 					if (!fb) {bCrashed = true;}
