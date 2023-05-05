@@ -1,5 +1,5 @@
 ﻿'use strict';﻿﻿﻿
-//04/05/23
+//06/05/23
 
 function menu(id) {
 	this.id = id;
@@ -35,6 +35,10 @@ function menu(id) {
 const ctxMenu = new menu('ctxMenu');
 ctxMenu.functions.ctxMenuDelete = () => $('#Del').click();
 ctxMenu.flags.ctxMenuDelete = () => fb.isLocked != '1' && selection.count;
+ctxMenu.functions.ctxMenuQueue = () => $('#QueueItems').click();
+ctxMenu.flags.ctxMenuQueue = () => selection.count;
+ctxMenu.functions.ctxMenuDequeue = () => $('#DequeueItems').click();
+ctxMenu.flags.ctxMenuDequeue = () => selection.count;
 ctxMenu.functions.ctxMenuUndo = () => $('#Undo').click();
 ctxMenu.flags.ctxMenuUndo = () => fb.isUndoAvailable == '1';
 ctxMenu.functions.ctxMenuRedo = () => $('#Redo').click();
