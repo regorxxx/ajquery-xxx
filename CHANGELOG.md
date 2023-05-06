@@ -22,7 +22,7 @@
 - Adjusted playlist tabs size (but font size remains the same).
 - Mouse changed to cross during drag n' drop.
 - Mouse changed to pointer when over the status bar (at bottom).
-- Scrolling during drag n' drop by moving the mouse to the top or bottom of the playlist now fires after 400 ms instead of 2000 ms (which made it practically unusable);
+- Scrolling during drag n' drop by moving the mouse to the top or bottom of the playlist now fires after 400 ms instead of 2000 ms (which made it practically unusable).
 - Template no longer shows AJAX errors while reloading the web page, as long as it is able to identify the page is unloading. See Mozilla compatibility browser [list](https://developer.mozilla.org/en-US/docs/Web/API/Window/beforeunload_event).
 ### Removed
 ### Fixed
