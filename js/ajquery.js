@@ -1099,7 +1099,7 @@ function updateLibrary() {
 	}
 	$('#querylist').html(list.join(''));
 	$('#querylist div').hover(function() { $(this).addClass('qr_selected'); }, function() { $(this).removeClass('qr_selected'); })
-				.off('click').click(function() {retrieveLibraryState('QueryAdvance', ($(this).text())); });
+		.off('click').click(function() {retrieveLibraryState('QueryAdvance', ($(this).text())); });
 	// Current Path
 	len = library.queryInfo.length;
 	const currSearch = $('#searchstr').val().length;
@@ -1111,7 +1111,19 @@ function updateLibrary() {
 		const name = stripXmlEntities.perform(library.queryInfo[i]);
 		path.push(i === 0 ? '[' + name + ']' : name);
 	}
+	path.forEach((name, i) => {
+		path[i] = '<span id="querypath_' + i + '">' + name + '</span>';
+	})
 	$('#querypath').html(path.join(' > '));
+	// Links for every path item but last one
+	len = path.length;
+	for (let i = len - 2; i >= 0; i--) {
+		$('#querypath_' + i)
+			.hover(function() { $(this).addClass('qr_selected'); }, function() { $(this).removeClass('qr_selected'); })
+			.off('click').click(function() {
+				for (let j = len - 1; j > i; j--) {retrieveLibraryState('QueryRetrace');}
+			});
+	}
 }
 
 function updateUI() {
