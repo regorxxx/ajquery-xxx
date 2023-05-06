@@ -901,13 +901,13 @@ function updatePlaylist() {
 		command('Start', getNumFromId($(this).attr('id')), void(0), true);
 	});
 	
-	$("#pl div[id*='i']").off('dblclick').off('click');
+	$("#pl div[id*='i']").off('dblclick').off('click').off('contextmenu');
 	$("#pl div[id*='i']").dblclick(function() {
 			$("#pl div[id*='i']").removeClass('pl_selected');
 			command('Start', getNumFromId($(this).attr('id')), void(0), true);
 		})
 		.click(function() {
-			let i = getNumFromId($(this).attr('id'));
+			const i = getNumFromId($(this).attr('id'));
 			selection.calc();
 			if (keyPressed[16] && selection.count) { // shift
 				$("#pl div[id*='i']").removeClass('pl_selected');
@@ -941,6 +941,18 @@ function updatePlaylist() {
 			}
 			updateSelectionStats();
 			setTimeout(updatePlaylist, 200); // Give a 200ms window for dblclick
+		})
+		.contextmenu(function() {
+			const i = getNumFromId($(this).attr('id'));
+			if (!selection.count || i < selection.lowest || i > selection.highest) {
+				selection.calc();
+				$("#pl div[id*='i']").removeClass('pl_selected');
+				selection.reset();
+				selection.items[i] = true;
+				$(this).addClass('pl_selected');
+				updateSelectionStats();
+				setTimeout(updatePlaylist, 200); // Give a 200ms window for dblclick
+			}
 		})
 		.disableSelection();
 	
