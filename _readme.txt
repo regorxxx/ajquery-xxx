@@ -221,6 +221,11 @@ https://github.com/regorxxx/ajquery-xxx
 		add:	Added total number of tracks on active playlist and selected tracks count at the
 				status bar (at bottom);
 		add:	Queue and Dequeue commands to contextual menu;
+		add:	Every part of the current query path at 'Search media library' panel can now be
+				clicked to jump to that node. For ex: for a library filtered by genre with path
+				'[African] > Ali Farka Touré > Ali & Toumani'; '[African]' And 'Ali Farka Touré' 
+				could be clicked to directly jump to those (like pressing the back button multiple
+				times).
 		cha:	Tooltips are now self-hidden if mouse is not moved after 6 secs of being shown.
 		cha:	Cut left text on status bar (at bottom) in case it's too long. Full text is now
 				shown on the tooltip.
@@ -233,7 +238,7 @@ https://github.com/regorxxx/ajquery-xxx
 		cha:	Scrolling during drag n' drop by moving the mouse to the top or bottom of the playlist
 				now fires after 400 ms instead of 2000 ms (which made it practically unusable);
 		cha:	Template no longer shows AJAX errors while reloading the web page, as long as it
-				is able to identify the page is unloading. See mozilla compatibility browser
+				is able to identify the page is unloading. See Mozilla compatibility browser
 				[list](https://developer.mozilla.org/en-US/docs/Web/API/Window/beforeunload_event);
 		fix:	Selected track, playing or pause icon overlapping with queue index in some cases;
 		fix:	Scrolling back not working during drag n' drop if already scrolled to a posterior

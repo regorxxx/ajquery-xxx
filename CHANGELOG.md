@@ -13,6 +13,7 @@
 - Added 'playlist_items_per_page_max' at 'config.json' (requires foo_httpcontrol v0.97.25).
 - Added total number of tracks on active playlist and selected tracks count at the status bar (at bottom).
 - Queue and Dequeue commands to contextual menu.
+- Every part of the current query path at 'Search media library' panel can now be clicked to jump to that node. For ex: for a library filtered by genre with path '[African] > Ali Farka Touré > Ali & Toumani'; '[African]' And 'Ali Farka Touré' could be clicked to directly jump to those (like pressing the back button multiple times).
 ### Changed
 - Tooltips are now self-hidden if mouse is not moved after 6 secs of being shown.
 - Cut left text on status bar (at bottom) in case it's too long. Full text is now shown on the tooltip.
