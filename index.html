@@ -220,8 +220,8 @@
 			<li class="ui-state-default ui-corner-all" title="SMP 9" id="PTSMP9"><span class="ui-icon ui-icon-circle-check"></span></li>
 			</ul>
 			<hr/>
-			<p>Playlist Tools Menu entries (listener)&nbsp;<select id="PTME" style="max-width: 100%;"><option value="0">None</option></select></p>
-			<p>Playlist Tools Menu entries (CMD)&nbsp;<select id="PTMECMD" style="max-width: 100%;"><option value="0">None</option></select></p>
+			<p>Playlist Tools Menu entries (listener)&nbsp;<br><select id="PTME" style="max-width: 100%; width: 100%;"><option value="0">None</option></select></p>
+			<p>Playlist Tools Menu entries (CMD)&nbsp;<br><select id="PTMECMD" style="max-width: 100%; width: 100%;"><option value="0">None</option></select></p>
 			<hr/>
 			<p>Output device&nbsp;<select id="PTOD" style="max-width: 100%;"><option value="0">None</option></select></p>
 			<p>DSP List&nbsp;<select id="PTDSP" style="max-width: 100%;"><option value="0">None</option></select></p>
@@ -422,18 +422,21 @@
 			<div id="help_dlg_text5">
 				<h3>Playlist Tools</h3>
 				<p>When <a href="https://github.com/regorxxx/Playlist-Tools-SMP">Playlist Tools</a> (Spider Monkey Panel script) is installed on foobar server, menu entries, output devices and DSP list will be available (*):</p>
-				<p>All functionality will be disabled unless <a href="https://foosion.foobar2000.org/components/?id=runcmd">foo_runcmd</a> and <a href="https://marc2k3.github.io/run-main/">foo_run_main</a> plugins are both installed.</p>
+				<p>All functionality will be disabled unless <a href="https://foosion.foobar2000.org/components/?id=runcmd">foo_runcmd</a> and <a href="https://marc2k3.github.io/run-main/">foo_run_main</a> plugins are both installed. Having both installed will enable these features:</p>
 				<ul>
-				<li>Playlist Tools buttons: added at 'Script integration\SMP Dynamic menu'.</li>
-				<li>Playlist Tools (CMD): enabled at 'Script integration\SMP Dynamic menu'.</li>
-				<li>Playlist Tools (listener): disabled unless 'Execute menu entry by name' is used.</li>
 				<li>Output Device</li>
+				<br>
 				<li>DSP List</li>
 				</ul>
-				<p><a href="https://github.com/regorxxx/Playlist-Tools-SMP">Playlist Tools (CMD)</a> executes the selected menu entry via CMD.
-				</p>
-				<p><a href="https://github.com/regorxxx/Playlist-Tools-SMP">Playlist Tools (listener)</a> menu entries allow multiple commands execution. Everytime a menu entry is selected, the command is added to the server list (**). Clicking on the execute button process the entire list and clears it. 'Execute menu entry by name' is added at 'Script integration\SMP Dynamic menu' to bind the execute button to one of the 9 available buttons. .
-				</p>
+				<p>To enable the rest of SMP integration features, Playlist tools must be configured within foobar2000:</p>
+				<ul>
+				<li>Playlist Tools buttons: added at 'Script integration\SMP Dynamic menu\Set menu'. There are up to 9 slots available for the buttons.</li>
+				<br>
+				<li>Playlist Tools (CMD): enabled at 'Script integration\SMP Dynamic menu\Create SMP dynamic menus'. Executes the selected menu entry via CMD.</li>
+				<br>
+				<li>Playlist Tools (listener): enabled when 'Execute menu entry by name' is used in one of the 9 available button slots. It allows multiple -sequential- command execution. Everytime a menu entry is selected, the command is added to the server list (**). Clicking on the execute button process the entire list and clears it. 'Execute menu entry by name' is added at 'Script integration\SMP Dynamic menu' to bind the execute button to one of the 9 available buttons.</li>
+				</ul>
+				<img src="img/_doc/enable_cmd.jpg" alt="Enable 'Playlist Tools (CMD)'." style="width: 100%;">
 				(*) The panel is the one sending those lists to the server. Whether you enable or not the rest of the features, so it's a 'requirement' to see the actual devices or DSPs on the controller on real time. There is a 'workaround' if you don't use SMP and/or Playlist Tools though: you can manually edit 'smp\dsp.json' and 'devices.json' according to your PC config. Examples can be found at 'smp\defaults' folder.
 				<br><br>
 				(**) <strong>It's mandatory to disable 'Always send new files to playist' at 'Preferences/shell integration', otherwise the commands will be sent to the wrong playlist</strong>.
