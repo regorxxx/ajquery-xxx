@@ -15,6 +15,7 @@
 - Queue and Dequeue commands to contextual menu.
 - Every part of the current query path at 'Search media library' panel can now be clicked to jump to that node. For ex: for a library filtered by genre with path '[African] > Ali Farka Touré > Ali & Toumani'; '[African]' And 'Ali Farka Touré' could be clicked to directly jump to those (like pressing the back button multiple times).
 ### Changed
+- Clarified the warnings for 'Playlist Tools Menu Entries' (listener and CMD) when the required components are installed but the feature has not been enabled.
 - Opening the contextual menu now first selects the track at mouse position if there were no tracks selected before or current selection was at other position. i.e. it behaves like foobar2000 selection, only running the contextual menu on current selection if you clicked within it.
 - Tooltips are now self-hidden if mouse is not moved after 6 secs of being shown.
 - Cut left text on status bar (at bottom) in case it's too long. Full text is now shown on the tooltip.

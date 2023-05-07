@@ -226,6 +226,8 @@ https://github.com/regorxxx/ajquery-xxx
 				'[African] > Ali Farka Touré > Ali & Toumani'; '[African]' And 'Ali Farka Touré' 
 				could be clicked to directly jump to those (like pressing the back button multiple
 				times);
+		cha:	Clarified the warnings for 'Playlist Tools Menu Entries' (listener and CMD) when 
+				the required components are installed but the feature has not been enabled;
 		cha:	Opening the contextual menu now first selects the track at mouse position if 
 				there were no tracks selected before or current selection was at other position.
 				i.e. it behaves like foobar2000 selection, only running the contextual menu on
