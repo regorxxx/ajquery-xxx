@@ -1,5 +1,5 @@
 ﻿'use strict';﻿﻿﻿
-//06/05/23
+//08/05/23
 
 const version = 'v0.97'
 let fb; // fb2k state
@@ -1303,7 +1303,7 @@ function updateSMPUI() {
 		}
 	}
 		
-	const addDisabledNode = (id, nodeText = (bEnabledPlsToolsCMD ? '-- Select an option --' : '-- foo_runcmd or foo_run_main missing --')) => {
+	const addDisabledNode = (id, nodeText) => {
 		const list = document.getElementById(id);
 		while (list.firstChild) {list.removeChild(list.firstChild);}
 		const node = new Option(nodeText, -1, true, true);
@@ -1311,14 +1311,16 @@ function updateSMPUI() {
 		list.appendChild(node);
 	};
 	// Rewrite Playlist Tools Menu list
+	let bDone = false;
 	if (!bEnabledPlsToolsCMD || !smp.hasOwnProperty('playlistToolsEntries')) {
-		if (!bEnabledManager) {$('#pt_btn').attr('title', 'Playlist Tools (foo_run_main or foo_runcmd not found)');}
+		if (!bEnabledManager) {$('#pt_btn').attr('title', 'Playlist Tools (foo_run_main or foo_runcmd missing)');}
 	} else {
 		$('#pt_btn').attr('title', 'Playlist Tools');
 	}
-	if (smp.hasOwnProperty('playlistToolsEntries')) {
+	if (smp.hasOwnProperty('playlistToolsEntries') && bEnabledMenuList) {
 		const num = smp.playlistToolsEntries.length;
 		if (num) {
+			bDone = true;
 			const list = document.getElementById('PTME');
 			while (list.firstChild) {list.removeChild(list.firstChild);}
 			for (let i = -1; i < num; i++) {
@@ -1334,10 +1336,11 @@ function updateSMPUI() {
 				list.appendChild(node);
 			}
 			list.selectedIndex = 0; // Index will have an offset due to the first entry being a dummy entry...
-		} else {addDisabledNode('PTME');}
-	} else {addDisabledNode('PTME');}
+		} else {addDisabledNode('PTME', '-- foo_runcmd or foo_run_main missing --');}
+	} else {addDisabledNode('PTME', bEnabledPlsToolsCMD ? '-- \'Execute menu entry by name\' missing --' : '-- foo_runcmd or foo_run_main missing --');}
 	
 	// Rewrite Playlist Tools Menu list CMD
+	bDone = false;
 	if (smp.hasOwnProperty('playlistToolsEntriesCMD')) {
 		const panelKeys = Object.keys(smp.playlistToolsEntriesCMD);
 		const panelNum = panelKeys.length;
@@ -1345,10 +1348,17 @@ function updateSMPUI() {
 			const panelKey = panelKeys[0]; // Only use first one
 			const num = smp.playlistToolsEntriesCMD[panelKey].length;
 			if (num) {
+				bDone = true;
 				const list = document.getElementById('PTMECMD');
 				while (list.firstChild) {list.removeChild(list.firstChild);}
 				for (let i = -1; i < num; i++) {
-					let name = i === -1 ? (bEnabledPlsToolsCMDDyn ? '-- Select an option --' : '-- foo_runcmd or foo_run_main missing --') : smp.playlistToolsEntriesCMD[panelKey][i].name;
+					let name = i === -1 
+						? (bEnabledPlsToolsCMDDyn 
+							? '-- Select an option --' 
+							: bEnabledPlsToolsCMD 
+								? '-- \'Create SMP dynamic menus\' disabled --'
+								: '-- foo_runcmd or foo_run_main missing --') 
+						: smp.playlistToolsEntriesCMD[panelKey][i].name;
 					const flags = i === -1 ? 1 : smp.playlistToolsEntriesCMD[panelKey][i].flags;
 					if (name === 'sep') {
 						name = '---------------------------\n---------------------------'
@@ -1361,8 +1371,9 @@ function updateSMPUI() {
 				}
 				list.selectedIndex = 0; // Index will have an offset due to the first entry being a dummy entry...
 			}
-		} else {addDisabledNode('PTMECMD');}
-	} else {addDisabledNode('PTMECMD');}
+		}
+	}
+	if (!bDone) {addDisabledNode('PTMECMD', bEnabledPlsToolsCMD ? '-- \'Create SMP dynamic menus\' disabled --' : '-- foo_runcmd or foo_run_main missing --');}
 	
 	// Rewrite Output devices list
 	if (smp.hasOwnProperty('devices')) {
