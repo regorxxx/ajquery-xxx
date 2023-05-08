@@ -2,12 +2,19 @@
 
 ## [Table of Contents]
 - [Unreleased](#unreleased)
+- [0.97](#097---2023-05-08)
 - [0.96](#096---2023-05-05)
 - [0.95](#095---2023-05-04)
 - [0.94](#094---2023-03-07)
 - [0.93](#093---2023-03-05)
 
 ## [Unreleased][]
+### Added
+### Changed
+### Removed
+### Fixed
+
+## [0.97] - 2023-05-08
 ### Added
 - Tooltip to playlist's tracks with current track's info, selection count and extra configurable info at 'config.json' (helper4).
 - Added 'playlist_items_per_page_max' at 'config.json' (requires foo_httpcontrol v0.97.25).
@@ -85,8 +92,9 @@
 ### Removed
 ### Fixed
 
-[Unreleased]: https://github.com/regorxxx/ajquery-xxx/compare/v0.96...HEAD
-[0.96]: https://github.com/regorxxx/ajquery-xxx/compare/v0.95...v0.95
+[Unreleased]: https://github.com/regorxxx/ajquery-xxx/compare/v0.97...HEAD
+[0.97]: https://github.com/regorxxx/ajquery-xxx/compare/v0.96...v0.97
+[0.96]: https://github.com/regorxxx/ajquery-xxx/compare/v0.95...v0.96
 [0.95]: https://github.com/regorxxx/ajquery-xxx/compare/v0.94...v0.95
 [0.94]: https://github.com/regorxxx/ajquery-xxx/compare/v0.93...v0.94
 [0.93]: https://github.com/regorxxx/ajquery-xxx/compare/2fd0f3d...v0.93

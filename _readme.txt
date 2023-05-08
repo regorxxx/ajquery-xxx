@@ -214,7 +214,7 @@ https://github.com/regorxxx/ajquery-xxx
 	¡otherwise the commands will be sent to the wrong playlist!. See 'img\_doc\always_send_new_files.jpg' image.
 
 *** Release history 2023
-	XX XXX  0.97
+	08 May  0.97
 		add:	Tooltip to playlist's tracks with current track's info, selection count and
 				extra configurable info at 'config.json' (helper4);
 		add:	Added 'playlist_items_per_page_max' at 'config.json' (requires foo_httpcontrol v0.97.25);
