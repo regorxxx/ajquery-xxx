@@ -15,6 +15,11 @@
 - Queue and Dequeue commands to contextual menu.
 - Every part of the current query path at 'Search media library' panel can now be clicked to jump to that node. For ex: for a library filtered by genre with path '[African] > Ali Farka Touré > Ali & Toumani'; '[African]' And 'Ali Farka Touré' could be clicked to directly jump to those (like pressing the back button multiple times).
 ### Changed
+- Progress bar text is now cut to ensure it's displayed on a single line.
+- Progress bar tooltip now displays the full playing now info (helper2).
+- Changed 'Sort by...', 'Rename', 'Add' (Extended controls) and 'Browse to...' (Browse files) popups from native modal popups to HTML ones (should work in more browsers and be future-proof). Colors also change according to theme.
+- Simplified 'Search media library' panel UI.
+- Simplified 'Sort by...' prompt info.
 - Clarified the warnings for 'Playlist Tools Menu Entries' (listener and CMD) when the required components are installed but the feature has not been enabled.
 - Opening the contextual menu now first selects the track at mouse position if there were no tracks selected before or current selection was at other position. i.e. it behaves like foobar2000 selection, only running the contextual menu on current selection if you clicked within it.
 - Tooltips are now self-hidden if mouse is not moved after 6 secs of being shown.
@@ -28,6 +33,8 @@
 - Template no longer shows AJAX errors while reloading the web page, as long as it is able to identify the page is unloading. See Mozilla compatibility browser [list](https://developer.mozilla.org/en-US/docs/Web/API/Window/beforeunload_event).
 ### Removed
 ### Fixed
+- 'Flush queue' and 'Run contextual menu' did not respect the disabled state, allowing to click on them while action was disabled.
+- 'Sort by...' at 'Extended controls' panel not working in some cases when specifying the sort direction.
 - Selected track, playing or pause icon overlapping with queue index in some cases.
 - Scrolling back not working during drag n' drop if already scrolled to a posterior page on the playlist (since original ajquery).
 - Dynamic colors not being reset when closing/opening the art panel during the same track due to some optimizations included in v0.96.

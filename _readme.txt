@@ -226,6 +226,13 @@ https://github.com/regorxxx/ajquery-xxx
 				'[African] > Ali Farka Touré > Ali & Toumani'; '[African]' And 'Ali Farka Touré' 
 				could be clicked to directly jump to those (like pressing the back button multiple
 				times);
+		cha:	Progress bar text is now cut to ensure it's displayed on a single line;
+		cha:	Progress bar tooltip now displays the full playing now info (helper2);
+		cha:	Changed 'Sort by...', 'Rename', 'Add' (Extended controls) and 'Browse to...' (Browse
+				files) popups from native modal popups to HTML ones (should work in more browsers 
+				and be future-proof). Colors also change according to theme;
+		cha:	Simplified 'Search media library' panel UI;
+		cha:	Simplified 'Sort by...' prompt info;
 		cha:	Clarified the warnings for 'Playlist Tools Menu Entries' (listener and CMD) when 
 				the required components are installed but the feature has not been enabled;
 		cha:	Opening the contextual menu now first selects the track at mouse position if 
@@ -246,6 +253,10 @@ https://github.com/regorxxx/ajquery-xxx
 		cha:	Template no longer shows AJAX errors while reloading the web page, as long as it
 				is able to identify the page is unloading. See Mozilla compatibility browser
 				[list](https://developer.mozilla.org/en-US/docs/Web/API/Window/beforeunload_event);
+		fix:	'Flush queue' and 'Run contextual menu' did not respect the disabled state, allowing
+				to click on them while action was disabled.
+		fix:	'Sort by...' at 'Extended controls' panel not working in some cases when specyfing
+				the sort direction.
 		fix:	Selected track, playing or pause icon overlapping with queue index in some cases;
 		fix:	Scrolling back not working during drag n' drop if already scrolled to a posterior
 				page on the playlist (since original ajquery);

@@ -13,8 +13,9 @@
 		<script type="text/javascript" defer src="js/vibrant.js"></script>
 		<script type="text/javascript" defer src="js/contextual.js"></script>
 		<script type="text/javascript" defer src="js/startup.js"></script>
+		<script type="text/javascript" defer src="js/daypilot-modal.min.js"></script>
 		<style type="text/css">
-			:root { --background-color: #fff; --background-color-v2: #e8e8e8; --background-color-v3: #e7e7e7; --background-color-v4: #f8f8f8; --border-color: gray; --border-color-v2: white; --text-color: #000; --text-color-v2: gray; --console-color: #000; --tabs-color-v1: #dddddd url(css/smoothness/images/ui-bg_highlight-soft_75_dddddd_1x100.png) 50% 0% repeat-x; --tabs-color-v2: none; --pl_prev: #5f5f5f; --pl_play: #6c0101;  --pl-album_play: #653b3b;}
+			:root { --background-color: #fff; --background-color-v2: #e8e8e8; --background-color-v3: #e7e7e7; --background-color-v4: #f8f8f8; --border-color: gray; --border-color-v2: white; --text-color: #000; --text-color-v2: gray; --console-color: #000; --tabs-color-v1: #dddddd url(css/smoothness/images/ui-bg_highlight-soft_75_dddddd_1x100.png) 50% 0% repeat-x; --tabs-color-v2: none; --pl_prev: #5f5f5f; --pl_play: #6c0101;  --pl-album_play: #653b3b; --modal-main: #2367bf;}
 			[data-theme="dark"] { --background-color: #3F3F3F; --background-color-v2: #a2a2a2; --background-color-v3: #a2a2a2; --background-color-v4: #e8e8e8; --border-color: #000; --border-color-v2: #d7d7d7; --text-color: #000; --text-color-v2: #3f3d3d; --console-color: white; --tabs-color-v1: #cccccc url(css/smoothness/images/ui-bg_highlight-soft_75_cccccc_1x100.png) 50% 0% repeat-x; --tabs-color-v2: #c8c8c8; --pl_prev: #474747; --pl_play: #6c0101; --pl-album_play: #653b3b;}
 			body{ font-size: 0.5em; margin: 10px; background-color: var(--background-color); max-width: 600px;}
 			ul#buttons {margin: 0; padding: 0;}
@@ -74,7 +75,7 @@
 
 			#querylist { height: 300px; overflow: visible;}
 			#querylist #qr { cursor: pointer; }
-			.qr_selected { background: #daeaff; }
+			.qr_selected { background: #daeaff; cursor: pointer;}
 
 			#tooltip { background: #ededed; padding: 2px; border: 1px solid gray; display: none; z-index: 1000; }
 
@@ -87,6 +88,21 @@
 			.column { flex: 50%;}
 			.columnA { flex: 40%;}
 			.columnB { flex: 60%;}
+			
+			.modal_ajquery_background { background-color: var(--background-color-v2); opacity: 0.75; }
+			.modal_ajquery_main { border-radius: 4px; background-color: #fff0;}
+			.modal_ajquery_main, .modal_ajquery_main button { font-size: 1.7em;}
+			.modal_ajquery_main input { font-size: 1em; }
+			.modal_ajquery_inner { padding: 20px; padding-top: 10px; padding-bottom: 10px; background: var(--background-color-v3); color: var(--text-color); border-radius: 8px; }
+			.modal_ajquery_main input, .modal_ajquery_main button {  padding: 5px; box-sizing: border-box; border-radius: 4px; border: 1px solid var(--modal-main); }
+			.modal_ajquery_content { margin: 10px 0px; font-family: verdana;}
+			.modal_ajquery_input { margin: 20px 0px 0px 0px; font-family: verdana;}
+			.modal_ajquery_input input { accent-color: var(--modal-main);}
+			.modal_ajquery_buttons { margin-top: 10px; margin-bottom: 0px; }
+			.modal_ajquery_main button { font-size: 1em; background-color: var(--modal-main); color: white; padding: 8px 0px; border: 0px; cursor: pointer; outline: none; width: 100px; }
+			button.modal_ajquery_cancel { font-size: 1em; margin-left: 10px; border: 1px solid var(--modal-main); background-color: #fff; color: var(--modal-main); }
+			
+			
 		</style>
 	</head>
 	<body>
@@ -451,11 +467,11 @@
 		</div>
 
 		<div id="search_dlg_nav1" class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix noselect" style="border-bottom-width: 1px; border-top-width: 0px; font-size: 1em; width: 92%; white-space:nowrap; max-width: 92%;">
-			<p>Search: <input type="text" size="30" id="searchstr" style="max-width: 80%;"> <a style="padding-right: 5px;" href="http://wiki.hydrogenaudio.org/index.php?title=Foobar2000:Query_syntax" target="_blank" title="Query syntax help">?</a></p>
+			<p><input type="text" placeholder="Search" size="30" id="searchstr" style="max-width: 80%;">&nbsp;&nbsp;<a style="padding-right: 5px;" href="http://wiki.hydrogenaudio.org/index.php?title=Foobar2000:Query_syntax" target="_blank" title="Query syntax help">?</a><span id="searchstrBttn" style="position: relative;left: -8%;">X</span></p>
 		</div>
 
 		<div id="search_dlg_nav2" class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix noselect" style="border-bottom-width: 1px; border-top-width: 0px; font-size: 1em; width: 92%; white-space:nowrap; max-width: 92%;">
-			<button id="r_btn">Retrieve list</button><strong>&nbsp;Current query path:&nbsp;</strong><span id="querypath"></span>
+			<button id="r_btn">All</button><button id="r_btn2"><</button><span id="querypath"></span>
 		</div>
 
 		<div id="browse_dlg" class="noselect" title="File browser" style="overflow-x: hidden;">

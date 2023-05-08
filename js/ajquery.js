@@ -19,6 +19,10 @@ let brParams = new Object;
 let keyPressed = {};
 let inputHasFocus = false;
 let bUnloading = false; // See startup.js
+let promptfCache = {
+	sort: '%TITLE%',
+	contextual: 'Playback Statistics/Rating/5'
+}
 const refreshInterval = 1000; // ms,.data retrieval interval, (not supposed to be changed)
 const menusPls = [
 	{id: 'PMME0',	type: '',					bSelection: false,	name: '', 						description: ''},
@@ -212,6 +216,12 @@ function promptf(msg, value) {
 	const result = prompt(msg, value);
 	inputHasFocus = false;
 	return result;
+}
+
+function promptfV2(msg, value, options = {theme: 'modal_ajquery', dragDrop: true, top: document.documentElement.clientHeight / 3}) {
+	inputHasFocus = true;
+	msg = msg.replace(/\n/g, '<br>');
+	return DayPilot.Modal.prompt(msg, value, options).finally(() => inputHasFocus = false);
 }
 
 /* This script and many more are available free online at
@@ -1025,8 +1035,7 @@ function updateTabs() {
 			$("#tabs a:eq(" + i + ")").html(['<span>', fb.playlists[i].name, '</span>'].join(''));
 		}
 	}
-//	tabs.tabs('select', parseInt(fb.playlistActive));
-//	let index = $('#tabs a[href="#simple-tab-2"]').parent().index();
+	
 	$("#tabs").tabs("option", "active", parseInt(fb.playlistActive));
 	settingTabs = false;
 }
@@ -1073,6 +1082,7 @@ function updateAlbumartPalette() {
 					'--background-color-v4':	palette.LightMuted.getHex(),
 					'--tabs-color-v1':			palette.LightMuted.getHex(),
 					'--tabs-color-v2':			palette.LightVibrant.getHex(),
+					'--modal-main': 				palette.Vibrant.getHex(),
 				};
 				const style = Object.keys(colors).map((key) => key + ': ' + colors[key]).join('; ');
 				$(':root').attr('style', style);
@@ -1116,8 +1126,8 @@ function updateLibrary() {
 	len = library.queryInfo.length;
 	const currSearch = $('#searchstr').val().length;
 	if (len < 1 && currSearch) {$('#r_btn').html('Filter');}
-	else if (len < 1 && !currSearch) {$('#r_btn').html('Retrieve list');}
-	else {$('#r_btn').text('<');}
+	else if (len < 1 && !currSearch) {$('#r_btn').html('All');}
+	// else {$('#r_btn').text('<');}
 	const path = [];
 	for (let i = 0; i < len; ++i) {
 		const name = stripXmlEntities.perform(library.queryInfo[i]);
@@ -1146,9 +1156,9 @@ function updateUI() {
 			let playingTitle = fb.helper2;
 			$('#playingtitle').html(fb.helper2);
 			// Responsive design
-			const maxWidth = document.documentElement.clientWidth * 0.75;
+			const maxWidth = $('#progressbar').width() * 0.88;
 			while ($('#playingtitle').width() > maxWidth) {
-				playingTitle = playingTitle.substring(0, playingTitle.length - 10) + '...';
+				playingTitle = playingTitle.substring(0, playingTitle.length - 4) + '...';
 				$('#playingtitle').html(playingTitle);
 			}
 			// Pause/play
@@ -1736,7 +1746,7 @@ $(function() {
 			},
 			range: false,
 			min: 1,
-			max: 1,            
+			max: 1,
 			value: 1
 		})
 		
@@ -1788,30 +1798,65 @@ $(function() {
 		$('#search_dlg_nav2').insertBefore('#search_dlg');
 		
 		$('#searchstr').keypress(function(e) {
-			const currSearch = $('#searchstr').val();
 			if (e.which == 13) { // Enter
+				const currSearch = $('#searchstr').val();
 				searchMediaLibrary(currSearch);
+				if (currSearch.length) {$('#r_btn').html('Filter');}
+				else {$('#r_btn').html('All');}
 			} else {
 				if (timeoutId2) {
-				  	clearTimeout(timeoutId2);
-				  	timeoutId2 = null;
+					clearTimeout(timeoutId2);
+					timeoutId2 = null;
 				}
 				if (!timeoutId2) {
-					timeoutId2 = setTimeout(() => searchMediaLibrary($('#searchstr').val()), 500);
+					timeoutId2 = setTimeout(() => {
+						const currSearch = $('#searchstr').val();
+						searchMediaLibrary(currSearch);
+						if (currSearch.length) {$('#r_btn').html('Filter');}
+						else {$('#r_btn').html('All');}
+					}, 500);
 				}
 			}
-			const query = library ? library.queryInfo.length : null;
-			if (query === null) {return;}
-			if (library.queryInfo.length < 1 && currSearch) {$('#r_btn').html('Filter');}
-			else if(library.queryInfo.length < 1 && !currSearch) {$('#r_btn').html('Retrieve artist list');}
-			else {$('#r_btn').text('<');}
+		}).keyup(function(e) {
+			if (e.which == 8) { // Return
+				if (timeoutId2) {
+					clearTimeout(timeoutId2);
+					timeoutId2 = null;
+				}
+				if (!timeoutId2) {
+					timeoutId2 = setTimeout(() => {
+						const currSearch = $('#searchstr').val();
+						searchMediaLibrary(currSearch);
+						if (currSearch.length) {$('#r_btn').html('Filter');}
+						else {$('#r_btn').html('All');}
+					}, 500);
+				}
+			}
+		}).on('focus keyup', function(e) {
+			if (!$(this).val().length){
+				$('#searchstrBttn').css({display: 'none', visibility: 'hidden'});
+			} else {
+				$('#searchstrBttn').css({display: 'inline', visibility: 'visible'});
+			}
+		});
+		
+		$('#searchstrBttn').hover(
+			function() {$(this).addClass('qr_selected');},
+			function() {$(this).removeClass('qr_selected');}
+		).click(function(e) {
+			$('#searchstr').val('').keypress().keyup();
+			
 		});
 		
 		$('#r_btn').click(function(e) {
 			$(this).blur();
 			const query = $('#searchstr').val().toString();
-			if (query && query.length && (!library || library.queryInfo.length === 0)) {retrieveLibraryState('QueryAdvance', query);}
-			else {retrieveLibraryState('QueryRetrace');}
+			if (query && query.length && (!library || library.queryInfo.length === 0)) {searchMediaLibrary(currSearch);}
+			else {$('#querypath_' + 0).click(); retrieveLibraryState('QueryRetrace');}
+		});
+		$('#r_btn2').click(function(e) {
+			$(this).blur();
+			retrieveLibraryState('QueryRetrace');
 		});
 		
 		// browse dialog
@@ -1824,8 +1869,10 @@ $(function() {
 			},
 			buttons: {
 				"Browse to..." : function() {
-					let path = promptf("Browse to:", Url.decode(br.pathcurrent));
-					if (path !== null) {retrieveBrowserState(path);}
+					promptfV2('<b>Browse to:</b>', Url.decode(br.pathcurrent !== '+' ? br.pathcurrent : '')).then((e) => {
+						const path = e.result;
+						if (path) {retrieveBrowserState(path);}
+					});
 				},
 				"Enqueue current" : function() { 
 					retrieveState(brParams.cmdenqueue);
@@ -1836,7 +1883,7 @@ $(function() {
 				"Close": function() { 
 					$(this).dialog("close"); 
 				}
-		    },
+			},
 			close: function(event, ui) { 
 				saveWindowToCookie($(this).attr('id'), false);
 				brOffsets = {};
@@ -2192,8 +2239,10 @@ $(function() {
 		
 		// Buttons
 		$('#CreatePlaylist,#PTCreatePlaylist').click(function(e) {
-			let name = promptf('Enter new playlist name:', 'New Playlist');
-			if (name != null) {command($(this).attr('id').replace('PT',''), name, void(0), true);}
+			promptfV2('<b>Enter new playlist name:</b>', 'New Playlist').then((e) => {
+				const name = e.result;
+				if (name) {command($(this).attr('id').replace('PT',''), name, void(0), true);}
+			});
 		});
 		
 		$('#RemovePlaylist,#PTRemovePlaylist').click(function(e) {
@@ -2206,8 +2255,11 @@ $(function() {
 		
 		$('#RenamePlaylist,#PTRenamePlaylist').click(function(e) {
 			if (!$(this).hasClass('ui-state-disabled')) {
-				let new_name = promptf("Enter new name:", fb.playlists[fb.playlistActive].name);
-				if (new_name != null) {command('RenamePlaylist', new_name, fb.playlistActive, true);}
+				const currName = fb.playlists[fb.playlistActive].name;
+				promptfV2('<b>Enter new name:</b>', currName).then((e) => {
+					const name = e.result;
+					if (name && name !== currName) {command('RenamePlaylist', new_name, fb.playlistActive, true);}
+				});
 			}
 		});
 		
@@ -2225,7 +2277,9 @@ $(function() {
 		});
 		
 		$('#FlushQueue,#QueueRandomItems').click(function(e) {
-			command($(this).attr('id'), void(0), void(0), true);
+			if (!$(this).hasClass('ui-state-disabled')) {
+				command($(this).attr('id'), void(0), void(0), true);
+			}
 		});
 		
 		$('#Undo,#Redo,#PTUndo,#PTRedo').click(function() {
@@ -2300,7 +2354,7 @@ $(function() {
 		
 		$('#progressbar').progressbar({
 			value: 0
-		})                                                             
+		})
 		.resizable({ alsoResize: '#tabs', handles: 'e', resize: function(event, ui) { savePlaylistSize(); } })
 		.hover(
 			function(event) { },
@@ -2309,7 +2363,7 @@ $(function() {
 			function(event) {
 				if (fb && fb.isPlaying == "1") {
 					let t = Math.round((event.pageX - $('#progressbar').offset().left) * fb.itemPlayingLen / ($('#progressbar').width()));
-					tooltip.show(formatTime(t), event.pageX + 15, $('#progressbar').offset().top - 10);
+					tooltip.showHTML(fb.helper2 + '<br>' + formatTime(t), event.pageX + 15, $('#progressbar').offset().top - 10);
 				}
 		})
 		.click(function(event) {
@@ -2333,21 +2387,31 @@ $(function() {
 		
 		// Input sort menu
 		$('#InputSort').click(function(e) {
-			let sort = promptf('Enter Sort pattern:\n\'ASCENDING BY\' or \'DESCENDING BY\'\nare allowed at the start (ascending by default).', '%title%');
-			if (sort != null) {
-				if (sort.startsWith('ASCENDING BY') || sort.startsWith('ABY')) {command('SortAscending', sort);}
-				else if (sort.startsWith('DESCENDING BY') || sort.startsWith('DBY')) {command('SortDescending', sort);}
-				else if (!sort.startsWith('DESCENDING') && !sort.startsWith('ASCENDING')) {command('SortAscending', sort);}
-				else {return;}
-			}
+			promptfV2('<b>Enter Sort pattern:</b> (ascending by default)\n\'ASCENDING BY\' (or \'ABY\') and \'DESCENDING BY\' (or \'DBY\') allowed.', promptfCache.sort).then((e) => {
+				const sort = e.result;
+				let bDone = false;
+				if (sort) {
+					bDone = true;
+					if (sort.startsWith('ASCENDING BY') || sort.startsWith('ABY')) {command('SortAscending', sort.replace(/^(ASCENDING BY|ABY) /, ''));}
+					else if (sort.startsWith('DESCENDING BY') || sort.startsWith('DBY')) {command('SortDescending', sort.replace(/^(DESCENDING BY|DBY) /, ''));}
+					else if (!sort.startsWith('DESCENDING') && !sort.startsWith('ASCENDING')) {command('SortAscending', sort);}
+					else {bDone = false;}
+				}
+				if (bDone) {promptfCache.sort = sort;}
+			});
 		});
 		
 		// Input contextual menu
 		$('#InputCC').click(function(e) {
-			let name = promptf('Enter Contextual (full) menu name:\nNote that running playlist-specific commands\nlike Remove, Crop, etc is not possible.', 'Playback Statistics/Rating/5');
-			if (name != null) {
-				const items = selection.toStr();
-				command('SelectionCommand', name , items, true);
+			if (!$(this).hasClass('ui-state-disabled')) {
+				promptfV2('<b>Enter Contextual (full) menu name:</b>\nNote that running playlist-specific commands\nlike Remove, Crop, etc is not possible.', promptfCache.contextual).then((e) => {
+					const name = e.result;
+					if (name) {
+						const items = selection.toStr();
+						command('SelectionCommand', name , items, true);
+						promptfCache.contextual = name;
+					}
+				});
 			}
 		});
 		
