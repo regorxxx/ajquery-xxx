@@ -211,8 +211,28 @@ https://github.com/regorxxx/ajquery-xxx
 	Examples can be found at 'smp\defaults' folder.
 	
 	(****) IT'S MANDATORY TO DISABLE 'ALWAYS SEND NEW FILES TO PLAYIST' 'AT PREFERENCES/SHELL INTEGRATION', 
-	°otherwise the commands will be sent to the wrong playlist!. See 'img\_doc\always_send_new_files.jpg' image.
+	¬°otherwise the commands will be sent to the wrong playlist!. See 'img\_doc\always_send_new_files.jpg' image.
 
+*** Release history 2024
+	11 Jun  0.98
+		add:	Reset rating shortcut is now also bound to '¬∫' key, in addition to '0'.
+		add:	Tips for covers not being parsed properly while setting dynamic colors on UI at
+				help window.
+		add:	Controller outputs to browser console current template, foobar2000 and foo_httpcontrol
+				version numbers.
+		add:	Ctrl + Double L. click on a playlist tab removes the selected playlist.
+		cha:	foobar2000 and foo_httpcontrol version numbers are now displayed at the help window title.
+		cha:	Updated keyboard shortcuts processing to work with most new browsers and different
+				keyboard layouts. Old method is still used as fallback for legacy browsers.
+		cha:	.ui only playlist are now shown at the playlist manager window and can be selected to
+				switch between them. Files still need to be loaded first.
+		fix:	Rating keyboard shortcuts (0-5, +, -) not working.
+		fix:	Code cleanup and internal code fixes.
+		fix:	Folders displayed as playlists on playlist manager window.  Now are hidden.
+		fix:	Copy selection on playlist manager window was not working properly with latest
+				Playlist Manager script versions due to a name change on actions.
+		fix:	Keyboard shortcuts not working.
+	
 *** Release history 2023
 	08 May  0.97
 		add:	Tooltip to playlist's tracks with current track's info, selection count and
@@ -223,7 +243,7 @@ https://github.com/regorxxx/ajquery-xxx
 		add:	Queue and Dequeue commands to contextual menu;
 		add:	Every part of the current query path at 'Search media library' panel can now be
 				clicked to jump to that node. For ex: for a library filtered by genre with path
-				'[African] > Ali Farka TourÈ > Ali & Toumani'; '[African]' And 'Ali Farka TourÈ' 
+				'[African] > Ali Farka Tour√© > Ali & Toumani'; '[African]' And 'Ali Farka Tour√©' 
 				could be clicked to directly jump to those (like pressing the back button multiple
 				times);
 		cha:	Progress bar text is now cut to ensure it's displayed on a single line;

@@ -10,9 +10,21 @@
 
 ## [Unreleased][]
 ### Added
+- Reset rating shortcut is now also bound to 'º' key, in addition to '0'.
+- Tips for covers not being parsed properly while setting dynamic colors on UI at help window.
+- Controller outputs to browser console current template, foobar2000 and foo_httpcontrol version numbers.
+- Ctrl + Double L. click on a playlist tab removes the selected playlist.
 ### Changed
+- foobar2000 and foo_httpcontrol version numbers are now displayed at the help window title.
+- Updated keyboard shortcuts processing to work with most new browsers and different keyboard layouts. Old method is still used as fallback for legacy browsers.
+- .ui only playlist are now shown at the Playlist Manager window and can be selected to	switch between them. Files still need to be loaded first.
 ### Removed
 ### Fixed
+- Rating keyboard shortcuts (0-5, +, -) not working.
+- Code cleanup and internal code fixes.
+- Folders displayed as playlists on Playlist Manager window.  Now are hidden.
+- Copy selection on Playlist Manager window was not working properly with latest Playlist Manager script versions due to a name change on actions.
+- Keyboard shortcuts not working.
 
 ## [0.97] - 2023-05-08
 ### Added

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html data-theme="dark">
+<html data-theme="dark" lang="en" xml:lang="en">
 	<head>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -57,6 +57,7 @@
 				-moz-user-select:		none; /* Old versions of Firefox */
 				-ms-user-select:		none; /* Internet Explorer/Edge */
 				-user-select:			none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
+				user-select:			none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
 			}
 			
 			#playlist { margin-right: -10px; margin-left: -10px; }
@@ -68,7 +69,7 @@
 			#progressbar { cursor: pointer; margin-bottom: 12px; }
 			#playingtitle { float: left; font-size: 1.2em; padding: 0.25em; font-style: italic; font-weight: bold; margin: 0; position: absolute; top: 50%; transform: translateY(-50%);}
 			#playingtime { float: right; font-size: 1.2em; padding: 0.25em; font-style: italic; font-weight: bold; margin: 0; position: relative; top: 50%; transform: translateY(-50%);} 
-			#browse_table { width: 100%; /*height: 85%;*/ overflow-y: hidden; overflow-x:hidden; }
+			#browse_table { width: 100%; overflow-y: hidden; overflow-x:hidden; }
 			#aa_pane { opacity: .95; width: 50%; display: none; z-index: 2; cursor: move; margin: 0px;}
 			#cl_pane { opacity: .95; width: 50%; display: none; z-index: 2; cursor: move; margin: 0px;}
 			#cl_text { font-size: 2em; white-space: pre-line; color: var(--console-color)}
@@ -95,8 +96,8 @@
 			.modal_ajquery_main input { font-size: 1em; }
 			.modal_ajquery_inner { padding: 20px; padding-top: 10px; padding-bottom: 10px; background: var(--background-color-v3); color: var(--text-color); border-radius: 8px; }
 			.modal_ajquery_main input, .modal_ajquery_main button {  padding: 5px; box-sizing: border-box; border-radius: 4px; border: 1px solid var(--modal-main); }
-			.modal_ajquery_content { margin: 10px 0px; font-family: verdana;}
-			.modal_ajquery_input { margin: 20px 0px 0px 0px; font-family: verdana;}
+			.modal_ajquery_content { margin: 10px 0px; font-family: verdana,sans-serif;}
+			.modal_ajquery_input { margin: 20px 0px 0px 0px; font-family: verdana,sans-serif;}
 			.modal_ajquery_input input { accent-color: var(--modal-main);}
 			.modal_ajquery_buttons { margin-top: 10px; margin-bottom: 0px; }
 			.modal_ajquery_main button { font-size: 1em; background-color: var(--modal-main); color: white; padding: 8px 0px; border: 0px; cursor: pointer; outline: none; width: 100px; }
@@ -106,51 +107,51 @@
 		</style>
 	</head>
 	<body>
-	<div id="wnd">
-		<ul id="buttons" class="ui-widget ui-helper-clearfix" style="float: left;">
-		<!-- <li class="btncmd ui-state-default ui-corner-all" title="Start" id="Start"><span class="ui-icon ui-icon-play"></span></li> -->
-		<li class="btncmd ui-state-default ui-corner-all" title="Play or pause (Space)" id="PlayOrPause"><span class="ui-icon ui-icon-play"></span></li>
-		<li class="btncmd ui-state-default ui-corner-all" style="margin-left: 0px;" title="Stop" id="Stop"><span class="ui-icon ui-icon-stop"></span></li>
-		<li class="btncmd ui-state-default ui-corner-all" title="Previous" id="StartPrevious"><span class="ui-icon ui-icon-seek-first"></span></li>
-		<li class="btncmd ui-state-default ui-corner-all" title="Next" id="StartNext"><span class="ui-icon ui-icon-seek-end"></span></li>
-		<li class="btncmd ui-state-default ui-corner-all" title="Random" id="StartRandom"><span class="ui-icon ui-icon-shuffle"></span></li>
-		<li class=""></li>
-		<li class="ui-state-default ui-corner-all" title="Browse files" id="browse_btn"><span class="ui-icon ui-icon-folder-open"></span></li>
-		<li class="ui-state-default ui-corner-all" title="Search media library" id="search_btn"><span class="ui-icon ui-icon-search"></span></li>
-		<li class="ui-state-default ui-corner-all" title="Album art" id="aa_btn"><span class="ui-icon ui-icon-image"></span></li>
-		<li class="ui-state-default ui-corner-all" title="Extended controls" id="pbs_btn"><span class="ui-icon ui-icon-gear"></span></li>
-		<li class="ui-state-default ui-corner-all" title="Playlist Tools" id="pt_btn"><span class="ui-icon ui-icon-wrench"></span></li>
-		<li class="ui-state-default ui-corner-all" title="Playlist Manager" id="pm_btn"><span class="ui-icon ui-icon-note"></span></li>
-		<li class="ui-state-default ui-corner-all" title="Console log" id="cl_btn"><span class="ui-icon ui-icon-alert"></span></li>
-		<li class="ui-state-default ui-corner-all" title="Help" id="help_btn"><span class="ui-icon ui-icon-help"></span></li>
-		<li class="ui-state-default ui-corner-all" id="mute"><span class="ui-icon ui-icon-volume-off"></span></li>
-		<li id="vol"><!--<span>--><div id="volume" style="width: 100px; margin: 0.5em"></div><!--</span>--></li>
-		</ul>
-		<div id="loading" class="lindicator">&nbsp;&nbsp;<img src="img/loading.gif"></div>
-		<p><div id="progressbar" class="noselect"><div id="playingtitle"></div><div id="playingtime"></div></div>
-
-		<div id="tabs" class="ui-tabs ui-helper-clearfix">
-			<ul>
-				<li><a href="#t"></a></li>
+		<!-- Buttons and playlist -->
+		<div id="wnd">
+			<ul id="buttons" class="ui-widget ui-helper-clearfix" style="float: left;">
+				<li class="btncmd ui-state-default ui-corner-all" title="Play or pause (Space)" id="PlayOrPause"><span class="ui-icon ui-icon-play"></span></li>
+				<li class="btncmd ui-state-default ui-corner-all" style="margin-left: 0px;" title="Stop" id="Stop"><span class="ui-icon ui-icon-stop"></span></li>
+				<li class="btncmd ui-state-default ui-corner-all" title="Previous" id="StartPrevious"><span class="ui-icon ui-icon-seek-first"></span></li>
+				<li class="btncmd ui-state-default ui-corner-all" title="Next" id="StartNext"><span class="ui-icon ui-icon-seek-end"></span></li>
+				<li class="btncmd ui-state-default ui-corner-all" title="Random" id="StartRandom"><span class="ui-icon ui-icon-shuffle"></span></li>
+				<li class=""></li>
+				<li class="ui-state-default ui-corner-all" title="Browse files" id="browse_btn"><span class="ui-icon ui-icon-folder-open"></span></li>
+				<li class="ui-state-default ui-corner-all" title="Search media library" id="search_btn"><span class="ui-icon ui-icon-search"></span></li>
+				<li class="ui-state-default ui-corner-all" title="Album art" id="aa_btn"><span class="ui-icon ui-icon-image"></span></li>
+				<li class="ui-state-default ui-corner-all" title="Extended controls" id="pbs_btn"><span class="ui-icon ui-icon-gear"></span></li>
+				<li class="ui-state-default ui-corner-all" title="Playlist Tools" id="pt_btn"><span class="ui-icon ui-icon-wrench"></span></li>
+				<li class="ui-state-default ui-corner-all" title="Playlist Manager" id="pm_btn"><span class="ui-icon ui-icon-note"></span></li>
+				<li class="ui-state-default ui-corner-all" title="Console log" id="cl_btn"><span class="ui-icon ui-icon-alert"></span></li>
+				<li class="ui-state-default ui-corner-all" title="Help" id="help_btn"><span class="ui-icon ui-icon-help"></span></li>
+				<li class="ui-state-default ui-corner-all" id="mute"><span class="ui-icon ui-icon-volume-off"></span></li>
+				<li id="vol"><div id="volume" style="width: 100px; margin: 0.5em"></div></li>
 			</ul>
-			<div id="t">
-				<div>
-					<div style="float: right; width: 8em; margin-right: -1em;">
-						<ul id="buttons" class="ui-widget" style="margin-top: -1.3em; ">
-							<li style="border: 1px solid transparent;" title="" id="prevpage_btn"><span class="ui-icon ui-icon-arrowthick-1-w"></span></li>
-							<li style="border: 1px solid transparent;" title="" id="nextpage_btn"><span class="ui-icon ui-icon-arrowthick-1-e"></span></li>
-							<li style="border: 1px solid transparent;" title="Refresh controller" id="rel_btn"><span class="ui-icon ui-icon-arrowrefresh-1-w"></span></li>
-						</ul>
-					</div>
-					<div style="margin-top:0.5em; margin-right: 8em; cursor: pointer;"><div id="pageslider"></div></div>
-				</div>
+			<div id="loading" class="lindicator">&nbsp;&nbsp;<img alt="Loading" src="img/loading.gif"></div>
+			<p><div id="progressbar" class="noselect"><div id="playingtitle"></div><div id="playingtime"></div></div>
 
-				<div id="playlist" style="clear: both;">Loading...</div>
-				<hr style="margin-right: -1.5em; margin-left: -1.5em;">
-				<div id="summary" class="noselect" style="margin-bottom: -0.5em; cursor: pointer;"></div>
-  	        	</div>
+			<div id="tabs" class="ui-tabs ui-helper-clearfix">
+				<ul>
+					<li><a title ="dummy" href="#t"></a></li>
+				</ul>
+				<div id="t">
+					<div>
+						<div style="float: right; width: 8em; margin-right: -1em;">
+							<ul id="buttons" class="ui-widget" style="margin-top: -1.3em; ">
+								<li style="border: 1px solid transparent;" title="" id="prevpage_btn"><span class="ui-icon ui-icon-arrowthick-1-w"></span></li>
+								<li style="border: 1px solid transparent;" title="" id="nextpage_btn"><span class="ui-icon ui-icon-arrowthick-1-e"></span></li>
+								<li style="border: 1px solid transparent;" title="Refresh controller" id="rel_btn"><span class="ui-icon ui-icon-arrowrefresh-1-w"></span></li>
+							</ul>
+						</div>
+						<div style="margin-top:0.5em; margin-right: 8em; cursor: pointer;"><div id="pageslider"></div></div>
+					</div>
+					<div id="playlist" style="clear: both;">Loading...</div>
+					<hr style="margin-right: -1.5em; margin-left: -1.5em;">
+					<div id="summary" class="noselect" style="margin-bottom: -0.5em; cursor: pointer;"></div>
+				</div>
+			</div>
 		</div>
-	</div>
+		<!-- Windows -->
 		<div id="pbs_dlg" class="noselect" title="Extended controls" style="overflow-x: hidden;">
 			<p>Playlist:</p>
 			<ul id="buttons" class="ui-widget ui-helper-clearfix">
@@ -174,10 +175,6 @@
 			<li class="ui-state-default ui-corner-all" title="Set cursor" id="SetFocus"><span class="ui-icon ui-icon-pin-s"></span></li>
 			<li class="ui-state-default ui-corner-all" title="Run contextual menu...&#013;(on selection)" id="InputCC"><span class="ui-icon ui-icon-script"></span></li>
 			<li class="ui-state-default ui-corner-all" title="Sort by...&#013;(all playlist items)" id="InputSort"><span class="ui-icon ui-icon-carat-2-n-s"></span></li>
-			<!-- Paste doesn't work
-			<li class="ui-state-default ui-corner-all" title="Copy" id="Copy"><span class="ui-icon ui-icon-clipboard"></span></li>
-			<li class="ui-state-default ui-corner-all" title="Paste" id="Paste"><span class="ui-icon ui-icon-cart"></span></li>
-			-->
 			</ul>
 			<hr/>
 			<p>Rating:</p>
@@ -329,19 +326,20 @@
 		</div>
 		
 		<div id="aa_pane">
-			<img id="aa_img" style="width: 100%;">
+			<img id="aa_img" alt="Album art" style="width: 100%;">
 		</div>
 		
 		<div id="cl_pane">
 			<div id="cl_text"><p>No console.</p></div>
 		</div>
-
+		
 		<div id="help_dlg" class="noselect justify" style="width: 50%; overflow-x: hidden;" title="Help">
 			<div id="help_dlg_text1">
 				<h3>Tips</h3>
 				<ul>
 				<li>It is recommended to enable 'Cursor follows playback' option in foobar2000 Playback menu for more convenient playlists browsing.</li>
 				<li>It's also recommended to uncheck 'Log access to console' at 'Preferences/Tools/Http Control' on foobar (to not pollute console).</li>
+				<li>If the UI colors are not adjusted to specific album art files while playing, try opening and re-saving the cover file on any image editor since it will probably be a format error (recommended 'Baseline optimized').</li>
 				</ul>
 			</div>
 			<hr>
@@ -379,6 +377,7 @@
 				<h4>Playlist Tabs</h4>
 				<ul>
 				<li>Double clicking active playlist tab opens rename popup.</li>
+				<li>Ctrl + Double clicking a playlist tab removes the playlist.</li>
 				</ul>
 				<h4>Hotkeys (also shown on buttons tooltip)</h4>
 				<ul>
@@ -389,11 +388,16 @@
 					<li><strong>del				</strong>: delete selection.</li>
 					<li><strong>q				</strong>: enqueue selection.</li>
 					<li><strong>w				</strong>: dequeue selection.</li>
+					<li><strong>ctrl + w		</strong>: remove playlist (may not work on most browsers).</li>
+					<li><strong>ctrl + n		</strong>: create new playlist (may not work on most browsers).</li>
+					<li><strong>w				</strong>: dequeue selection.</li>
 					<li><strong>0...5			</strong>: rate selection from 0 to 5.</li>
+					<li><strong>º				</strong>: rate selection 0.</li>
 					<li><strong>+ (numpad)		</strong>: reduce rating on selection.</li>
 					<li><strong>- (numpad)		</strong>: increase rating on selection.</li>
 					<li><strong>Space			</strong>: play/pause</li>
-					<li><strong>Shift + AvPag	</strong>: reduce playlist size</li>
+					<li><strong>Shift + PageUp	</strong>: increase playlist size</li>
+					<li><strong>Shift + PageDown</strong>: reduce playlist size</li>
 				</ul>
 			</div>
 			<hr>
@@ -461,27 +465,21 @@
 				</p>
 			</div>
 		</div>
-		
 		<div id="search_dlg" class="noselect" title="Search media library" style="overflow-x: hidden;">
 			<div id="querylist"></div>
 		</div>
-
 		<div id="search_dlg_nav1" class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix noselect" style="border-bottom-width: 1px; border-top-width: 0px; font-size: 1em; width: 92%; white-space:nowrap; max-width: 92%;">
 			<p><input type="text" placeholder="Search" size="30" id="searchstr" style="max-width: 80%;">&nbsp;&nbsp;<a style="padding-right: 5px;" href="http://wiki.hydrogenaudio.org/index.php?title=Foobar2000:Query_syntax" target="_blank" title="Query syntax help">?</a><span id="searchstrBttn" style="position: relative;left: -8%;">X</span></p>
 		</div>
-
 		<div id="search_dlg_nav2" class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix noselect" style="border-bottom-width: 1px; border-top-width: 0px; font-size: 1em; width: 92%; white-space:nowrap; max-width: 92%;">
 			<button id="r_btn">All</button><button id="r_btn2"><</button><span id="querypath"></span>
 		</div>
-
 		<div id="browse_dlg" class="noselect" title="File browser" style="overflow-x: hidden;">
 			<div id="browse_table"></div>
 		</div>
-
 		<div id="browse_dlg_nav" class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix" style="border-bottom-width: 1px; border-top-width: 0px; font-size: 1em; width: 100%; white-space:nowrap; max-width: 100%;">
-			<a id="browse_parent" href="#"></a>&nbsp;<span id="browse_path"></span>
-		</div>
-
+			<a id="browse_parent" title="Up one folder" href="#"></a>&nbsp;<span id="browse_path"></span>
+		</div>		
 		<div id="error_dlg" title="&#9760; Ouch!">
 			<p>An AJAX error occured.</p>
 			<p>Possible reasons:</p>
@@ -494,9 +492,9 @@
 			<hr/>
 			<textarea id="dbg" cols="90" rows="30"></textarea>
 		</div>
-
+		<!-- Tooltip -->
 		<span id="tooltip" class="ui-widget"></span>
-		
+		<!-- Contextual Menus -->
 		<div id="ctxMenu" class="menu">
 			<a id="ctxMenuDelete">
 				Remove <span>Del</span>
@@ -514,6 +512,19 @@
 			</a>
 			<a id="ctxMenuRedo">
 				Redo <span>Ctrl + y</span>
+			</a>
+		</div>
+		<div id="plsMenu" class="menu">
+			<a id="plsMenuRename">
+				<b>Rename </b><span>Dbl. click</span>
+			</a>
+			<hr />
+			<a id="plsMenuRemove">
+				Remove <span>Ctrl + w</span>
+			</a>
+			<hr />
+			<a id="plsMenuNew">
+				New <span>Ctrl + n</span>
 			</a>
 		</div>
 	</body>

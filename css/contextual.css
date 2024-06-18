@@ -16,6 +16,7 @@
 	box-shadow: 2px 2px 2px 0px rgba(143, 144, 145, 1);
 	padding: 0px;
 	border: 1px solid #C6C6C6;
+	z-index: 99999;
 }
 
 .menu a {
